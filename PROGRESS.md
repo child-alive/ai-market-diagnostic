@@ -652,3 +652,40 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
    为 1200×630；本地 HTTP/health/静态图均成功；密钥特征 0 命中；`git diff --check` 通过。
 2. 提交第六部独立 commit；
 3. 用户有 ECS 公网 IP / SSH 后执行部署脚本，把 URL 回填 `SUBMISSION.md`。
+
+---
+
+## 2026-07-17 session-04 (Codex，Lumio 中转站兼容性验收)
+
+### 开工与基线
+- [x] 按协议重新完整阅读 `PLAN.md` → `PROGRESS.md` → `src/models.py`；接手时工作树干净。
+- [x] Mock 基线通过：20 问题 / 8 回答 / 7 缺口 / 7 建议。
+
+### Stage4-T7 — Lumio 中转站兼容性诊断与报告
+- [x] 网关 `https://api.lumio.games/` 在线；未鉴权 `/v1/models` 返回 401，并声明支持
+      Bearer、`x-api-key` 与 `x-goog-api-key`。测试密钥只经隐藏回显的交互式进程传入，
+      未写入 `.env`、源码、日志、报告或 Git。
+- [x] GPT 密钥可见 20 个路由模型，`gpt-5.4` 普通 Chat Completions 返回 200 和预期正文；
+      Gemini 密钥可见 5 个路由模型，`gemini-3.5-flash` 普通生成返回 200 和预期正文主体。
+- [x] GPT `web_search_options` 请求返回 200，但 `annotations=0`，并把 2025-08-07 的文章误报为
+      2026-07-17 时点的最新 OpenAI News；OpenAI 官方 News 页已列出 2026-07-16 等新内容，
+      该搜索结果被交叉核验明确证伪。正文残留不可解析的内部 citation token。
+- [x] GPT `/v1/responses` 对普通请求和 `web_search` 工具请求均返回 200 / `application/json`，
+      但正文为 0 字节，当前不可用。
+- [x] Gemini 携搜索参数连续两次返回 200，但 message 只有 role，正文为空且无 annotations；
+      `/v1/interactions` 与 `/v1beta/interactions` 均为 404，未暴露官方 Google Search Grounding 契约。
+- [x] 新增 `docs/Lumio中转站API验收报告.md`，完整记录验收口径、端点、模型列表、逐项结果、
+      官方页面交叉核验、风险和给 Fable5 的复核重点；全文不含任何密钥。
+
+### 决策记录（Lumio）
+- 不将 Lumio 接入现有 `openai` / `gemini` Provider，也不把普通生成结果记入官方平台切片：
+  当前只证明第三方网关能返回对应模型名称与文本，未证明上游身份、联网工具执行、当前信息新鲜度
+  或原生引用契约。该决定延续此前“普通代理不得冒充官方平台”的测量口径。
+- 若未来使用，只能新增独立的 `lumio_gpt` / `lumio_gemini` 第三方普通生成标签；但它对本项目
+  的联网 GEO 目标没有足够增量价值，因此本次不改代码、不扩大范围。
+- 用户在对话中直接提供过两把 Lumio 密钥。仓库中未保存；测试完成后建议用户在服务商后台轮换。
+
+### 下一步
+1. Fable5 可直接审阅 `docs/Lumio中转站API验收报告.md`，无需重复消耗 API；
+2. 若服务商后续提供公开的搜索工具与结构化 citation 契约，只做单题复验，成功前不跑 Top-8；
+3. 当前提交主示例继续使用已真实验收的 DeepSeek `run_id=37b442ec`。
