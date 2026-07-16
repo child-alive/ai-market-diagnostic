@@ -535,3 +535,58 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 ### 下一步
 1. 验证历史/新报告、示例产物、Mock 基线和 45 个测试后提交第四部 B；
 2. 进入第五部 Query Fanout，只对无品牌词派生 3~5 个子问法并计算 Coverage。
+
+### 冲刺-P1 第五部：Query Fanout
+- [x] 数据契约只增向后兼容字段：`FanoutQuery` 保存父问题、双语文本、分支类型与
+      Mock 标记；`FanoutMetrics` 独立保存父问题数、已生成/已检测分支、Mention /
+      Recommendation 命中、Parent / Branch Coverage 与 Grounded Rate。历史报告缺少
+      Fanout 字段时仍按空列表 / `None` 正常加载。
+- [x] 父问题只从高价值 **unbranded** Prompt Set 中选取；真实模式用 DeepSeek JSON
+      生成每题 3~5 个分支，至少覆盖 paraphrase / scenario / follow_up 三类，并在
+      Pydantic 校验后执行品牌名和别名泄漏硬拦截、父问题归属/数量/类型/重复文本校验。
+      生成或校验失败时使用确定性分支并标记 `is_mock=true`，不把降级内容伪装成真实生成。
+- [x] Fanout 回答真实模式只由 DeepSeek Web Search 采样，Mock 模式只用 MockProvider；
+      回答、分析、指标与主 Prompt Set 分开存储和展示，不改变顶层 Visibility、缺口或建议。
+      CLI 新增显式开关 `--query-fanout`、`--fanout-parents`、`--fanout-branches`，默认关闭，
+      因而普通运行不会增加 API 消耗。
+- [x] 报告增加 Query Fanout 板块：4 张 Coverage / Grounded 指标卡、父问题、分支类型、
+      双语问法、提及/推荐/顺位、来源数和真实/Mock 标记；文案明确 Coverage 不是搜索量、
+      不是统计置信区间，也不混入主 Prompt Set 指标。
+- [x] 2026-07-17 完整真实验收 `run_id=37b442ec`：主链路实时生成 22 问并回答 Top-8，
+      3 branded + 5 unbranded；8/8 `search_grounded=true`，70 个来源 URL，0 Mock、
+      0 结构化解析降级。Unbranded Mention / Recommendation / SOV 均为 0%，Citation
+      Rate 100%；Branded Visibility 100%、Recommendation 66.7%、Average Position 1.0。
+- [x] 同一运行从 q01 / q02 两个价值分 4 的无品牌词父问题派生 6 个真实分支，三类各 2；
+      西语和中文文本中 Deli / 得力 / 别名泄漏为 0。6/6 分支完成 Web Search，返回
+      66 个来源 URL，0 Mock；Parent Fanout、Branch Mention、Branch Recommendation
+      Coverage 均为 0%，Grounded Rate 100%。
+- [x] 同一运行的无品牌词主回答共 37 个来源条目：目标品牌官网 0、权威媒体/政府 3、
+      电商 0、目录 5、论坛 0、其他 29。主无品牌词与 Fanout 同时未命中，支持“当前
+      DeepSeek 小样本中尚未进入通用需求叙事”的限定判断；两组样本仍是同平台同日观测，
+      不冒充 ChatGPT/Gemini 结果、独立重复验证或统计置信区间。
+- [x] SQLite 历史恢复实测：`.venv/bin/python -m src.main --run-id 37b442ec` 成功，
+      原生成时间、Fanout 数据、指标和报告板块均保留，不重新调用 LLM / Web Search / 官网。
+- [x] 新增 5 个测试，覆盖父问题选择、三类分支、品牌泄漏拦截、Coverage 公式与 Mock
+      主链路隔离；全量 `50 passed`。默认 Mock 基线继续为 20 / 8 / 7 / 7；显式 Mock
+      Fanout 为 2 父问题 / 6 分支，主回答仍为 8 条。
+- [x] `data/示例产物/report.json` / `report.html` 已固化为 `37b442ec`；JSON 闸门逐项验证
+      22/8 主链路、70 主来源、0 Mock/降级、5 条无品牌词、6/6 真实 Fanout、66 分支来源、
+      0 品牌泄漏、15 页非快照进阶官网审计。默认 Mock 再跑通过且保持 20 / 8 / 7 / 7；
+      `git diff --check` 通过，密钥特征扫描只有 `desk-organizer` 路径触发宽松 `sk-` 子串
+      误报，增加非字母左边界后为 0 命中。
+
+### 决策记录（第五部）
+- Query Fanout 采用“独立切片”而不是追加进主 `questions/answers/metrics`。原因是它是
+  围绕少量高价值父问题的扩展抽样；若混入主分母会让同一父意图获得额外权重并破坏不同
+  run 的可比性。该决定与追加指令的“输出 Fanout Coverage 并入报告”一致，仅改变存储位置。
+- 真实分支生成失败时允许回退确定性模板，是为了让一次生成格式错误不拖垮主诊断；但回退
+  必须逐条标记 Mock，报告显示 FANOUT MOCK，不能把真实回答建立在未披露的 seed 上。
+- `37b442ec` 取代 `f141d182` 作为提交主示例：新 run 在同一可追溯报告内同时具备分层指标、
+  进阶站点审计与真实 Query Fanout；旧 run 继续保留为“品牌词混算导致虚高”的审计案例。
+- 用户已明确无需等待 Fable5 恢复额度；Fable5 后续应从本节及对应 commit 开始独立复核，
+  无需重复运行真实 API。浏览器无法访问本机文件/端口仍是 Codex 浏览器隔离，不是用户权限。
+
+### 下一步
+1. 提交第五部独立 commit；
+2. 进入第六部：回放模式优先的 Vue 3 + TypeScript 双受众演示网页，随后增加隔离的
+   FastAPI 实况端点、限流/并发/超时降级与部署手册；不得破坏 CLI 和静态报告主件。

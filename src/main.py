@@ -4,6 +4,7 @@
     python -m src.main --mock            # 全 Mock 模式（无需 key/网络）
     python -m src.main                   # 有 DEEPSEEK_API_KEY 时为 hybrid 模式
     python -m src.main --top-n 10        # 调整可见度检测的问题数
+    python -m src.main --query-fanout    # 额外检测无品牌词问题分支
     python -m src.main --run-id abc12345 # 重渲染历史报告
 """
 from __future__ import annotations
@@ -14,7 +15,16 @@ from datetime import datetime, timezone
 
 from .config import DATA_DIR, DELI_PROFILE, Settings
 from .models import DiagnosticReport, EvidenceMetrics, PlatformResult, ReportMeta, RunMode
-from .pipeline import analysis, evidence, gaps, question_gen, recommend, site_audit, visibility
+from .pipeline import (
+    analysis,
+    evidence,
+    gaps,
+    query_fanout,
+    question_gen,
+    recommend,
+    site_audit,
+    visibility,
+)
 from .providers import GeminiSearchProvider, MockProvider, OpenAISearchProvider
 from .providers.base import AnswerProvider
 from .report import render
@@ -98,6 +108,9 @@ def run_diagnostic(
     verify_evidence: bool = False,
     evidence_max_sources: int = 3,
     evidence_max_claims: int = 3,
+    enable_query_fanout: bool = False,
+    fanout_parents: int = query_fanout.DEFAULT_PARENTS,
+    fanout_branches: int = query_fanout.DEFAULT_BRANCHES,
 ) -> DiagnosticReport:
     profile = DELI_PROFILE
     providers = build_providers(settings, provider_names)
@@ -134,6 +147,32 @@ def run_diagnostic(
     answers = primary.answers
     analyses = primary.analyses
     metrics = primary.metrics
+    fanout_queries = []
+    fanout_answers = []
+    fanout_analyses = []
+    fanout_metrics = None
+    if enable_query_fanout:
+        if settings.force_mock:
+            fanout_provider: AnswerProvider = MockProvider()
+        else:
+            if not settings.deepseek_api_key:
+                raise ValueError("Query Fanout 真实检测仅支持 DeepSeek，请配置 DEEPSEEK_API_KEY")
+            from .providers.deepseek import DeepSeekProvider
+
+            fanout_provider = DeepSeekProvider(settings)
+        (
+            fanout_queries,
+            fanout_answers,
+            fanout_analyses,
+            fanout_metrics,
+        ) = query_fanout.run_query_fanout(
+            questions,
+            profile,
+            settings,
+            fanout_provider,
+            max_parents=fanout_parents,
+            branches_per_parent=fanout_branches,
+        )
     audit = site_audit.audit_site(profile, settings)
     gap_list = gaps.find_gaps(questions, analyses, audit)
     recs = recommend.make_recommendations(metrics, gap_list, audit)
@@ -148,6 +187,10 @@ def run_diagnostic(
         gaps=gap_list,
         recommendations=recs,
         platform_results=platform_results,
+        fanout_queries=fanout_queries,
+        fanout_answers=fanout_answers,
+        fanout_analyses=fanout_analyses,
+        fanout_metrics=fanout_metrics,
         meta=ReportMeta(
             generated_at=datetime.now(timezone.utc),
             mode=(
@@ -165,9 +208,12 @@ def run_diagnostic(
             providers=[result.provider for result in platform_results],
             models={result.provider: result.model for result in platform_results},
             notes=(
-                [f"缺口与建议仍基于主平台 {primary.provider} 的结果。"]
-                if len(platform_results) > 1
-                else []
+                ([f"缺口与建议仍基于主平台 {primary.provider} 的结果。"]
+                 if len(platform_results) > 1 else [])
+                + (["Query Fanout 回答仅由 DeepSeek 采样，未混入主平台指标。"]
+                   if enable_query_fanout and not settings.force_mock else [])
+                + (["Query Fanout 使用确定性派生与 Mock 回答。"]
+                   if enable_query_fanout and settings.force_mock else [])
             ),
         ),
     )
@@ -205,6 +251,23 @@ def main() -> None:
         default=3,
         help="每条回答最多预审的陈述数（默认 3）",
     )
+    parser.add_argument(
+        "--query-fanout",
+        action="store_true",
+        help="对高价值无品牌词派生分支并用 DeepSeek 抽样检测（会增加 API 请求）",
+    )
+    parser.add_argument(
+        "--fanout-parents",
+        type=int,
+        default=query_fanout.DEFAULT_PARENTS,
+        help="Query Fanout 父问题数（默认 2）",
+    )
+    parser.add_argument(
+        "--fanout-branches",
+        type=int,
+        default=query_fanout.DEFAULT_BRANCHES,
+        help="每个父问题派生 3~5 个分支（默认 3）",
+    )
     args = parser.parse_args()
 
     if args.run_id:
@@ -236,6 +299,10 @@ def main() -> None:
         parser.error("--mock 不能与 --providers 同时使用")
     if args.evidence_max_sources < 1 or args.evidence_max_claims < 1:
         parser.error("证据预审的 max-sources / max-claims 必须大于 0")
+    if args.fanout_parents < 1:
+        parser.error("--fanout-parents 必须大于 0")
+    if not 3 <= args.fanout_branches <= 5:
+        parser.error("--fanout-branches 必须在 3~5 之间")
     provider_names = None
     if args.providers:
         provider_names = [name.strip().lower() for name in args.providers.split(",") if name.strip()]
@@ -255,6 +322,9 @@ def main() -> None:
             verify_evidence=args.verify_evidence,
             evidence_max_sources=args.evidence_max_sources,
             evidence_max_claims=args.evidence_max_claims,
+            enable_query_fanout=args.query_fanout,
+            fanout_parents=args.fanout_parents,
+            fanout_branches=args.fanout_branches,
         )
     except ValueError as exc:
         parser.error(str(exc))
@@ -273,6 +343,13 @@ def main() -> None:
             for result in report.platform_results
         )
         print(f"[evidence] {summary}")
+    if report.fanout_metrics is not None:
+        print(
+            f"[fanout] {report.fanout_metrics.queries_checked}/"
+            f"{report.fanout_metrics.queries_generated} checked | "
+            f"Mention {report.fanout_metrics.mention_coverage:.0%} | "
+            f"Recommendation {report.fanout_metrics.recommendation_coverage:.0%}"
+        )
     print(f"[out]  {json_path}")
     print(f"[out]  {html_path}  ← 双击用浏览器打开")
 

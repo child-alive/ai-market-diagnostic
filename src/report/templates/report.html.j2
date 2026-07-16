@@ -227,7 +227,10 @@
 {% for a in r.analyses %}{% if analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
 {% set question_map = {} %}
 {% for q in r.questions %}{% if question_map.update({q.id: q}) %}{% endif %}{% endfor %}
+{% set fanout_analysis_map = {} %}
+{% for a in r.fanout_analyses %}{% if fanout_analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
 {% set mock_count = r.answers|selectattr("is_mock")|list|length %}
+{% set fanout_mock_count = r.fanout_answers|selectattr("is_mock")|list|length %}
 {% set grounded_count = r.answers|selectattr("search_grounded")|list|length %}
 {% set primary_provider = r.platform_results[0].provider if r.platform_results else (r.answers[0].provider if r.answers else "unknown") %}
 {% set evidence_ns = namespace(total=0) %}
@@ -415,6 +418,51 @@
       </table>
     </div>
   </section>
+
+  {% if r.fanout_metrics %}
+  <section id="query-fanout">
+    <div class="section-head">
+      <div><p class="section-kicker">Query expansion</p><h2>Query Fanout 问题分支 <small>{{ r.fanout_metrics.parents_selected }} 父问题 · {{ r.fanout_metrics.queries_generated }} 分支</small></h2></div>
+      <p class="section-note">同义改写、场景细化与追问式分支均保持无品牌词；Coverage 不混入主 Prompt Set 指标。</p>
+    </div>
+    {% if fanout_mock_count or r.fanout_queries|selectattr("is_mock")|list|length %}
+    <div class="data-notice">
+      <span class="badge mock">FANOUT MOCK</span>
+      <div><strong>本节使用确定性分支或 Mock 回答。</strong> 用于离线验收 Query Fanout 数据链路，不代表真实 DeepSeek 分支覆盖。</div>
+    </div>
+    {% endif %}
+    <div class="metrics">
+      <article class="metric primary"><div class="label">Parent Fanout Coverage<br>父问题分支覆盖率</div><div class="num">{{ "%.0f%%"|format(r.fanout_metrics.parent_fanout_coverage*100) }}</div><div class="sub">至少一个分支提及品牌的父问题</div></article>
+      <article class="metric"><div class="label">Branch Mention Coverage<br>分支提及覆盖率</div><div class="num">{{ "%.0f%%"|format(r.fanout_metrics.mention_coverage*100) }}</div><div class="sub">{{ r.fanout_metrics.mention_hits }}/{{ r.fanout_metrics.queries_checked }} 个已检测分支</div></article>
+      <article class="metric"><div class="label">Branch Recommendation<br>分支推荐覆盖率</div><div class="num">{{ "%.0f%%"|format(r.fanout_metrics.recommendation_coverage*100) }}</div><div class="sub">{{ r.fanout_metrics.recommendation_hits }}/{{ r.fanout_metrics.queries_checked }} 个分支明确推荐</div></article>
+      <article class="metric"><div class="label">Grounded Rate<br>联网搜索率</div><div class="num">{{ "%.0f%%"|format(r.fanout_metrics.grounded_rate*100) }}</div><div class="sub">{{ r.fanout_metrics.queries_checked }}/{{ r.fanout_metrics.queries_generated }} 分支完成检测</div></article>
+    </div>
+    <div class="table-wrap" style="margin-top:18px">
+      <table>
+        <thead><tr><th>父问题</th><th>分支类型</th><th>派生问法</th><th>检测结果</th><th>顺位</th><th>来源</th></tr></thead>
+        <tbody>
+          {% for fanout in r.fanout_queries %}
+          {% set an = fanout_analysis_map.get(fanout.id) %}
+          {% set answer = (r.fanout_answers|selectattr("question_id", "equalto", fanout.id)|list|first) %}
+          <tr>
+            <td><span class="rank">{{ fanout.parent_question_id }}</span><br><span class="question-zh">{{ question_map[fanout.parent_question_id].text_local }}</span></td>
+            <td><span class="badge">{{ {"paraphrase":"同义改写","scenario":"场景细化","follow_up":"追问式"}[fanout.fanout_type.value] }}</span>{% if fanout.is_mock %}<br><span class="badge mock">SEED</span>{% endif %}</td>
+            <td><span class="question-text">{{ fanout.text_local }}</span><br><span class="question-zh">{{ fanout.text_zh }}</span></td>
+            {% if an %}
+            <td>{% if an.brand_recommended %}<span class="result-hit">✓ 推荐</span>{% elif an.brand_mentioned %}<span class="result-hit">○ 仅提及</span>{% else %}<span class="result-miss">× 未提及</span>{% endif %}</td>
+            <td>{{ an.brand_position if an.brand_position is not none else "—" }}</td>
+            <td>{% if answer %}{{ answer.source_urls|length }}{% if answer.search_grounded %} <span class="badge real">WEB</span>{% elif answer.is_mock %} <span class="badge mock">MOCK</span>{% endif %}{% else %}<span class="badge fail">失败</span>{% endif %}</td>
+            {% else %}
+            <td><span class="badge fail">未完成</span></td><td>—</td><td>—</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="evidence"><strong>口径：</strong>Parent Fanout Coverage 表示“至少一个派生分支提及目标品牌”的父问题占比；Branch Coverage 表示所有已检测分支中的命中比例。两者均为本轮 DeepSeek 分支样本，不是搜索量或统计置信区间。</p>
+  </section>
+  {% endif %}
 
   <section id="answers">
     <div class="section-head">

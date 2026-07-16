@@ -95,6 +95,12 @@ class CrawlerPurpose(str, Enum):
     BOTH = "both"
 
 
+class FanoutType(str, Enum):
+    PARAPHRASE = "paraphrase"
+    SCENARIO = "scenario"
+    FOLLOW_UP = "follow_up"
+
+
 # ---------------------------------------------------------------- 输入
 
 class BrandProfile(BaseModel):
@@ -204,6 +210,27 @@ class VisibilityMetrics(VisibilitySegmentMetrics):
 
     branded: VisibilitySegmentMetrics = Field(default_factory=VisibilitySegmentMetrics)
     unbranded: VisibilitySegmentMetrics = Field(default_factory=VisibilitySegmentMetrics)
+
+
+class FanoutQuery(BaseModel):
+    id: str
+    parent_question_id: str
+    text_local: str
+    text_zh: str
+    fanout_type: FanoutType
+    is_mock: bool = False
+
+
+class FanoutMetrics(BaseModel):
+    parents_selected: int = 0
+    queries_generated: int = 0
+    queries_checked: int = 0
+    mention_hits: int = 0
+    recommendation_hits: int = 0
+    mention_coverage: float = 0.0
+    recommendation_coverage: float = 0.0
+    parent_fanout_coverage: float = 0.0
+    grounded_rate: float = 0.0
 
 
 class EvidenceReview(BaseModel):
@@ -316,6 +343,10 @@ class DiagnosticReport(BaseModel):
     analyses: list[AnswerAnalysis] = Field(default_factory=list)
     metrics: Optional[VisibilityMetrics] = None
     platform_results: list[PlatformResult] = Field(default_factory=list)
+    fanout_queries: list[FanoutQuery] = Field(default_factory=list)
+    fanout_answers: list[AIAnswer] = Field(default_factory=list)
+    fanout_analyses: list[AnswerAnalysis] = Field(default_factory=list)
+    fanout_metrics: Optional[FanoutMetrics] = None
     site_audit: Optional[SiteAuditResult] = None
     gaps: list[ContentGap] = Field(default_factory=list)
     recommendations: list[Recommendation] = Field(default_factory=list)

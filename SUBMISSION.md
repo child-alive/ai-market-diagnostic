@@ -6,7 +6,7 @@
 
 1. **0~4 分钟：双击打开 [`data/示例产物/report.html`](data/示例产物/report.html)**
    
-   先看执行摘要、无品牌词指标和品牌认知板块，再快速浏览问题地图、AI 回答与来源、官网诊断、缺口和 P0/P1/P2 建议。该文件来自 DeepSeek V4 真实联网运行 `f141d182`；如需验证随机性，再看同目录的 [`repeat_sampling.json`](data/示例产物/repeat_sampling.json)。
+   先看执行摘要、无品牌词指标、Query Fanout 和品牌认知板块，再快速浏览问题地图、AI 回答与来源、官网诊断、缺口和 P0/P1/P2 建议。该文件来自 DeepSeek V4 真实联网运行 `37b442ec`；如需验证随机性，再看同目录的 [`repeat_sampling.json`](data/示例产物/repeat_sampling.json)。
 
 2. **4~7 分钟：阅读 [`docs/方案说明.md`](docs/方案说明.md)**
    
@@ -33,7 +33,8 @@
 - 将品牌词与无品牌词分层，并进一步拆分 Mention Rate 与 Recommendation Rate：品牌进入答案不等于被建议购买；
 - 保存 API 返回的搜索来源，展示官网/权威媒体与政府/电商/目录/论坛 Source Mix，并提供可选的页面级证据预审，始终区分“来源类型”“有来源”和“来源支持结论”；
 - 完成 3 个无品牌词 × 3 轮的真实 DeepSeek 重复采样，保存逐轮回答与来源，展示 0%~33.3% 的实际波动；
-- 完成 15 页上限的官网轻量实抓/快照降级；站点审计细分 8 个 AI 访问 token、`llms.txt`、原始 HTML/JS 依赖与内容可提取性；并提供 SQLite 历史运行存档、静态 HTML/JSON 报告与 45 个回归测试。
+- 完成 Query Fanout：高价值无品牌词按同义改写/场景细化/追问式派生 3~5 个分支，强制品牌泄漏检查，并将 Parent / Branch Coverage 与主 Prompt Set 分开统计；
+- 完成 15 页上限的官网轻量实抓/快照降级；站点审计细分 8 个 AI 访问 token、`llms.txt`、原始 HTML/JS 依赖与内容可提取性；并提供 SQLite 历史运行存档、静态 HTML/JSON 报告与 50 个回归测试。
 
 ## 2. 为什么这样设计
 
@@ -47,9 +48,10 @@
 
 | 项目 | 边界 |
 | --- | --- |
-| **DeepSeek 提交示例** | **真实联网运行**：`run_id=f141d182`，22 条实时生成问题、Top-8 真实回答，8/8 `search_grounded=true`，64 个搜索来源 URL，0 Mock、0 解析降级 |
-| **真实核心数字** | Top-8 = 4 branded + 4 unbranded；Unbranded Mention / Recommendation / SOV 均为 0%；Branded Visibility 100%、Avg Position 1.5。无品牌词的 38 个来源中目标品牌官网为 0，目录 21、电商 7、权威媒体/政府 5、其他 5 |
-| **官网检查** | 2026-07-16 真实抓取 `deliworld.com` 15 页；“未发现西语内容 / es-MX hreflang”仅限该抓取范围，不是全站绝对结论 |
+| **DeepSeek 提交示例** | **真实联网运行**：`run_id=37b442ec`，22 条实时生成问题、Top-8 真实回答，8/8 `search_grounded=true`，70 个主回答来源 URL，0 Mock、0 解析降级 |
+| **真实核心数字** | Top-8 = 3 branded + 5 unbranded；Unbranded Mention / Recommendation / SOV 均为 0%；Branded Visibility 100%、Recommendation 66.7%、Avg Position 1.0。无品牌词的 37 个来源中目标品牌官网为 0，目录 5、权威媒体/政府 3、其他 29 |
+| **Query Fanout** | 从 2 个高价值无品牌词父问题派生 6 个真实分支，品牌名/别名泄漏 0；6/6 DeepSeek Web Search 成功，66 个来源 URL；Parent / Branch Mention / Recommendation Coverage 均为 0%。分支指标未混入主 Prompt Set |
+| **官网检查** | 同一 `37b442ec` 运行真实抓取 `deliworld.com` 15 页，`snapshot_mode=false`；“未发现西语内容 / es-MX hreflang”仅限该抓取范围，不是全站绝对结论 |
 | **Mock 演示** | `--mock` 使用本地 fixtures，问题、回答、官网结果和派生指标均在数据与报告中明显标注；用于链路验收，不代表市场表现 |
 | **OpenAI** | Provider 代码和本地伪响应测试已通过；官方最小真实请求因 API 账户无 credits 返回 `429 insufficient_quota`，**不声称联网真实验收通过** |
 | **Gemini** | Key 有效且普通文本生成可用；Google Search Grounding 返回 `429 RESOURCE_EXHAUSTED`，**不声称联网真实验收通过** |
@@ -59,10 +61,10 @@
 
 ## 4. 下一步做什么
 
-1. 实现 Query Fanout：高价值无品牌词问题派生 3~5 个子问法，计算 Fanout Coverage；
-2. 将当前 3×3 方法演示扩展为 100+ Prompt Set 和更多轮次，给出分布、波动与置信区间；
-3. 在官方额度/权限恢复后，分别完成 OpenAI Search 与 Gemini Grounding 单题冒烟，再运行同一 Prompt Set 的多平台比较；
-4. 完成回放/实况双模式演示网页与部署手册，但不破坏 CLI 和静态报告主交付。
+1. 将当前 3×3 方法演示扩展为 100+ Prompt Set 和更多轮次，给出分布、波动与置信区间；
+2. 在官方额度/权限恢复后，分别完成 OpenAI Search 与 Gemini Grounding 单题冒烟，再运行同一 Prompt Set 的多平台比较；
+3. 完成回放/实况双模式演示网页与部署手册，但不破坏 CLI 和静态报告主交付；
+4. 在历史 runs 数据上增加时间、地区与平台趋势，并用人工标注集校准推荐和实体抽取。
 
 > **范围说明：** 最低交付要求已由 CLI + 真实示例报告 + 方案说明独立满足；Stage 4 与冲刺阶段各项均为可选增强，彼此独立完整，不应被读成“主链路尚未做完”。
 
