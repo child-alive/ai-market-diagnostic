@@ -130,7 +130,8 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
       ECharts SVG 正常渲染；示例 HTML 已用原有真实官网实抓 JSON 重渲染（15 页、非快照模式）
 - [x] Stage3-T2 `docs/方案说明.md` 定稿：补官网实抓结果、SQLite/错误处理、
       当前完成边界与下一步；PLAN §9 六项限制与不确定性全部保留
+- [x] Stage3-T3 `README.md` 定稿：三步运行、五种 CLI 用法、`--run-id` 示例、
+      产物/数据边界/工程约定与无 key、网络受限、图表 CDN 等常见问题
 
 ### 下一步
-1. Stage3-T3 README 定稿；
-2. Stage3-T4 补充约 10 个 pytest 用例并跑全量验收。
+1. Stage3-T4 补充约 10 个 pytest 用例并跑全量验收。
