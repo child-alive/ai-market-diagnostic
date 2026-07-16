@@ -132,13 +132,30 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
       当前完成边界与下一步；PLAN §9 六项限制与不确定性全部保留
 - [x] Stage3-T3 `README.md` 定稿：三步运行、五种 CLI 用法、`--run-id` 示例、
       产物/数据边界/工程约定与无 key、网络受限、图表 CDN 等常见问题
-- [x] Stage3-T4 pytest：12 个用例覆盖启发式解析（别名/顺位/竞品/引用/情感/词边界）、
-      指标聚合（空输入/公式/竞品排序）与 SQLite 报告往返/未知 ID；`12 passed`
+- [x] Stage3-T4 pytest：14 个用例覆盖启发式解析（别名/顺位/竞品/引用/情感/词边界）、
+      指标聚合（空输入/公式/竞品排序）、SQLite 报告往返/未知 ID 与两项真实链路回归场景；`14 passed`
 - [x] Stage 3 最终验收：mock 基线保持 20 问题 / 8 回答 / 7 缺口 / 7 建议；
       新 run 写库后按 `--run-id` 重渲染成功；示例报告仍保留实时官网检查 15 页、非快照模式
 
 **Stage 3 完成 ✅**
 
+### DeepSeek 真实链路联调（用户配置 API 后）
+- [x] 三段小测通过：DeepSeek 实时生成 22 条问题（含题目指定西语问题）、单条真实回答、
+      单条 JSON-mode 结构化抽取；`is_mock=false`、无降级
+- [x] 完整 hybrid 验收通过：22 问题 / 8 条 DeepSeek 回答 / 8 条结构化分析；
+      最终 `run_id=c271b6ac`，0 Mock、0 解析降级；SQLite 历史重渲染成功
+- [x] 最终真实指标：Visibility 62.5% / SOV 16.13% / Avg Position 1.2 /
+      Citation Rate 100%；官网实时检查 15 页，问题仍为 `NO_HREFLANG_ES_MX`、`NO_SPANISH_CONTENT`
+- [x] `data/示例产物/report.{json,html}` 已升级为最终 hybrid 真实运行产物
+
+### 决策记录（真实数据反馈）
+- DeepSeek 曾将“Deli”歧义解释为熟食并输出 FUD/Zwan 等食品品牌；修复为仅对原问题已包含 Deli 的问法
+  追加“得力文具品牌”消歧。曾尝试全局消歧，但会向通用品类问题泄露目标品牌、污染 Visibility，验证后撤回
+- LLM 可能输出 `BIC`/`Bic` 大小写变体；抽取后按既有品牌词典做大小写规范化、去重并过滤零售商，
+  不修改数据契约或规则驱动缺口模块
+- DeepSeek 未接检索工具，回答域名属于模型声明来源；报告与文档将 Citation Rate 明确标注为“声明引用率（未核验）”，
+  生产环境需增加 URL 可访问性与证据文本校验
+
 ### 下一步
 1. Stage 4 为可选加分项，按剩余时间选择 FastAPI、第二 Provider、Query Fanout 或演示视频；
-2. 获取有效 `DEEPSEEK_API_KEY` 后，优先小规模联调三段尚未实测的真实调用路径。
+2. 若进入产品化，优先接真实海外平台并扩大到 100+ 问题、多轮采样。

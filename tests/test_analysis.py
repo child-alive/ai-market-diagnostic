@@ -12,8 +12,14 @@ from src.models import (
     Citation,
     CompetitorMention,
     Sentiment,
+    UserQuestion,
 )
-from src.pipeline.analysis import aggregate_metrics, heuristic_analyze
+from src.pipeline.analysis import (
+    _normalize_competitors,
+    aggregate_metrics,
+    heuristic_analyze,
+)
+from src.providers.deepseek import _build_user_prompt
 
 
 def make_answer(text: str, question_id: str = "test") -> AIAnswer:
@@ -24,6 +30,32 @@ def make_answer(text: str, question_id: str = "test") -> AIAnswer:
         retrieved_at=datetime.now(timezone.utc),
         is_mock=True,
     )
+
+
+def make_question(text: str) -> UserQuestion:
+    return UserQuestion(
+        id="test",
+        text_local=text,
+        text_zh="测试问题",
+        tier="category",
+        funnel="TOFU",
+        value_score=5,
+        value_reason="测试",
+    )
+
+
+def test_deepseek_prompt_only_disambiguates_questions_that_name_deli() -> None:
+    generic = _build_user_prompt(
+        make_question("¿Cuáles son las mejores marcas de papelería en México?")
+    )
+    branded = _build_user_prompt(
+        make_question("¿Dónde comprar productos Deli en México?")
+    )
+
+    assert generic == "¿Cuáles son las mejores marcas de papelería en México?"
+    assert "Deli/得力" not in generic
+    assert "Deli/得力" in branded
+    assert branded.endswith("¿Dónde comprar productos Deli en México?")
 
 
 def test_heuristic_recognizes_brand_alias_as_target_brand() -> None:
@@ -96,6 +128,22 @@ def test_heuristic_uses_word_boundaries_for_short_brand_name() -> None:
     assert result.brand_mentioned is False
     assert result.brand_position is None
     assert result.sentiment == Sentiment.NEUTRAL
+
+
+def test_normalize_competitors_canonicalizes_deduplicates_and_filters_retailers() -> None:
+    competitors = [
+        CompetitorMention(name="Bic", position=1),
+        CompetitorMention(name="BIC", position=2),
+        CompetitorMention(name="Office Depot", position=3),
+        CompetitorMention(name="Miquelrius", position=4),
+    ]
+
+    result = _normalize_competitors(competitors, DELI_PROFILE)
+
+    assert [(item.name, item.position) for item in result] == [
+        ("BIC", 1),
+        ("Miquelrius", 4),
+    ]
 
 
 def test_aggregate_metrics_handles_empty_input() -> None:

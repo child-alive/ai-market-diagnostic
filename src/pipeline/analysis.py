@@ -131,6 +131,32 @@ def heuristic_analyze(answer: AIAnswer, profile: BrandProfile) -> AnswerAnalysis
 
 # ---------------------------------------------------------------- LLM 抽取
 
+def _normalize_competitors(
+    competitors: list[CompetitorMention],
+    profile: BrandProfile,
+) -> list[CompetitorMention]:
+    """统一 LLM 输出的品牌大小写，去重并过滤渠道名称。"""
+
+    canonical_names = list(profile.seed_competitors) + KNOWN_BRANDS
+    canonical_by_key = {name.casefold(): name for name in canonical_names}
+    retailer_keys = {name.casefold() for name in RETAILERS}
+    seen: set[str] = set()
+    normalized: list[CompetitorMention] = []
+
+    for competitor in competitors:
+        raw_name = competitor.name.strip()
+        key = raw_name.casefold()
+        if not raw_name or key in retailer_keys or key in seen:
+            continue
+        seen.add(key)
+        normalized.append(
+            CompetitorMention(
+                name=canonical_by_key.get(key, raw_name),
+                position=competitor.position,
+            )
+        )
+    return normalized
+
 _EXTRACT_PROMPT = """从下面这段"AI 对消费者问题的回答"中抽取结构化信息。目标品牌：{brand}（别名：{aliases}）。
 
 回答原文：
@@ -161,7 +187,9 @@ def llm_analyze(answer: AIAnswer, profile: BrandProfile, settings: Settings) -> 
         )}]
     )
     try:
-        return AnswerAnalysis(question_id=answer.question_id, **data)
+        result = AnswerAnalysis(question_id=answer.question_id, **data)
+        result.competitors = _normalize_competitors(result.competitors, profile)
+        return result
     except Exception as e:  # ValidationError 等
         raise ProviderError(f"抽取结果不符合契约: {e}")
 

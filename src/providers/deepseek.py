@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from datetime import datetime, timezone
 
@@ -70,11 +71,26 @@ class DeepSeekClient:
 
 _ANSWER_SYSTEM_PROMPT = (
     "Eres un asistente de IA para consumidores en México, similar a ChatGPT. "
+    "Todas las preguntas pertenecen al contexto de papelería, artículos escolares "
+    "y suministros de oficina. "
     "Responde la pregunta del usuario en español de México, de forma natural y útil. "
     "Si la pregunta pide recomendaciones de marcas/tiendas, menciona marcas concretas "
     "disponibles en México en orden de relevancia. Al final agrega una línea "
     "'Fuentes:' con los dominios web que respaldarían tu respuesta."
 )
+
+_DELI_CONTEXT = (
+    "Contexto: en esta pregunta, 'Deli' se refiere a Deli/得力, la marca china "
+    "de papelería, nunca a alimentos, embutidos ni tiendas delicatessen.\n\n"
+)
+
+
+def _build_user_prompt(question: UserQuestion) -> str:
+    """只对原问题已出现 Deli 的问法追加消歧，避免污染通用可见度测量。"""
+
+    if re.search(r"(?<![\w])Deli(?![\w])", question.text_local, re.IGNORECASE):
+        return f"{_DELI_CONTEXT}Pregunta: {question.text_local}"
+    return question.text_local
 
 
 class DeepSeekProvider(AnswerProvider):
@@ -89,7 +105,7 @@ class DeepSeekProvider(AnswerProvider):
         raw_text = self.client.chat(
             [
                 {"role": "system", "content": _ANSWER_SYSTEM_PROMPT},
-                {"role": "user", "content": question.text_local},
+                {"role": "user", "content": _build_user_prompt(question)},
             ],
             temperature=0.7,
         )

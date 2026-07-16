@@ -253,7 +253,7 @@
       <article class="metric primary"><div class="label">Visibility<br>AI 可见度</div><div class="num">{{ "%.0f%%"|format(m.visibility_rate*100) }}</div><div class="sub">提及回答 / 检测回答</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Share of Voice<br>话语权</div><div class="num">{{ "%.1f%%"|format(m.sov*100) }}</div><div class="sub">品牌提及 / 全部品牌提及</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Average Position<br>平均排名</div><div class="num">{{ m.avg_position if m.avg_position is not none else "—" }}</div><div class="sub">被提及时的平均顺位</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Citation Rate<br>引用率</div><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="sub">含可溯源域名的回答占比</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Citation Rate<br>声明引用率</div><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="sub">回答声明域名的占比 · 未核验</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Sentiment<br>情感倾向</div><div class="num">{{ m.sentiment_summary.get("pos",0) }}·{{ m.sentiment_summary.get("neu",0) }}·{{ m.sentiment_summary.get("neg",0) }}</div><div class="sub">正面 · 中性 · 负面</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
     </div>
 
@@ -322,7 +322,7 @@
           <span class="badge">引用 {{ an.citations|length }}</span>
         </div>
         <p class="evidence"><strong>竞品：</strong>{{ an.competitors|map(attribute="name")|join("、") or "无" }}</p>
-        <p class="evidence"><strong>引用源：</strong>{{ an.citations|map(attribute="domain")|join("、") or "无" }}</p>
+        <p class="evidence"><strong>声明引用源（未核验）：</strong>{{ an.citations|map(attribute="domain")|join("、") or "无" }}</p>
         {% if an.evidence_quote %}<div class="quote">“{{ an.evidence_quote }}”</div>{% endif %}
         <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>{{ a.raw_text }}</pre></details>
       </article>
@@ -396,7 +396,7 @@
 
   <footer>
     <strong>AI 海外市场诊断智能体 · Prototype</strong><br>
-    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照。
+    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照；AI 回答声明的引用域名未经独立检索核验。
   </footer>
 </main>
 
