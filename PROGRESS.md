@@ -255,8 +255,13 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 - [x] Gemini `gemini-3.5-flash` Interactions 请求返回 `429`；另以官方
       `generateContent + google_search` 小测 `gemini-3-flash-preview` 与 `gemini-3.1-flash-lite`，均返回
       `429 RESOURCE_EXHAUSTED`；`gemini-2.5-flash` 对新用户返回 404 已停用
-- [x] 当前结论：两套 Provider 的官方真实请求均被额度阻塞，**未把本次测试记录为真实链路通过**；
-      下一步先检查 Google AI Studio 项目实际 rate limit，OpenAI 则需独立 API credits 或经契约审计的代理
+- [x] 用户提供 AI Studio rate-limit 截图后复核：Gemini 2.5 Flash / 2.5 Flash Lite / 3 Flash
+      显示非零免费推理额度；`gemini-3-flash-preview` 不带工具的最小 `generateContent` 请求返回 200，
+      证明 Key 与普通文本生成可用，429 的阻塞点是 `google_search` 联网工具而非整个 Gemini 项目
+- [x] 进一步测试截图中有免费额度的 `gemini-2.5-flash-lite + google_search`，官方接口对新用户返回 404
+      “no longer available”；因此不能用旧模型绕过联网工具限制
+- [x] 当前结论：OpenAI 被 API 余额阻塞；Gemini 普通生成可用、Google Search Grounding 被额度/权限阻塞。
+      两者都**未记录为联网真实链路通过**
 
 ### 决策记录（官方 API 与代理）
 - 暂不直接切换未知中转站：本项目要求平台原生联网搜索与文本区间引用；普通 OpenAI 兼容代理即使能聊天，
