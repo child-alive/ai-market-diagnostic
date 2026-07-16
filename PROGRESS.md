@@ -15,7 +15,8 @@
 
 ### Stage 0 — 骨架与契约
 - [x] Stage0-T1 目录结构 + requirements.txt + .env.example + README.md 初版
-- [ ] Stage0-T2 models.py 全部契约
+- [x] Stage0-T2 models.py 全部契约（在 §6 基础上为 DiagnosticReport 增加 answers/analyses 字段，
+      并给 AnswerAnalysis 增加 parse_degraded 降级标记——仅增字段，未改名）
 - [ ] Stage0-T3 MockProvider + fixtures（8 条西语模拟回答 + 问题种子）
 - [ ] Stage0-T4 main.py --mock 空跑全管道输出占位 JSON
 - 验收：`pip install -r requirements.txt && python -m src.main --mock` 无报错出 JSON

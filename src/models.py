@@ -1,0 +1,198 @@
+"""全链路 Pydantic 数据契约（PLAN.md §6）。
+
+模块之间只允许通过本文件定义的模型传递数据。
+字段可增不可随意改名；改名必须记录到 PROGRESS.md 决策记录。
+"""
+from __future__ import annotations
+
+from datetime import datetime
+from enum import Enum
+from typing import Optional
+
+from pydantic import BaseModel, Field
+
+
+# ---------------------------------------------------------------- 枚举
+
+class QuestionTier(str, Enum):
+    """问题三层分类，对齐 GEO 行业术语：品牌词 / 地区排名词 / 品类(全国)排名词。"""
+
+    BRAND = "brand"
+    REGIONAL = "regional"
+    CATEGORY = "category"
+
+
+class Funnel(str, Enum):
+    TOFU = "TOFU"  # 认知
+    MOFU = "MOFU"  # 比较
+    BOFU = "BOFU"  # 决策
+
+
+class Sentiment(str, Enum):
+    POSITIVE = "pos"
+    NEUTRAL = "neu"
+    NEGATIVE = "neg"
+
+
+class GapType(str, Enum):
+    PAGE = "page"      # 缺少的页面类型
+    TOPIC = "topic"    # 缺少的内容主题
+    SIGNAL = "signal"  # 缺少的品牌/技术信号(hreflang, schema 等)
+
+
+class Priority(str, Enum):
+    P0 = "P0"
+    P1 = "P1"
+    P2 = "P2"
+
+
+class Effort(str, Enum):
+    S = "S"
+    M = "M"
+    L = "L"
+
+
+class RunMode(str, Enum):
+    MOCK = "mock"
+    REAL = "real"
+    HYBRID = "hybrid"
+
+
+class IssueSeverity(str, Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+# ---------------------------------------------------------------- 输入
+
+class BrandProfile(BaseModel):
+    brand_name: str
+    brand_aliases: list[str] = Field(default_factory=list)
+    category: str
+    market: str
+    language: str
+    website_url: str = ""
+    seed_competitors: list[str] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------- ① 问题发现
+
+class UserQuestion(BaseModel):
+    id: str
+    text_local: str                      # 目标市场语言原文
+    text_zh: str                         # 中文对照
+    tier: QuestionTier
+    funnel: Funnel
+    value_score: int = Field(ge=1, le=5)  # 商业价值评分
+    value_reason: str
+
+
+# ---------------------------------------------------------------- ② AI 回答采集
+
+class AIAnswer(BaseModel):
+    question_id: str
+    provider: str                        # deepseek / mock / ...
+    raw_text: str
+    retrieved_at: datetime
+    is_mock: bool
+
+
+# ---------------------------------------------------------------- ③ 回答结构化分析
+
+class CompetitorMention(BaseModel):
+    name: str
+    position: Optional[int] = None       # 在回答中的出现顺位(1-based)
+
+
+class Citation(BaseModel):
+    domain: str
+    url: Optional[str] = None
+
+
+class AnswerAnalysis(BaseModel):
+    question_id: str
+    brand_mentioned: bool
+    brand_position: Optional[int] = None
+    competitors: list[CompetitorMention] = Field(default_factory=list)
+    citations: list[Citation] = Field(default_factory=list)
+    sentiment: Sentiment = Sentiment.NEUTRAL
+    evidence_quote: str = ""             # 回答原文中的证据句
+    parse_degraded: bool = False         # 结构化抽取失败降级标记
+
+
+class CompetitorRank(BaseModel):
+    name: str
+    mention_count: int                   # 被提及的回答数
+    avg_position: Optional[float] = None
+    sov: float                           # 话语权占比 0~1
+
+
+class VisibilityMetrics(BaseModel):
+    """指标命名对齐聚路国际数据检测平台体系。"""
+
+    visibility_rate: float               # Visibility: 品牌出现的回答占比 0~1
+    sov: float                           # Share of Voice: 品牌提及/全部品牌提及 0~1
+    avg_position: Optional[float] = None  # Average Position: 品牌平均顺位
+    citation_rate: float                 # Citation Rate: 含可溯源引用的回答占比 0~1
+    sentiment_summary: dict[str, int] = Field(default_factory=dict)  # {pos: n, neu: n, neg: n}
+    competitor_ranking: list[CompetitorRank] = Field(default_factory=list)
+    questions_checked: int = 0
+
+
+# ---------------------------------------------------------------- ④ 网站诊断
+
+class SiteIssue(BaseModel):
+    severity: IssueSeverity
+    code: str                            # 如 NO_HREFLANG_ES_MX / NO_SITEMAP
+    detail: str
+
+
+class SiteAuditResult(BaseModel):
+    crawlable: bool = False
+    robots_ok: bool = False
+    sitemap_found: bool = False
+    pages_checked: int = 0
+    has_es_mx_hreflang: bool = False
+    has_structured_data: bool = False
+    spanish_content_found: bool = False
+    issues: list[SiteIssue] = Field(default_factory=list)
+    snapshot_mode: bool = False          # 网络失败降级为本地快照时为 True
+
+
+# ---------------------------------------------------------------- ⑤⑥ 缺口与建议
+
+class ContentGap(BaseModel):
+    gap_type: GapType
+    title: str
+    evidence: list[str] = Field(default_factory=list)
+    related_questions: list[str] = Field(default_factory=list)  # UserQuestion.id
+
+
+class Recommendation(BaseModel):
+    priority: Priority
+    action: str
+    reason: str
+    expected_impact: str
+    effort: Effort
+
+
+# ---------------------------------------------------------------- ⑦ 汇总报告
+
+class ReportMeta(BaseModel):
+    generated_at: datetime
+    mode: RunMode
+    run_id: str = ""
+    notes: list[str] = Field(default_factory=list)
+
+
+class DiagnosticReport(BaseModel):
+    brand_profile: BrandProfile
+    questions: list[UserQuestion] = Field(default_factory=list)
+    answers: list[AIAnswer] = Field(default_factory=list)
+    analyses: list[AnswerAnalysis] = Field(default_factory=list)
+    metrics: Optional[VisibilityMetrics] = None
+    site_audit: Optional[SiteAuditResult] = None
+    gaps: list[ContentGap] = Field(default_factory=list)
+    recommendations: list[Recommendation] = Field(default_factory=list)
+    meta: ReportMeta
