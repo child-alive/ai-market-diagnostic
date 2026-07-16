@@ -14,7 +14,7 @@
   与 PLAN.md §0 的对齐策略一致，无需修正。
 
 ### Stage 0 — 骨架与契约
-- [ ] Stage0-T1 目录结构 + requirements.txt + .env.example + README.md 初版
+- [x] Stage0-T1 目录结构 + requirements.txt + .env.example + README.md 初版
 - [ ] Stage0-T2 models.py 全部契约
 - [ ] Stage0-T3 MockProvider + fixtures（8 条西语模拟回答 + 问题种子）
 - [ ] Stage0-T4 main.py --mock 空跑全管道输出占位 JSON
