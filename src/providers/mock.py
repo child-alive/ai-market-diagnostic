@@ -34,6 +34,7 @@ class MockProvider(AnswerProvider):
         return AIAnswer(
             question_id=question.id,
             provider=self.name,
+            model="mock",
             raw_text=raw_text,
             retrieved_at=datetime.now(timezone.utc),
             is_mock=True,

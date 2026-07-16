@@ -46,6 +46,26 @@ class Settings:
     deepseek_search_max_uses: int = field(
         default_factory=lambda: int(os.getenv("DEEPSEEK_SEARCH_MAX_USES", "3"))
     )
+    openai_api_key: str = field(
+        default_factory=lambda: os.getenv("OPENAI_API_KEY", "").strip()
+    )
+    openai_base_url: str = field(
+        default_factory=lambda: os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    )
+    openai_model: str = field(
+        default_factory=lambda: os.getenv("OPENAI_MODEL", "gpt-5-search-api")
+    )
+    gemini_api_key: str = field(
+        default_factory=lambda: os.getenv("GEMINI_API_KEY", "").strip()
+    )
+    gemini_base_url: str = field(
+        default_factory=lambda: os.getenv(
+            "GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta"
+        )
+    )
+    gemini_model: str = field(
+        default_factory=lambda: os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+    )
     force_mock: bool = False
     force_live_audit: bool = False  # mock 模式下仍对官网做实时诊断（其余环节维持 mock）
 

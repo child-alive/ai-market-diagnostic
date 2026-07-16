@@ -219,6 +219,7 @@ class DeepSeekProvider(AnswerProvider):
         return AIAnswer(
             question_id=question.id,
             provider=self.name,
+            model=self.settings.deepseek_model,
             raw_text=raw_text,
             retrieved_at=datetime.now(timezone.utc),
             is_mock=False,

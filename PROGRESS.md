@@ -185,3 +185,22 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 ### 下一步
 1. Stage 4 联网搜索增强已完成；其余可选加分项为 FastAPI、第二 Provider、Query Fanout 或演示视频；
 2. 若进入产品化，优先接真实海外平台并扩大到 100+ 问题、多轮采样。
+
+### Stage4-T2 — OpenAI / Gemini 联网 Provider（等待用户配置 Key）
+- [x] 数据契约只增字段：`AIAnswer` 记录实际模型、搜索词与
+      `SourceAnnotation`（答案文本区间 → 来源 URL），旧 JSON / SQLite 报告可依默认值加载
+- [x] `OpenAISearchProvider`：按当前官方 Search in ChatGPT 专用路径调用
+      `gpt-5-search-api` + Chat Completions `web_search_options`，解析 `url_citation`
+- [x] `GeminiSearchProvider`：按当前官方推荐的 Interactions API 调用
+      `gemini-3.5-flash` + `google_search`，解析搜索词与带区间的引用注解
+- [x] `.env.example` 新增 OpenAI / Gemini 的 Key、Base URL 和模型配置；
+      缺 Key 时不构造对应 Provider，不做隐式伪降级
+- [x] 4 个新单测覆盖 Key 门禁、请求契约、URL 去重、文本区间和搜索词传递；
+      全量 `21 passed`，全部使用本地伪响应，**未声称 OpenAI/Gemini 真实链路已联调**
+
+### 决策记录（多平台 Provider）
+- OpenAI 选 `gpt-5-search-api` 而非通用 Responses `web_search`：官方当前明确该专用模型
+  直接访问 Search in ChatGPT 使用的微调模型与搜索工具，更符合“校准客户端体验”目标
+- Gemini 选当前官方推荐的 Interactions API，因为它直接返回
+  `google_search_call` 与文本区间级 `url_citation`，便于下一任务做逐句证据验证
+- 仍用 `httpx` 直连，不引入两套 SDK；与已验收 DeepSeek Provider 的依赖策略保持一致

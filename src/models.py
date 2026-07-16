@@ -90,14 +90,31 @@ class UserQuestion(BaseModel):
 
 # ---------------------------------------------------------------- ② AI 回答采集
 
+class SourceAnnotation(BaseModel):
+    """平台原生的答案片段 → 来源 URL 映射。
+
+    DeepSeek 当前仅返回搜索结果集合，因此该列表可为空；
+    OpenAI Search / Gemini Grounding 可提供原生文本区间。
+    """
+
+    url: str
+    title: str = ""
+    start_index: Optional[int] = None
+    end_index: Optional[int] = None
+    cited_text: str = ""
+
+
 class AIAnswer(BaseModel):
     question_id: str
     provider: str                        # deepseek / mock / ...
+    model: str = ""                     # 该回答实际请求的模型
     raw_text: str
     retrieved_at: datetime
     is_mock: bool
     search_grounded: bool = False        # 是否由联网搜索结果支撑
     source_urls: list[str] = Field(default_factory=list)  # Web Search 返回的实际 URL
+    source_annotations: list[SourceAnnotation] = Field(default_factory=list)
+    search_queries: list[str] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------- ③ 回答结构化分析
