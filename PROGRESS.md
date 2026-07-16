@@ -128,7 +128,9 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
       Mock 标注覆盖全局说明、五个派生指标、问题检测结果与逐条回答
 - [x] Stage3-T1 视觉 QA：桌面端 1280px 与移动端 390px 浏览器实测，无横向溢出、无控制台错误，
       ECharts SVG 正常渲染；示例 HTML 已用原有真实官网实抓 JSON 重渲染（15 页、非快照模式）
+- [x] Stage3-T2 `docs/方案说明.md` 定稿：补官网实抓结果、SQLite/错误处理、
+      当前完成边界与下一步；PLAN §9 六项限制与不确定性全部保留
 
 ### 下一步
-1. Stage3-T2/T3 方案说明与 README 定稿；
+1. Stage3-T3 README 定稿；
 2. Stage3-T4 补充约 10 个 pytest 用例并跑全量验收。
