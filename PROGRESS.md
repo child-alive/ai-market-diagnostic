@@ -414,3 +414,34 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 ### 下一步
 1. 按追加指令第七部要求，本部分验收并 commit 后暂停向用户汇报；
 2. 用户确认后再进入第二部：密钥历史审计、干净环境彩排和 README 现状注记。
+
+### 用户续行授权与浏览器复试（2026-07-17）
+- 用户明确决定：不等待 Fable5 额度恢复，由 Codex 继续按《追加指令》顺序开发；
+  Fable5 恢复后再做独立复核，不把其当作当前阻塞条件。
+- 用户要求重试报告视觉检查。复试事实：`file://` 被内置浏览器 URL 安全策略禁止；
+  `http://127.0.0.1:8765` 在浏览器隔离环境中连接超时；改用 Mac 局域网地址后返回
+  `ERR_BLOCKED_BY_CLIENT`。这是 Codex 内置浏览器的本地资源/网络隔离，不是 macOS
+  桌面文件权限，也不是 report.html 加载失败的证据；用户无需额外提供文件权限。
+- 因上述隔离，当前只能声称模板渲染、HTML 内容、JSON 溯源与回归测试通过；
+  未把 Codex 内置浏览器的桌面/移动视觉 QA 冒充为通过。本机普通浏览器可由用户
+  双击 `data/示例产物/report.html` 复核。
+
+### 冲刺-P0 安全与可复现彩排
+- [x] `.env` 历史审计：`git log --all -- .env` 命中 0 个 commit；任意层级 `.env`
+      历史路径数为 0；当前 `.env` 未被跟踪且 `git check-ignore` 确认被忽略。
+- [x] 三类密钥特征全历史审计：首次宽正则在 17 个 commit 中命中，没有直接打印内容；
+      仅输出文件路径定位到 `fixtures/site_snapshot/robots.txt`，再经脱敏上下文确认是
+      公开 URL slug 中的 `sk-` 子串误报，不是 key。加入“前一字符不能是字母数字”的
+      边界后，OpenAI/DeepSeek `sk-...`、Gemini `AIza...`、FreeModel `fe_oa_...`
+      在 `git rev-list --all` 全部历史中命中 **0 commit**；结论为零泄漏。
+- [x] 干净环境彩排：从 commit `64b24ba` clone 到新的临时目录，使用 Python 3.10.6，
+      严格按 README 新建 `.venv` 并重新安装 `requirements.txt`，复制 `.env.example`
+      且不填 key，执行 `--mock` 得到 20/8/7/7；随后 `33 passed`，clone 工作树为干净。
+      仅出现 pip 版本升级提示，不影响三步运行，无 README 摩擦点。
+- [x] README 在 `--providers auto` 命令后增加当前真实边界：OpenAI 官方 API
+      账户无 credits，Gemini 普通生成可用但 Search Grounding 429；无对应额度/权限时
+      优先 `--mock` 或显式选择已可用平台，避免评审者直接跑 `auto` 遇到可预知 429。
+
+### 下一步（用户已授权连续执行）
+1. 提交安全与可复现彩排的独立 commit；
+2. 直接进入第三部：新建 `SUBMISSION.md` 评审导览页，不再等待 Fable5 确认。
