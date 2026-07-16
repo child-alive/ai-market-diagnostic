@@ -121,7 +121,9 @@ def run_diagnostic(
                 model=_provider_model(provider, settings),
                 answers=platform_answers,
                 analyses=platform_analyses,
-                metrics=analysis.aggregate_metrics(platform_analyses),
+                metrics=analysis.aggregate_metrics(
+                    platform_analyses, questions, profile
+                ),
                 evidence_reviews=evidence_reviews,
                 evidence_metrics=evidence_metrics,
             )
@@ -210,6 +212,18 @@ def main() -> None:
             report = storage.load_report(args.run_id)
         except storage.RunNotFoundError as exc:
             parser.error(str(exc))
+        analysis.refresh_report_metrics(report)
+        if report.site_audit is not None:
+            site_audit.scope_sample_sensitive_claims(report.site_audit)
+            issue_details = {
+                issue.code: issue.detail for issue in report.site_audit.issues
+            }
+            for gap in report.gaps:
+                if gap.gap_type.value != "signal":
+                    continue
+                code = gap.title.rsplit(": ", maxsplit=1)[-1]
+                if code in issue_details:
+                    gap.evidence = [issue_details[code]]
         print(f"[history] run_id={report.meta.run_id} | mode={report.meta.mode.value}")
         json_path = render.write_json(report, DATA_DIR)
         html_path = render.write_html(report, DATA_DIR)

@@ -371,3 +371,46 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 - 交接前最后一次 mock 基线会把工作输出 `data/report.{json,html}` 覆盖为 Mock；仓库中用于提交展示的
   DeepSeek V4 真实样例是 `data/示例产物/report.{json,html}`，不要混淆；
 - 交接前共 24 个 commit；本交接 commit 完成后应为 25 个。
+
+---
+
+## 2026-07-17 session-03 (Codex，提交前冲刺)
+
+### 冲刺-P0 品牌词 / 无品牌词分层核查
+- [x] 交接基线：HEAD `98d00f9`、工作树干净；`28 passed`；mock 为 20 问题 /
+      8 回答 / 7 缺口 / 7 建议。Fable5 只完成追加指令入库和 PLAN 冲刺章节，无半成品代码。
+- [x] `run_id=f141d182` 真实样本核查：Top-8 中仅 3 题原始 `tier=brand`，但 q02
+      “Dónde comprar productos Deli...”虽被标为 regional，文本含 Deli，也必须按 branded 计。
+      因此有 4 branded + 4 unbranded；旧头版 50% Visibility 和 1.5 Avg Position
+      **全部由 branded 问题贡献**，不能表述为主动推荐竞争力。
+- [x] 修正后指标：unbranded = Visibility 0% / SOV 0% / Avg Position 无 /
+      Citation 100% / 4 题；branded = Visibility 100% / SOV 40% / Avg Position 1.5 /
+      Citation 100% / 情感 3 正面·0 中性·1 负面 / 4 题。顶层旧口径仍保留仅为向后兼容。
+- [x] 数据契约只增字段：`UserQuestion.query_scope`、`VisibilityMetrics.branded`、
+      `VisibilityMetrics.unbranded`；旧 JSON / SQLite 依默认值可加载，`--run-id` 渲染前
+      基于旧 answers/analyses 自动补算分层，不重新调用 API。
+- [x] 报告头版改用 Unbranded Visibility；新增“品牌认知与情感诊断”，
+      将 branded 问题的提及、顺位、情感和原文证据句单列，并明示描述准确性/
+      时效性需人工复核；头版所有数字显式关联 RUN ID。
+- [x] 报告与方案说明将官网结论收敛为“本次抓取的 15 页范围内未发现”，
+      不再从小样本推导全站绝对结论；方案说明新增 branded vs unbranded
+      的行业共识、vanity metric 风险和运行数字溯源。
+- [x] `question_gen` prompt 明确禁止 regional/category 包含品牌名/别名；
+      第一次 6 题真实 DeepSeek 小样本仍出现 1 题错标，证明不能只信 prompt。
+      新增确定性后置契约：文本命中品牌的非 brand tier 自动纠正为 brand；
+      brand tier 却无品牌名时拒绝 LLM 输出并降级。第二次 6 题真实验证为
+      `unbranded_leaks=0` / `branded_missing_name=0`，全程未输出密钥。
+- [x] 新增 5 个回归用例，覆盖短品牌词边界、错 tier 纠正、双分层独立聚合、
+      旧 JSON 默认加载和 prompt 约束；当前全量 `33 passed`。
+
+### 决策记录（查询分层）
+- 不删除/改名顶层 VisibilityMetrics 旧字段：它们继续保存全样本口径以兼容
+  已有缺口/建议规则与外部读取方；新报告和新平台对比只使用 `unbranded`
+  切片作为推荐竞争力。
+- 分层以“tier=brand **或**任一语言文本命中品牌名/别名”为硬规则；
+  不依赖 LLM 的 tier 单一字段，是因为 f141d182 的 q02 和真实小样本都证明
+  模型会错标。这是对冲刺指令的可复现加固，不改动已验收 Provider 和推荐规则。
+
+### 下一步
+1. 按追加指令第七部要求，本部分验收并 commit 后暂停向用户汇报；
+2. 用户确认后再进入第二部：密钥历史审计、干净环境彩排和 README 现状注记。

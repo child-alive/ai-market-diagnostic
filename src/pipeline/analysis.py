@@ -20,9 +20,14 @@ from ..models import (
     Citation,
     CompetitorMention,
     CompetitorRank,
+    DiagnosticReport,
+    QueryScope,
     Sentiment,
+    UserQuestion,
     VisibilityMetrics,
+    VisibilitySegmentMetrics,
 )
+from .segmentation import classify_question_scope, label_question_scopes
 
 # 墨西哥文具/办公品类的常见品牌词典（启发式抽取用；生产环境应换实体词典服务）
 KNOWN_BRANDS = [
@@ -249,12 +254,10 @@ def analyze_answers(
 
 # ---------------------------------------------------------------- 指标聚合
 
-def aggregate_metrics(analyses: list[AnswerAnalysis]) -> VisibilityMetrics:
+def _aggregate_segment(analyses: list[AnswerAnalysis]) -> VisibilitySegmentMetrics:
     n = len(analyses)
     if n == 0:
-        return VisibilityMetrics(
-            visibility_rate=0.0, sov=0.0, citation_rate=0.0, questions_checked=0
-        )
+        return VisibilitySegmentMetrics()
 
     mentioned = [a for a in analyses if a.brand_mentioned]
     brand_mentions = len(mentioned)
@@ -290,7 +293,7 @@ def aggregate_metrics(analyses: list[AnswerAnalysis]) -> VisibilityMetrics:
         key=lambda r: (-r.mention_count, r.avg_position or 99),
     )
 
-    return VisibilityMetrics(
+    return VisibilitySegmentMetrics(
         visibility_rate=round(brand_mentions / n, 4),
         sov=round(brand_mentions / total_mentions, 4) if total_mentions else 0.0,
         avg_position=round(sum(positions) / len(positions), 2) if positions else None,
@@ -299,3 +302,52 @@ def aggregate_metrics(analyses: list[AnswerAnalysis]) -> VisibilityMetrics:
         competitor_ranking=competitor_ranking,
         questions_checked=n,
     )
+
+
+def aggregate_metrics(
+    analyses: list[AnswerAnalysis],
+    questions: list[UserQuestion] | None = None,
+    profile: BrandProfile | None = None,
+) -> VisibilityMetrics:
+    """保留全样本顶层指标，同时独立计算 branded / unbranded。
+
+    ``questions``/``profile`` 可选是为了保持旧调用方兼容；正式管道始终传入。
+    """
+
+    overall = _aggregate_segment(analyses)
+    branded_analyses: list[AnswerAnalysis] = []
+    unbranded_analyses: list[AnswerAnalysis] = []
+
+    if questions is not None and profile is not None:
+        label_question_scopes(questions, profile)
+        scope_by_id = {
+            question.id: question.query_scope or classify_question_scope(question, profile)
+            for question in questions
+        }
+        for item in analyses:
+            scope = scope_by_id.get(item.question_id)
+            if scope == QueryScope.BRANDED:
+                branded_analyses.append(item)
+            elif scope == QueryScope.UNBRANDED:
+                unbranded_analyses.append(item)
+
+    return VisibilityMetrics(
+        **overall.model_dump(),
+        branded=_aggregate_segment(branded_analyses),
+        unbranded=_aggregate_segment(unbranded_analyses),
+    )
+
+
+def refresh_report_metrics(report: DiagnosticReport) -> DiagnosticReport:
+    """为旧 SQLite/JSON 报告补算查询分层，不调用 Provider。"""
+
+    label_question_scopes(report.questions, report.brand_profile)
+    if report.metrics is not None:
+        report.metrics = aggregate_metrics(
+            report.analyses, report.questions, report.brand_profile
+        )
+    for platform in report.platform_results:
+        platform.metrics = aggregate_metrics(
+            platform.analyses, report.questions, report.brand_profile
+        )
+    return report

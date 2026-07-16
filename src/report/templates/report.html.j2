@@ -219,10 +219,14 @@
 </head>
 <body>
 {% set m = r.metrics %}
+{% set um = m.unbranded %}
+{% set bm = m.branded %}
 {% set s = r.site_audit %}
 {% set checked_ids = r.answers|map(attribute="question_id")|list %}
 {% set analysis_map = {} %}
 {% for a in r.analyses %}{% if analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
+{% set question_map = {} %}
+{% for q in r.questions %}{% if question_map.update({q.id: q}) %}{% endif %}{% endfor %}
 {% set mock_count = r.answers|selectattr("is_mock")|list|length %}
 {% set grounded_count = r.answers|selectattr("search_grounded")|list|length %}
 {% set primary_provider = r.platform_results[0].provider if r.platform_results else (r.answers[0].provider if r.answers else "unknown") %}
@@ -259,12 +263,16 @@
   <div class="summary">
     <article class="summary-card">
       <h2>执行摘要 <small>Resumen ejecutivo</small></h2>
-      <p>在 {{ m.questions_checked }} 个高价值问题样本中，得力被提及 {{ (m.visibility_rate * m.questions_checked)|round|int }} 次，可见度为 <strong>{{ "%.0f%%"|format(m.visibility_rate*100) }}</strong>，话语权仅 <strong>{{ "%.1f%%"|format(m.sov*100) }}</strong>。当前核心矛盾不是“有没有答案”，而是得力在品类推荐语境中的出现频率与优先顺位仍弱。</p>
+      {% if um.visibility_rate == 0 %}
+      <p><strong>RUN {{ r.meta.run_id }}</strong> 的 {{ um.questions_checked }} 个高价值无品牌词问题中，得力未被 AI 主动提及：<strong>无品牌词可见度 0%</strong>。与此同时，{{ bm.questions_checked }} 个含品牌词问题中有 {{ (bm.visibility_rate * bm.questions_checked)|round|int }} 个获得品牌描述，说明“AI 认得得力”不等于“AI 会主动推荐得力”。{% if not s.spanish_content_found or not s.has_es_mx_hreflang %}在本次官网抓取的 {{ s.pages_checked }} 页范围内，{% if not s.spanish_content_found %}未发现西语内容{% endif %}{% if not s.spanish_content_found and not s.has_es_mx_hreflang %}，且{% endif %}{% if not s.has_es_mx_hreflang %}未发现 es-MX hreflang{% endif %}，品牌需要补齐本地化的内容承接面。{% endif %}</p>
+      {% else %}
+      <p><strong>RUN {{ r.meta.run_id }}</strong> 的 {{ um.questions_checked }} 个高价值无品牌词问题中，得力被主动提及 {{ (um.visibility_rate * um.questions_checked)|round|int }} 次，<strong>无品牌词可见度 {{ "%.0f%%"|format(um.visibility_rate*100) }}</strong>、SOV {{ "%.1f%%"|format(um.sov*100) }}。该数字与品牌词认知指标已分开，只表示本次单轮样本。</p>
+      {% endif %}
     </article>
     <article class="summary-card">
       <h2>优先判断 <small>Lecturas clave</small></h2>
       <ul class="key-list">
-        <li><b>01</b><span>先补齐墨西哥西语市场入口与 <strong>es-MX hreflang</strong>，建立可理解的地域信号。</span></li>
+        <li><b>01</b><span>先补齐墨西哥西语市场入口与 <strong>es-MX hreflang</strong>，建立可理解、可承接的地域信号。</span></li>
         <li><b>02</b><span>围绕高价值品类问法建设可引用内容，提升进入 AI 推荐列表的概率。</span></li>
         <li><b>03</b><span>用多轮、多平台、100+ 问题采样校准本报告的方向性结论。</span></li>
       </ul>
@@ -274,19 +282,19 @@
   <section id="metrics">
     <div class="section-head">
       <div><p class="section-kicker">01 · Performance</p><h2>AI 可见度指标 <small>Métricas de visibilidad</small></h2></div>
-      <p class="section-note">五项指标采用回答级统计口径；数值越高通常越好，平均排名越低越好。</p>
+      <p class="section-note">头部竞争力指标只统计无品牌词；品牌词另作认知与情感诊断。平均排名越低越好。</p>
     </div>
     <div class="metrics">
-      <article class="metric primary"><div class="label">Visibility<br>AI 可见度</div><div class="num">{{ "%.0f%%"|format(m.visibility_rate*100) }}</div><div class="sub">提及回答 / 检测回答</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Share of Voice<br>话语权</div><div class="num">{{ "%.1f%%"|format(m.sov*100) }}</div><div class="sub">品牌提及 / 全部品牌提及</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Average Position<br>平均排名</div><div class="num">{{ m.avg_position if m.avg_position is not none else "—" }}</div><div class="sub">被提及时的平均顺位</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Citation Rate<br>{{ "联网引用率" if grounded_count else "声明引用率" }}</div><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="sub">{% if grounded_count %}含 Web Search 来源 URL 的回答{% else %}回答声明域名的占比 · 未核验{% endif %}</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Sentiment<br>情感倾向</div><div class="num">{{ m.sentiment_summary.get("pos",0) }}·{{ m.sentiment_summary.get("neu",0) }}·{{ m.sentiment_summary.get("neg",0) }}</div><div class="sub">正面 · 中性 · 负面</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric primary"><div class="label">Unbranded Visibility<br>无品牌词可见度</div><div class="num">{{ "%.0f%%"|format(um.visibility_rate*100) }}</div><div class="sub">主动提及 / 无品牌词回答</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Unbranded SOV<br>无品牌词话语权</div><div class="num">{{ "%.1f%%"|format(um.sov*100) }}</div><div class="sub">无品牌词中的品牌提及占比</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Unbranded Avg Position<br>无品牌词平均排名</div><div class="num">{{ um.avg_position if um.avg_position is not none else "—" }}</div><div class="sub">主动被提及时的顺位</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Unbranded Citation<br>{{ "联网引用率" if grounded_count else "声明引用率" }}</div><div class="num">{{ "%.0f%%"|format(um.citation_rate*100) }}</div><div class="sub">{% if grounded_count %}无品牌词且含搜索来源 URL{% else %}回答声明域名的占比 · 未核验{% endif %}</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Branded Sentiment<br>品牌词情感</div><div class="num">{{ bm.sentiment_summary.get("pos",0) }}·{{ bm.sentiment_summary.get("neu",0) }}·{{ bm.sentiment_summary.get("neg",0) }}</div><div class="sub">正面 · 中性 · 负面</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
     </div>
 
     <div class="grid-2">
       <div class="panel">
-        <div class="panel-title"><h3>品牌话语权对比 · Comparativa SOV</h3>{% if mock_count %}<span class="badge mock">MOCK DERIVED</span>{% endif %}</div>
+        <div class="panel-title"><h3>无品牌词话语权对比 · Unbranded SOV</h3>{% if mock_count %}<span class="badge mock">MOCK DERIVED</span>{% endif %}</div>
         <div id="sov-chart" role="img" aria-label="得力与竞品话语权对比柱状图"></div>
         <div id="chart-fallback" class="chart-fallback">图表组件未加载，请参考右侧竞品排行表。</div>
       </div>
@@ -294,8 +302,8 @@
         <table>
           <thead><tr><th>#</th><th>Marca / 品牌</th><th>Menciones / 提及</th><th>Posición / 排名</th><th>SOV</th></tr></thead>
           <tbody>
-            <tr><td class="rank">—</td><td class="strong">{{ r.brand_profile.brand_name }}（目标品牌）</td><td>{{ (m.visibility_rate * m.questions_checked)|round|int }}</td><td>{{ m.avg_position if m.avg_position is not none else "—" }}</td><td class="strong">{{ "%.1f%%"|format(m.sov*100) }}</td></tr>
-            {% for c in m.competitor_ranking[:9] %}
+            <tr><td class="rank">—</td><td class="strong">{{ r.brand_profile.brand_name }}（目标品牌）</td><td>{{ (um.visibility_rate * um.questions_checked)|round|int }}</td><td>{{ um.avg_position if um.avg_position is not none else "—" }}</td><td class="strong">{{ "%.1f%%"|format(um.sov*100) }}</td></tr>
+            {% for c in um.competitor_ranking[:9] %}
             <tr><td class="rank">{{ "%02d"|format(loop.index) }}</td><td>{{ c.name }}</td><td>{{ c.mention_count }}</td><td>{{ c.avg_position if c.avg_position is not none else "—" }}</td><td>{{ "%.1f%%"|format(c.sov*100) }}</td></tr>
             {% endfor %}
           </tbody>
@@ -303,6 +311,36 @@
       </div>
     </div>
   </section>
+
+  {% if bm.questions_checked %}
+  <section id="brand-cognition">
+    <div class="section-head">
+      <div><p class="section-kicker">Brand cognition</p><h2>品牌认知与情感诊断 <small>Consultas de marca · {{ bm.questions_checked }}</small></h2></div>
+      <p class="section-note">品牌词回答不计入主动推荐竞争力；此处检查 AI 是否认得品牌、如何描述以及情感倾向。</p>
+    </div>
+    <div class="data-notice">
+      <span class="badge partial">HUMAN REVIEW</span>
+      <div><strong>描述准确性和时效性仍需逐条人工复核。</strong> 下表的“证据句”只是模型回答中支撑情感/提及判断的原文，不代表其中的事实已被核验。</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>问题</th><th>品牌提及</th><th>情感</th><th>AI 描述证据句</th><th>准确性</th></tr></thead>
+        <tbody>
+          {% for q in r.questions if q.query_scope and q.query_scope.value == "branded" and q.id in checked_ids %}
+          {% set an = analysis_map[q.id] %}
+          <tr>
+            <td><span class="rank">{{ q.id }}</span><br><span class="question-text">{{ q.text_local }}</span></td>
+            <td>{% if an.brand_mentioned %}<span class="result-hit">✓ 第 {{ an.brand_position }} 位</span>{% else %}<span class="result-miss">× 未提及</span>{% endif %}</td>
+            <td><span class="badge">{{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}</span></td>
+            <td class="review-quote">{{ an.evidence_quote or "未抽取到证据句" }}</td>
+            <td><span class="badge partial">待人工复核</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
 
   {% if r.platform_results|length > 1 %}
   <section id="platform-comparison">
@@ -312,7 +350,7 @@
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>平台</th><th>模型</th><th>回答</th><th>联网回答</th><th>可见度</th><th>SOV</th><th>平均排名</th><th>引用率</th><th>证据预审</th></tr></thead>
+        <thead><tr><th>平台</th><th>模型</th><th>回答</th><th>联网回答</th><th>无品牌词可见度</th><th>Unbranded SOV</th><th>无品牌词平均排名</th><th>无品牌词引用率</th><th>证据预审</th></tr></thead>
         <tbody>
           {% for p in r.platform_results %}
           {% set p_grounded = p.answers|selectattr("search_grounded")|list|length %}
@@ -320,8 +358,8 @@
             <td><span class="platform-name">{{ p.provider }}</span>{% if loop.first %}<br><span class="badge">主平台</span>{% endif %}</td>
             <td class="model-name">{{ p.model or "—" }}</td>
             <td>{{ p.answers|length }}</td><td>{{ p_grounded }}/{{ p.answers|length }}</td>
-            <td class="strong">{{ "%.0f%%"|format(p.metrics.visibility_rate*100) }}</td><td>{{ "%.1f%%"|format(p.metrics.sov*100) }}</td>
-            <td>{{ p.metrics.avg_position if p.metrics.avg_position is not none else "—" }}</td><td>{{ "%.0f%%"|format(p.metrics.citation_rate*100) }}</td>
+            <td class="strong">{{ "%.0f%%"|format(p.metrics.unbranded.visibility_rate*100) }}</td><td>{{ "%.1f%%"|format(p.metrics.unbranded.sov*100) }}</td>
+            <td>{{ p.metrics.unbranded.avg_position if p.metrics.unbranded.avg_position is not none else "—" }}</td><td>{{ "%.0f%%"|format(p.metrics.unbranded.citation_rate*100) }}</td>
             <td>{% if p.evidence_reviews %}{{ p.evidence_metrics.supported }}/{{ p.evidence_metrics.total_claims }} 支持<br><span class="badge partial">机器预审</span>{% else %}<span class="badge unmapped">未运行</span>{% endif %}</td>
           </tr>
           {% endfor %}
@@ -343,7 +381,7 @@
           {% for q in r.questions %}
           <tr>
             <td class="rank">{{ q.id }}</td><td class="question-text">{{ q.text_local }}</td><td class="question-zh">{{ q.text_zh }}</td>
-            <td><span class="badge">{{ {"brand":"品牌词","regional":"地区排名词","category":"品类排名词"}[q.tier.value] }}</span></td>
+            <td><span class="badge">{{ {"brand":"品牌词","regional":"地区排名词","category":"品类排名词"}[q.tier.value] }}</span><br>{% if q.query_scope %}<span class="badge {{ 'P1' if q.query_scope.value == 'branded' else 'pass' }}">{{ "BRANDED / 品牌词" if q.query_scope.value == "branded" else "UNBRANDED / 无品牌词" }}</span>{% endif %}</td>
             <td><span class="badge">{{ q.funnel.value }}</span></td><td><span class="score">{{ q.value_score }}</span></td>
             <td>
               {% if q.id in checked_ids %}
@@ -368,10 +406,12 @@
     <div class="answers">
       {% for a in r.answers %}
       {% set an = analysis_map[a.question_id] %}
+      {% set q = question_map[a.question_id] %}
       <article class="answer-card">
         <div class="answer-head"><h3>{{ a.question_id }} · {% if an.brand_mentioned %}品牌已进入答案{% else %}品牌未进入答案{% endif %}</h3><div>{% if a.is_mock %}<span class="badge mock">MOCK</span>{% else %}<span class="badge real">{{ a.provider|upper }}</span>{% endif %} {% if a.search_grounded %}<span class="badge real">WEB SEARCH · {{ a.source_urls|length }}</span>{% endif %} {% if an.parse_degraded %}<span class="badge mock">解析降级</span>{% endif %}</div></div>
         <div class="answer-meta">
           {% if a.model %}<span class="badge">{{ a.model }}</span>{% endif %}
+          {% if q.query_scope %}<span class="badge {{ 'P1' if q.query_scope.value == 'branded' else 'pass' }}">{{ q.query_scope.value|upper }}</span>{% endif %}
           <span class="badge {{ 'pass' if an.brand_mentioned else 'fail' }}">提及 {{ "是 · 第 %d 位"|format(an.brand_position) if an.brand_mentioned else "否" }}</span>
           <span class="badge">情感 {{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}</span>
           <span class="badge">引用 {{ an.citations|length }}</span>
@@ -502,8 +542,8 @@
       fallback.style.display = "block";
       return;
     }
-    const names = [{{ r.brand_profile.brand_name|tojson }}{% for c in m.competitor_ranking[:7] %}, {{ c.name|tojson }}{% endfor %}];
-    const values = [{{ (m.sov * 100)|round(1) }}{% for c in m.competitor_ranking[:7] %}, {{ (c.sov * 100)|round(1) }}{% endfor %}];
+    const names = [{{ r.brand_profile.brand_name|tojson }}{% for c in um.competitor_ranking[:7] %}, {{ c.name|tojson }}{% endfor %}];
+    const values = [{{ (um.sov * 100)|round(1) }}{% for c in um.competitor_ranking[:7] %}, {{ (c.sov * 100)|round(1) }}{% endfor %}];
     const chart = echarts.init(chartNode, null, {renderer: "svg"});
     chart.setOption({
       animationDuration: 700,

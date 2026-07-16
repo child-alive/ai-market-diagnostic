@@ -97,6 +97,8 @@ def test_run_diagnostic_keeps_primary_compatibility_and_platform_metrics(
     assert len(report.platform_results) == 2
     assert report.platform_results[0].metrics.visibility_rate == 1.0
     assert report.platform_results[1].metrics.visibility_rate == 0.0
+    assert report.platform_results[0].metrics.unbranded.visibility_rate == 1.0
+    assert report.platform_results[1].metrics.unbranded.visibility_rate == 0.0
     assert all(a.provider == "openai" for a in report.answers)
     assert all(a.provider == "openai" for a in report.analyses)
     assert report.metrics == report.platform_results[0].metrics
@@ -140,5 +142,6 @@ def test_report_renders_platform_comparison_and_machine_evidence_warning(
     assert "多平台横向对比" in html
     assert "OPENAI" in html and "GEMINI" in html
     assert "机器预审 · 需人工复核" in html
+    assert "无品牌词可见度" in html
     assert 'href="https://example.com/evidence"' in html
     assert "来自 DeepSeek Web Search" not in html

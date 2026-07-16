@@ -92,10 +92,10 @@ def _build_result(
     if not has_es_mx:
         hint = f"现有 hreflang: {', '.join(sorted(signals.hreflangs)) or '无'}"
         issues.append(SiteIssue(severity=IssueSeverity.HIGH, code="NO_HREFLANG_ES_MX",
-                                detail=f"未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（{hint}）"))
+                                detail=f"本次抓取的 {pages_checked} 页范围内未发现 es-MX 声明，墨西哥用户与本地化 AI 检索难以定位西语内容（{hint}）"))
     if not spanish:
         issues.append(SiteIssue(severity=IssueSeverity.HIGH, code="NO_SPANISH_CONTENT",
-                                detail="站内未检测到西班牙语内容，目标市场语言完全缺位"))
+                                detail=f"本次抓取的 {pages_checked} 页范围内未检测到西班牙语内容，建议扩大抓取后复核并补齐目标市场内容"))
     if signals.jsonld_count == 0:
         issues.append(SiteIssue(severity=IssueSeverity.MEDIUM, code="NO_STRUCTURED_DATA",
                                 detail="未发现 JSON-LD 结构化数据，AI 难以准确理解品牌/产品实体"))
@@ -114,6 +114,25 @@ def _build_result(
         issues=issues,
         snapshot_mode=snapshot_mode,
     )
+
+
+def scope_sample_sensitive_claims(result: SiteAuditResult) -> SiteAuditResult:
+    """历史报告旧文案的口径收敛；不重新抓取、不改检查结果。"""
+
+    for issue in result.issues:
+        if issue.code == "NO_HREFLANG_ES_MX":
+            hint_match = re.search(r"[（(]现有 hreflang:.*[）)]", issue.detail)
+            hint = hint_match.group(0) if hint_match else ""
+            issue.detail = (
+                f"本次抓取的 {result.pages_checked} 页范围内未发现 es-MX 声明，"
+                f"墨西哥用户与本地化 AI 检索难以定位西语内容{hint}"
+            )
+        elif issue.code == "NO_SPANISH_CONTENT":
+            issue.detail = (
+                f"本次抓取的 {result.pages_checked} 页范围内未检测到西班牙语内容，"
+                "建议扩大抓取后复核并补齐目标市场内容"
+            )
+    return result
 
 
 def _audit_snapshot() -> SiteAuditResult:

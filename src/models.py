@@ -22,6 +22,13 @@ class QuestionTier(str, Enum):
     CATEGORY = "category"
 
 
+class QueryScope(str, Enum):
+    """可见度测量口径：品牌词只测认知，无品牌词才测主动推荐竞争力。"""
+
+    BRANDED = "branded"
+    UNBRANDED = "unbranded"
+
+
 class Funnel(str, Enum):
     TOFU = "TOFU"  # 认知
     MOFU = "MOFU"  # 比较
@@ -95,6 +102,8 @@ class UserQuestion(BaseModel):
     funnel: Funnel
     value_score: int = Field(ge=1, le=5)  # 商业价值评分
     value_reason: str
+    # 旧 JSON 可依默认值加载；运行时由 tier + 品牌词命中确定。
+    query_scope: Optional[QueryScope] = None
 
 
 # ---------------------------------------------------------------- ② AI 回答采集
@@ -158,16 +167,23 @@ class CompetitorRank(BaseModel):
     sov: float                           # 话语权占比 0~1
 
 
-class VisibilityMetrics(BaseModel):
-    """指标命名对齐聚路国际数据检测平台体系。"""
+class VisibilitySegmentMetrics(BaseModel):
+    """单一查询口径的指标切片；全字段默认保证旧报告可加载。"""
 
-    visibility_rate: float               # Visibility: 品牌出现的回答占比 0~1
-    sov: float                           # Share of Voice: 品牌提及/全部品牌提及 0~1
+    visibility_rate: float = 0.0         # Visibility: 品牌出现的回答占比 0~1
+    sov: float = 0.0                     # Share of Voice: 品牌提及/全部品牌提及 0~1
     avg_position: Optional[float] = None  # Average Position: 品牌平均顺位
-    citation_rate: float                 # Citation Rate: 含搜索 URL/声明域名的回答占比 0~1
+    citation_rate: float = 0.0           # Citation Rate: 含搜索 URL/声明域名的回答占比 0~1
     sentiment_summary: dict[str, int] = Field(default_factory=dict)  # {pos: n, neu: n, neg: n}
     competitor_ranking: list[CompetitorRank] = Field(default_factory=list)
     questions_checked: int = 0
+
+
+class VisibilityMetrics(VisibilitySegmentMetrics):
+    """指标命名对齐聚路国际体系；顶层旧字段继续表示全样本。"""
+
+    branded: VisibilitySegmentMetrics = Field(default_factory=VisibilitySegmentMetrics)
+    unbranded: VisibilitySegmentMetrics = Field(default_factory=VisibilitySegmentMetrics)
 
 
 class EvidenceReview(BaseModel):

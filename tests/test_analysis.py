@@ -13,11 +13,18 @@ from src.models import (
     CompetitorMention,
     Sentiment,
     UserQuestion,
+    VisibilityMetrics,
 )
 from src.pipeline.analysis import (
     _normalize_competitors,
     aggregate_metrics,
     heuristic_analyze,
+)
+from src.pipeline.question_gen import _GEN_PROMPT, _enforce_generated_scope_contract
+from src.pipeline.segmentation import (
+    classify_question_scope,
+    label_question_scopes,
+    question_mentions_brand,
 )
 from src.providers.deepseek import _build_user_prompt
 
@@ -244,3 +251,108 @@ def test_aggregate_metrics_sorts_competitors_and_averages_positions() -> None:
     assert ranking[0].mention_count == 2
     assert ranking[0].avg_position == pytest.approx(2.0)
     assert ranking[0].sov == pytest.approx(0.5)
+
+
+def test_query_scope_uses_tier_or_brand_term_without_substring_false_positive() -> None:
+    regional_with_brand = make_question("¿Dónde comprar productos Deli en México?")
+    regional_with_brand.tier = "regional"
+    generic = make_question("¿Cuáles son las mejores marcas de papelería?")
+    delicious = make_question("Busco un diseño delicioso para estudiantes")
+
+    assert question_mentions_brand(regional_with_brand, DELI_PROFILE) is True
+    assert classify_question_scope(regional_with_brand, DELI_PROFILE).value == "branded"
+    assert classify_question_scope(generic, DELI_PROFILE).value == "unbranded"
+    assert question_mentions_brand(delicious, DELI_PROFILE) is False
+
+
+def test_aggregate_metrics_keeps_branded_and_unbranded_independent() -> None:
+    questions = [
+        UserQuestion(
+            id="branded",
+            text_local="¿Deli es una buena marca?",
+            text_zh="得力是好品牌吗？",
+            tier="brand",
+            funnel="MOFU",
+            value_score=4,
+            value_reason="认知",
+        ),
+        UserQuestion(
+            id="unbranded",
+            text_local="¿Cuáles son las mejores marcas de papelería?",
+            text_zh="最好的文具品牌有哪些？",
+            tier="category",
+            funnel="MOFU",
+            value_score=5,
+            value_reason="推荐",
+        ),
+    ]
+    analyses = [
+        AnswerAnalysis(
+            question_id="branded",
+            brand_mentioned=True,
+            brand_position=1,
+            citations=[Citation(domain="brand.example")],
+            sentiment=Sentiment.POSITIVE,
+        ),
+        AnswerAnalysis(
+            question_id="unbranded",
+            brand_mentioned=False,
+            competitors=[CompetitorMention(name="BIC", position=1)],
+            citations=[Citation(domain="category.example")],
+            sentiment=Sentiment.NEUTRAL,
+        ),
+    ]
+
+    metrics = aggregate_metrics(analyses, questions, DELI_PROFILE)
+
+    assert metrics.visibility_rate == 0.5  # 顶层旧口径仅为向后兼容
+    assert metrics.branded.visibility_rate == 1.0
+    assert metrics.branded.avg_position == 1.0
+    assert metrics.unbranded.visibility_rate == 0.0
+    assert metrics.unbranded.avg_position is None
+    assert metrics.unbranded.questions_checked == 1
+    assert [question.query_scope.value for question in questions] == [
+        "branded",
+        "unbranded",
+    ]
+
+
+def test_old_visibility_json_loads_with_empty_segment_defaults() -> None:
+    metrics = VisibilityMetrics.model_validate(
+        {
+            "visibility_rate": 0.5,
+            "sov": 0.2,
+            "citation_rate": 1.0,
+            "questions_checked": 8,
+        }
+    )
+
+    assert metrics.visibility_rate == 0.5
+    assert metrics.branded.questions_checked == 0
+    assert metrics.unbranded.visibility_rate == 0.0
+
+
+def test_question_generation_prompt_forbids_brand_leakage_into_unbranded_queries() -> None:
+    prompt = _GEN_PROMPT.format(
+        brand=DELI_PROFILE.brand_name,
+        aliases="、".join(DELI_PROFILE.brand_aliases),
+        category=DELI_PROFILE.category,
+        market=DELI_PROFILE.market,
+        language=DELI_PROFILE.language,
+        competitors="、".join(DELI_PROFILE.seed_competitors),
+    )
+
+    assert "regional 和 category" in prompt
+    assert "均不得出现 Deli 或任何别名" in prompt
+    questions = label_question_scopes([make_question("哪个文具品牌最好？")], DELI_PROFILE)
+    assert questions[0].query_scope.value == "unbranded"
+
+
+def test_generated_question_mislabel_is_reclassified_before_aggregation() -> None:
+    mislabeled = make_question("¿Dónde comprar Deli en Ciudad de México?")
+    mislabeled.tier = "regional"
+
+    corrected = _enforce_generated_scope_contract([mislabeled], DELI_PROFILE)[0]
+
+    assert corrected.tier.value == "brand"
+    assert corrected.query_scope.value == "branded"

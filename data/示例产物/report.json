@@ -27,7 +27,8 @@
       "tier": "category",
       "funnel": "TOFU",
       "value_score": 5,
-      "value_reason": "高搜索量，用户广泛认知阶段，直接关联品类与品牌，商业价值极高。"
+      "value_reason": "高搜索量，用户广泛认知阶段，直接关联品类与品牌，商业价值极高。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q02",
@@ -36,7 +37,8 @@
       "tier": "regional",
       "funnel": "BOFU",
       "value_score": 4,
-      "value_reason": "地区性购买意图强，用户有明确决策需求，匹配品牌渠道。"
+      "value_reason": "地区性购买意图强，用户有明确决策需求，匹配品牌渠道。",
+      "query_scope": "branded"
     },
     {
       "id": "q03",
@@ -45,7 +47,8 @@
       "tier": "brand",
       "funnel": "MOFU",
       "value_score": 4,
-      "value_reason": "直接品牌比较，购买意图高，匹配核心品类。"
+      "value_reason": "直接品牌比较，购买意图高，匹配核心品类。",
+      "query_scope": "branded"
     },
     {
       "id": "q04",
@@ -54,7 +57,8 @@
       "tier": "category",
       "funnel": "MOFU",
       "value_score": 4,
-      "value_reason": "用户寻找渠道，包含购买意图，覆盖广泛。"
+      "value_reason": "用户寻找渠道，包含购买意图，覆盖广泛。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q05",
@@ -63,7 +67,8 @@
       "tier": "regional",
       "funnel": "MOFU",
       "value_score": 3,
-      "value_reason": "地区性认知问题，搜索量中等，有潜在购买意图。"
+      "value_reason": "地区性认知问题，搜索量中等，有潜在购买意图。",
+      "query_scope": "branded"
     },
     {
       "id": "q06",
@@ -72,7 +77,8 @@
       "tier": "brand",
       "funnel": "BOFU",
       "value_score": 4,
-      "value_reason": "具体产品细节，决策阶段，高购买意图。"
+      "value_reason": "具体产品细节，决策阶段，高购买意图。",
+      "query_scope": "branded"
     },
     {
       "id": "q07",
@@ -81,7 +87,8 @@
       "tier": "regional",
       "funnel": "MOFU",
       "value_score": 3,
-      "value_reason": "地区价格比较，中等搜索量，匹配学生/办公需求。"
+      "value_reason": "地区价格比较，中等搜索量，匹配学生/办公需求。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q08",
@@ -90,7 +97,8 @@
       "tier": "category",
       "funnel": "BOFU",
       "value_score": 5,
-      "value_reason": "高购买意图，B2B场景，搜索量高，直接转化。"
+      "value_reason": "高购买意图，B2B场景，搜索量高，直接转化。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q09",
@@ -99,7 +107,8 @@
       "tier": "brand",
       "funnel": "MOFU",
       "value_score": 4,
-      "value_reason": "品牌对比，用户比较阶段，高意图。"
+      "value_reason": "品牌对比，用户比较阶段，高意图。",
+      "query_scope": "branded"
     },
     {
       "id": "q10",
@@ -108,7 +117,8 @@
       "tier": "category",
       "funnel": "TOFU",
       "value_score": 3,
-      "value_reason": "品类推荐，认知阶段，搜索量中等。"
+      "value_reason": "品类推荐，认知阶段，搜索量中等。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q11",
@@ -117,7 +127,8 @@
       "tier": "regional",
       "funnel": "BOFU",
       "value_score": 3,
-      "value_reason": "地区购买决策，搜索量中等。"
+      "value_reason": "地区购买决策，搜索量中等。",
+      "query_scope": "branded"
     },
     {
       "id": "q12",
@@ -126,7 +137,8 @@
       "tier": "category",
       "funnel": "MOFU",
       "value_score": 3,
-      "value_reason": "品类比较，中等意图，匹配学生/办公。"
+      "value_reason": "品类比较，中等意图，匹配学生/办公。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q13",
@@ -135,7 +147,8 @@
       "tier": "brand",
       "funnel": "MOFU",
       "value_score": 3,
-      "value_reason": "特定产品线评估，中等搜索量。"
+      "value_reason": "特定产品线评估，中等搜索量。",
+      "query_scope": "branded"
     },
     {
       "id": "q14",
@@ -144,7 +157,8 @@
       "tier": "category",
       "funnel": "TOFU",
       "value_score": 3,
-      "value_reason": "认知阶段，搜索量中等，匹配办公场景。"
+      "value_reason": "认知阶段，搜索量中等，匹配办公场景。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q15",
@@ -153,7 +167,8 @@
       "tier": "regional",
       "funnel": "BOFU",
       "value_score": 3,
-      "value_reason": "地区购买渠道，决策阶段。"
+      "value_reason": "地区购买渠道，决策阶段。",
+      "query_scope": "branded"
     },
     {
       "id": "q16",
@@ -162,7 +177,8 @@
       "tier": "category",
       "funnel": "MOFU",
       "value_score": 4,
-      "value_reason": "比较阶段，高意图，用户关注质量。"
+      "value_reason": "比较阶段，高意图，用户关注质量。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q17",
@@ -171,7 +187,8 @@
       "tier": "brand",
       "funnel": "BOFU",
       "value_score": 3,
-      "value_reason": "决策细节，中等搜索量。"
+      "value_reason": "决策细节，中等搜索量。",
+      "query_scope": "branded"
     },
     {
       "id": "q18",
@@ -180,7 +197,8 @@
       "tier": "category",
       "funnel": "TOFU",
       "value_score": 3,
-      "value_reason": "品类认知，搜索量中等，匹配学生/艺术家。"
+      "value_reason": "品类认知，搜索量中等，匹配学生/艺术家。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q19",
@@ -189,7 +207,8 @@
       "tier": "brand",
       "funnel": "MOFU",
       "value_score": 4,
-      "value_reason": "直接竞品比较，高意图，匹配办公场景。"
+      "value_reason": "直接竞品比较，高意图，匹配办公场景。",
+      "query_scope": "branded"
     },
     {
       "id": "q20",
@@ -198,7 +217,8 @@
       "tier": "category",
       "funnel": "BOFU",
       "value_score": 5,
-      "value_reason": "高购买意图，搜索量大，直接转化机会。"
+      "value_reason": "高购买意图，搜索量大，直接转化机会。",
+      "query_scope": "unbranded"
     },
     {
       "id": "q21",
@@ -207,7 +227,8 @@
       "tier": "brand",
       "funnel": "MOFU",
       "value_score": 4,
-      "value_reason": "用户参考畅销品，比较阶段，高意图。"
+      "value_reason": "用户参考畅销品，比较阶段，高意图。",
+      "query_scope": "branded"
     },
     {
       "id": "q22",
@@ -216,13 +237,15 @@
       "tier": "category",
       "funnel": "TOFU",
       "value_score": 4,
-      "value_reason": "高搜索量，精准人群，认知阶段，匹配学生市场。"
+      "value_reason": "高搜索量，精准人群，认知阶段，匹配学生市场。",
+      "query_scope": "unbranded"
     }
   ],
   "answers": [
     {
       "question_id": "q01",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Claro! Con gusto te comparto las mejores marcas de papelería en México, basado en los resultados de búsqueda más recientes.\n\n## 🏆 Marcas de cuadernos y papel\n\n| Marca | ¿Qué ofrece? | ¿Dónde la consigues? |\n|-------|-------------|----------------------|\n| **Scribe** | La marca **líder en México** en papel bond, cuadernos y blocks. Pertenece a Bio Pappel, el mayor productor de papel del país. En estudios de calidad (ProfeCO 2025), sus cuadernos **In Black pasta dura** obtuvieron calificación **Excelente** en resistencia al borrado y pastas. | Office Depot, Walmart, Soriana, Bodega Aurrerá, papelerías |\n| **Norma** | Marca mexicana muy popular. Su cuaderno **Unicampus pasta dura (160 hojas)** obtuvo calificación **Muy Buena** general. La línea **Profesional** es una de las más económicas y accesibles. | Office Depot, Office Max, Bodega Aurrerá, papelerías |\n| **Sigel** | Cuaderno **Universitario** de 90 hojas, muy económico (~$32 MXN) y con calificación **Buena** en general. Ideal para uso diario sin gastar mucho. | Papelerías, Office Depot |\n| **European y KIP** | En estudios de calidad, ambos modelos obtuvieron **Excelente** en resistencia de hojas y pastas en cuadernos plastificados. | Tiendas departamentales y papelerías |\n\n## ✍️ Marcas de escritura y dibujo\n\n| Marca | Lo que debes saber |\n|-------|-------------------|\n| **Bic** | Clásico infalible. Tiene planta en Coahuila y es el rey de los bolígrafos (Bic Cristal, Bic 4 Colores) y portaminas. |\n| **Faber-Castell** | La mejor opción para **lápices de colores, grafito y materiales artísticos**. Muy presente en campañas escolares en México. |\n| **Newell Brands** | Dueño de **Sharpie** (marcadores), **Paper Mate** (plumas) y **Parker**. Domina el segmento de marcadores y plumas de calidad. |\n| **Staedtler** | Líder en **lápices de dibujo técnico, gomas y reglas**. Muy popular entre estudiantes de arquitectura y diseño. |\n| **Maped** | Especializada en **tijeras, compases, sacapuntas y reglas** escolares. Buena relación calidad-precio. |\n\n## 🏪 Tiendas y cadenas destacadas\n\n- **Office Depot México** – La cadena más grande de suministros de oficina en el país.\n- **Office Max** – Competencia directa de Office Depot con buenos precios.\n- **La Papelería** – Cadena mexicana con presencia nacional.\n- **Grupo Kaluz** – Enfocado en suministros educativos y escolares a gran escala.\n\n## 💡 Recomendación rápida\n\n- **Para la escuela (presupuesto ajustado):** Cuadernos **Sigel** (~$32) o **Norma Profesional** (~$54).\n- **Para la escuela (calidad-precio):** Cuadernos **Scribe pasta dura** (~$247) – excelente resistencia.\n- **Para la oficina/profesional:** **Norma Unicampus** o **Scribe In Black**.\n- **Plumas y bolígrafos:** **Bic** para el día a día; **Paper Mate** o **Sharpie** para calidad superior.\n- **Arte y dibujo:** **Faber-Castell** sin duda.\n\n¿Buscas algo en particular? ¡Dime y te ayudo a encontrar la mejor opción! 📚✏️\n\nFuentes recuperadas por búsqueda web:\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico\n- https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5 — https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5\n- 墨西哥文教用品行业有几家上市公司？-丝路印象 — https://www.zcqtz.com/news6285436\n- https://www.gob.mx/cms/uploads/attachment/file/98392/ItalianaCDM.pdf#1#1 — https://www.gob.mx/cms/uploads/attachment/file/98392/ItalianaCDM.pdf#1#1\n- Scribe — https://biopappel.com/en/scribe-en/\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749\n- 墨西哥文具市场规模、份额和增长趋势-行业政策-丝路印象-丝路印象 — https://www.zcqtz.com/news/3033749.html\n- Highlighter Set Brands in Mexico | Marketplace Brand Analysis - IndexBox — https://www.indexbox.io/store/mexico-highlighter-set-marketplace-brand-report/",
       "retrieved_at": "2026-07-16T10:21:52.695226Z",
       "is_mock": false,
@@ -237,11 +260,14 @@
         "https://www.zcqtz.com/news3033749",
         "https://www.zcqtz.com/news/3033749.html",
         "https://www.indexbox.io/store/mexico-highlighter-set-marketplace-brand-report/"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q08",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Claro! Aquí te comparto las mejores opciones para comprar artículos de oficina al **por mayor (mayoreo)** en México, ya sea para tu negocio, escuela u oficina:\n\n---\n\n## 🏢 **Grandes cadenas con programa de mayoreo**\n\n| Tienda | ¿Por qué? |\n|---|---|\n| **Office Depot** | Tienen un programa de **Ventas Corporativas** con descuentos por volumen. Sucursales en todo México y envíos. |\n| **OfficeMax** | Similar a Office Depot, con programas de mayoreo para empresas y escuelas. |\n| **Costco** | Venta al mayoreo con membresía. Buen precio en papel, carpetas, plumas y básicos de oficina. |\n| **Sam's Club** | Membresía, buena opción para papel, bolígrafos y artículos de limpieza escolar/oficina. |\n\n---\n\n## 📦 **Mayoristas especializados en papelería y oficina**\n\n- **DC Mayorista (dcm.com.mx)** – Empresa mexicana especializada en **mayoreo de artículos de oficina**, papel, consumibles, equipo de cómputo, mobiliario y accesorios. Están en CDMX (Anáhuac, Miguel Hidalgo). Son de los mayoristas más completos del país.\n- **Lumen** – Tienda de papelería y artículos de oficina con opciones de venta por mayoreo y entregas express.\n- **TodoOficina.com** – Tienda en línea con inventario grande de muebles y suministros para oficina; entregan a toda la República.\n- **Distribuidora Mayorista de Oficinas (DIMOSA)** – Se dedican a la venta al por mayor de mobiliario y equipo de oficina.\n\n---\n\n## 📍 **Central de Abasto de Papelería (CDMX)**\n\nSi estás en la **Ciudad de México**, en la zona de **Jamaica**, **Iztacalco** y **Merced** hay muchas distribuidoras de papelería al mayoreo. Algunas que aparecen en registros de proveedores:\n\n| Proveedor | Teléfono |\n|---|---|\n| Comercio Distribución y más... (Jamaica) | 55 5740 2040 |\n| Distribuidora Gardi (Granjas México) | 55 5657 1434 |\n| Continental Papelera de México (Naucalpan) | 55 5442 1881 |\n| Corporativo Comercial Milenium (Iztapalapa) | 55 5634 5958 |\n| Joluga (Iztapalapa) – papelería y empaque | 55 8590 9342 |\n\n---\n\n## 💡 **Recomendación final**\n\n- **Para mayoreo general (hojas, plumas, carpetas, etc.):** Office Depot Corporativo, Lumen o DC Mayorista.\n- **Para papel (bond, couché, reciclado):** Cosmopapel o Fábrica de Papel San José.\n- **Para muebles de oficina:** Versa Concepto, Steelcase de México, o grupos locales como Grup DI.\n\n¿Buscas algo en particular (papel, plumas, muebles, equipo de cómputo)? Dime y te ayudo a encontrar el mejor mayorista para ese producto.\n\nFuentes recuperadas por búsqueda web:\n- https://www.inegi.org.mx/contenidos/app/scian/tablaiii.pdf#44#20 — https://www.inegi.org.mx/contenidos/app/scian/tablaiii.pdf#44#20\n- TodoOficina.com - El mejor inventario y precios en un click — https://www.ipaddress.com/website/todooficina.com/\n- DC Wholesale - Crunchbase Company Profile & Funding — https://www.crunchbase.com/organization/dc-wholesale\n- https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#22 — https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#22\n- http://transparencia.udg.mx/sites/default/files/Padron%20de%20Provedores%20CUCosta.pdf#7#1 — http://transparencia.udg.mx/sites/default/files/Padron%20de%20Provedores%20CUCosta.pdf#7#1\n- https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#19 — https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#19\n- Empresas relacionadas con dimosa - LA ECONOMICA SA DE CV - ORIENTE 171 435 , COLONIA AMPLIACION SAN JUN DE ARAGON, Gustavo A. Madero, CIUDAD DE MÉXICO — https://directorioempresarialmexico.com/empresa/0006271398/FABRICA-DE-COLCHONES-Y-SALAS/?buscar=dimosa&p=0\n- https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#11 — https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#11\n- https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#10 — https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#10\n- 墨西哥office furniture采供商 — https://www.52wmb.com/cb-mexico/office_furniture\n- Versa, Muebles para Oficina, S.A. de C.V. | Dunsguide — https://www.dunsguide.com/company/59b16479608505cc94f694d94b14456d/versa-muebles-para-oficina-sa-de-cv\n- https://esemanal.mx/ejemplares/1191/1191.pdf#13#13 — https://esemanal.mx/ejemplares/1191/1191.pdf#13#13\n- DC Mayorista, S.A. de C.V. — https://www.verif.com/en/company/DC-Mayorista-S-A--de-C-V--68d9dcff1299230338926bf1/",
       "retrieved_at": "2026-07-16T10:22:13.358722Z",
       "is_mock": false,
@@ -260,11 +286,14 @@
         "https://www.dunsguide.com/company/59b16479608505cc94f694d94b14456d/versa-muebles-para-oficina-sa-de-cv",
         "https://esemanal.mx/ejemplares/1191/1191.pdf#13#13",
         "https://www.verif.com/en/company/DC-Mayorista-S-A--de-C-V--68d9dcff1299230338926bf1/"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q20",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Claro! Aquí te cuento dónde conseguir artículos de papelería baratos en línea en México, basado en varias opciones que encontré:\n\n---\n\n## 🛒 Las mejores tiendas en línea para papelería barata en México\n\n### 1. **Amazon México** (amazon.com.mx)\n- Tiene de todo: cuadernos **Scribe**, lápices **Prismacolor**, estuches, colores, etc.\n- Muy seguido encuentras descuentos de hasta **40% o más** en productos de papelería.\n- Envíos rápidos si tienes **Prime** y buenas opciones de meses sin intereses.\n\n### 2. **Office Depot México** (officedepot.com.mx)\n- Tienda clásica para oficina y escuela.\n- Tienen sección de **“Ofertas”** y promociones como **2x1** o descuentos por volumen.\n- Bueno si buscas marcas conocidas como **Scribe, Norma, BIC, Paper Mate**.\n\n### 3. **Lumen** (lumen.com.mx)\n- Especialistas en papelería, arte y diseño.\n- Tienen precios competitivos, sobre todo en **listas escolares** y material de dibujo.\n- Envío a todo México.\n\n### 4. **Ofix** (ofix.mx)\n- Tienda 100% en línea con precios bajos en artículos de oficina y escolares.\n- Ofrecen meses sin intereses y envíos rápidos.\n\n### 5. **Papelería del Ahorro** (papeleriadelahorro.mx)\n- Como su nombre lo dice, se enfocan en precios económicos.\n- Ideal si buscas cosas básicas sin gastar de más.\n\n### 6. **Pedidos.com**\n- Venden papelería, cómputo, impresión y mobiliario.\n- En CDMX entregan en **3 horas**, y hacen envíos a todo México.\n\n### 7. **Propapel** (propapel.mx)\n- Buenos precios en papel, carpetas, folders y artículos de oficina.\n- Tienen opciones de compra por mayoreo para ahorrar más.\n\n### 8. **Mercado Libre** (mercadolibre.com.mx)\n- Aparte de las tiendas especializadas, en ML hay vendedores con precios muy bajos.\n- Puedes filtrar por **\"Envío gratis\"** y **\"Meses sin intereses\"** para encontrar gangas.\n\n---\n\n## 💡 Tips para ahorrar más:\n- 🕒 **Aprovecha el Buen Fin y el Hot Sale** para descuentos grandes.\n- 📦 **Compra por mayoreo** (lotes de cuadernos, plumas, etc.) si es para toda la familia o la oficina.\n- ⭐ Revisa las **“Opciones Amazon”** o **“Mejor valorado”** en las páginas, que suelen tener buenos precios con buena calidad.\n- 🚚 Busca tiendas con **envío gratis** a partir de cierto monto (como Amazon con $599 o Lumen).\n\nSi me dices qué tipo de artículo buscas en específico (cuadernos, plumas, mochilas, colores), puedo darte recomendaciones aún más precisas. 😊\n\nFuentes recuperadas por búsqueda web:\n- Lápices de Colores, 24 Piezas Colores Profesionales con Núcleo Suave, Lapices de Dibujo de Ergónomicos, Papeleria de Dibujo para Niños, Adultos, Principiantes y Artistas : Amazon.com.mx: Oficina y papelería — https://www.amazon.com.mx/Profesionales-Erg%C3%B3nomicos-Papeleria-Principiantes-Artistas/dp/B0G7HG2KW7?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0G7HG2KW7&ref_=dossier_default_ref_B0G7HG2KW7\n- Scribe, MEGA PLUS, Cuaderno Profesional Espiral Sencillo de Pasta Semi Rígida, Raya de 100 Hojas (Diseño de Portada Aleatoria) : Amazon.com.mx: Oficina y papelería — https://www.amazon.com.mx/Megaplus-Cuaderno-100h-prof-megaplus/dp/B00VXXQM8W/ref=sr_1_12?_encoding=UTF8&content-id=amzn1.sym.8797e3c6-82e7-4224-aa94-05f81f27368f&dib=eyJ2IjoiMSJ9.NqYv6k2K62XXXmRE6Uc3n2FoOGdiEEoNNpypXaEfwq1g41oQmJj1l63PDqN04oRJR8q6vxYJn2DZtiNxWR-sSLTa-EUwVZ8Vj53HnVg1CEF_NNbjsDD92ZYJCjEIhX6nqWE2m4WoeEoYXUH8p6nr3Im-8ah4DPadFZRrycwwNPJiD-t3XOrh0-qZskRRnqD842Vgx6841v0aqLgSFl-IeoKaJSp1g6mA5dIoIt4xMvCcJB1_YfJh15gI61eLdQ-z4mJTPvYD276Ozid2q19wMoN7L95bB8HLNTFrRuWEFXI.WwjSdYV_N5zfR9dXcpyRkFB-2FrMjG8zK3n9PWwN4c4&dib_tag=se&keywords=cuaderno&pd_rd_r=f47ab4bf-cb35-4c9a-849c-9f63993ca895&pd_rd_w=tDhsV&pd_rd_wg=kDoym&qid=1784183810&sr=8-12\n- papira.com.mx (papira.com.mx) Shopify Store Profile | Revenue, Traffic & Insights | StoreCensus — https://www.storecensus.com/stores/papira.com.mx\n- Prismacolor - Lápices de Colores Junior, Colores Surtidos, 24 Piezas, 4.0mm, No Tóxicos : Amazon.com.mx: Oficina y papelería — https://www.amazon.com.mx/Prismacolor-l%C3%A1pices-colores-surtidos-paquete/dp/B0BN69G3C2/ref=pd_bxgy_d_sccl_1/140-3398445-7866818?pd_rd_w=a5y98&content-id=amzn1.sym.8cc2ee89-c2da-43c8-bc30-4e2a87d6e7dc&pf_rd_p=8cc2ee89-c2da-43c8-bc30-4e2a87d6e7dc&pf_rd_r=VAMRJEG3NT0GWEP2ET8R&pd_rd_wg=kYhXo&pd_rd_r=90105f23-4e2b-43a7-b36d-b3303668f825&pd_rd_i=B0BN69G3C2&th=1\n- Pedidos.com - Todo para tu espacio de trabajo | Pedidos.com — https://www.ipaddress.com/website/pedidos.com/\n- Propapel.mx ▷ Propapel|Artículos de Papelería de oficina y escolar2 — https://hypestat.com/info/propapel.mx\n- paperix (paperix.mx) Shopify Store Profile | Revenue, Traffic & Insights | StoreCensus — https://www.storecensus.com/stores/paperix.mx\n- www.ofix.mx DNS Lookup & Website Information — https://www.ipaddress.com/website/www.ofix.mx\n- Estuche para Lápices 24 Piezas，Estuche impermeable con cremallera.Puede almacenar papelería o maquillaje,Adecuada para la Escuela,Material de oficina,Accesorios de viaje (24PCS-Multicolor) : Amazon.com.mx: Oficina y papelería — https://www.amazon.com.mx/Piezas%EF%BC%8CEstuche-impermeable-cremallera-Puede-maquillaje-24PCS-Multicolor/dp/B0C6XZDCBZ?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0C6XZDCBZ&ref_=dossier_default_ref_B0C6XZDCBZ\n- Pizarron Adhesiva en Rollo,Calcomanía de Pintarron para Pared Extraíble e Impermeable,Vinil Pizarra Flexible de Papel para la Escuela, Oficina en Casa,Hogar,Dibujo de Niños(200 * 45cm) : Amazon.com.mx: Oficina y papelería — https://www.amazon.com.mx/dp/B0CCPCGNMY/?_encoding=UTF8&pd_rd_i=B0CCPCGNMY&pd_rd_i=B0CCPCGNMY&ref_=sbx_be_s_sparkle_ssd_pce&pd_rd_w=LTbkf&content-id=amzn1.sym.9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_w=LTbkf&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb\n- The Best Shopify Store for Escritorio in 2026 — https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank",
       "retrieved_at": "2026-07-16T10:22:32.206120Z",
       "is_mock": false,
@@ -281,22 +310,28 @@
         "https://www.amazon.com.mx/Piezas%EF%BC%8CEstuche-impermeable-cremallera-Puede-maquillaje-24PCS-Multicolor/dp/B0C6XZDCBZ?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0C6XZDCBZ&ref_=dossier_default_ref_B0C6XZDCBZ",
         "https://www.amazon.com.mx/dp/B0CCPCGNMY/?_encoding=UTF8&pd_rd_i=B0CCPCGNMY&pd_rd_i=B0CCPCGNMY&ref_=sbx_be_s_sparkle_ssd_pce&pd_rd_w=LTbkf&content-id=amzn1.sym.9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_w=LTbkf&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb",
         "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q02",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Hola! Claro, te ayudo con eso. **Deli (得力)** es una marca china muy popular de artículos de papelería y oficina (lápices, plumas, calculadoras, tijeras, engrapadoras, etc.). Aunque no encontré un distribuidor oficial anunciado en la CDMX, te comparto los canales más prácticos donde puedes conseguir sus productos:\n\n### 🛒 Opciones para comprar Deli en la CDMX\n\n| Canal | Detalles |\n|-------|----------|\n| **Amazon México** | Tienen un buen catálogo de productos Deli con envío rápido a la CDMX. Busca \"Deli\" y filtra por \"Envío Prime\". |\n| **Mercado Libre** | Hay varios vendedores (nacionales e importadores) que ofrecen artículos Deli, especialmente lotes de artículos escolares. |\n| **Papelsa** | Es una cadena mayorista de papelería con varias sucursales en CDMX (Zaragoza, Bolívar, Dr. Andrade, Tacuba, Calle 4, 5 de Febrero). Aunque no lo publicitan directamente, manejan marcas internacionales y es probable que tengan o puedan pedir productos Deli. Puedes llamar a su *Call Center: 55 8114 5435* para preguntar. |\n| **Lumen** | Cadena mexicana de papelería y arte. Tienen sucursales en CDMX (Roma, Polanco, Centro, etc.). Vale la pena preguntar si manejan la línea. |\n| **Papelerías de mayoreo (La Merced, Tepito, Eje Central)** | En zonas de mayoreo como La Merced o el Centro Histórico hay papelerías que importan directamente productos asiáticos. Pregunta por la marca \"Deli\" o \"得力\". |\n\n### ⚠️ Nota importante\nDeli es una marca que se vende mucho más en línea que en tiendas físicas en México. Si necesitas ver el producto antes de comprar, te sugiero **Amazon** (con devolución fácil) o llamar primero a **Papelsa / Lumen** para confirmar disponibilidad en sucursal.\n\n¿Buscas algún producto Deli en particular? Puedo ayudarte a ver si hay existencias en línea. 😊\n\nFuentes recuperadas por búsqueda web:\n- https://papelsa.com.mx/wp-content/uploads/2025/10/ListaContado_13oct2025_CIVA.pdf#11#1 — https://papelsa.com.mx/wp-content/uploads/2025/10/ListaContado_13oct2025_CIVA.pdf#11#1",
       "retrieved_at": "2026-07-16T10:22:49.604644Z",
       "is_mock": false,
       "search_grounded": true,
       "source_urls": [
         "https://papelsa.com.mx/wp-content/uploads/2025/10/ListaContado_13oct2025_CIVA.pdf#11#1"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q03",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Excelente pregunta! Te ayudo a comparar **BIC vs Deli** en el contexto del mercado mexicano, basado en lo que encontré en la web.\n\n---\n\n## Resultados de la búsqueda\n\nSegún la información disponible:\n\n- **BIC** es una marca global con una presencia **muy fuerte en México**. De hecho, Société BIC inauguró una planta de manufactura en Coahuila, lo que demuestra su compromiso con el mercado mexicano. Es mencionado como uno de los principales actores en instrumentos de escritura en México, junto con Faber-Castell y Paper Mate.\n- **Deli (得力)** es reconocida a nivel mundial como uno de los \"top 5\" jugadores globales en papelería, compitiendo con BIC, Newell Brands y M&G Stationery. Sin embargo, **no aparece mencionada específicamente en el mercado mexicano** en los resultados de búsqueda, lo que sugiere que su distribución y reconocimiento en México es mucho menor.\n\nEn cuanto a calidad, una guía comparativa de bolígrafos a granel describe:\n\n| Marca | Tipo | Características destacadas |\n|---|---|---|\n| **BIC Round Stic Xtra Life** | Bolígrafo de tinta ballpoint | Tinta de larguísima duración, escritura suave y consistente, ideal para alto volumen de uso en escuelas y oficinas |\n| **Deli Gel Pens (0.7mm)** | Bolígrafo de gel | Tinta de secado rápido, sin manchas, punta media precisa, diseño retráctil |\n\n---\n\n## Mi recomendación para México\n\n**Si buscas un bolígrafo en México, BIC es la mejor opción por las siguientes razones:**\n\n1. **Disponibilidad:** Lo encuentras en prácticamente cualquier papelería, supermercado (Walmart, Soriana, Chedraui) y tiendas en línea como Amazon México o Mercado Libre.\n2. **Precio:** Los BIC Cristal y Round Stic son súper económicos y accesibles para el mercado mexicano.\n3. **Duración:** La tinta de los BIC es famosa por durar muchísimo; el modelo \"Xtra Life\" promete hasta un 35% más de duración que un bolígrafo estándar.\n4. **Respaldo:** BIC tiene presencia local con planta en México, lo que garantiza distribución y servicio.\n\n**¿Cuándo elegir Deli?**\n\n- Si prefieres **tinta de gel** (más vibrante y suave que la ballpoint), los Deli Gel Pens son una excelente alternativa y suelen tener buen precio al comprarlos por mayoreo.\n- Si pides por Internet (Amazon, Mercado Libre, Temu), puedes conseguirlos, pero **no los esperes en la papelería de la esquina** en México.\n\n---\n\n## Veredicto final\n\n| Aspecto | **BIC** | **Deli** |\n|---|---|---|\n| Presencia en México | ✅ Muy alta (planta en Coahuila) | ❌ Baja |\n| Variedad | Bolígrafos ballpoint clásicos | Gel pens, bolígrafos económicos |\n| Precio en México | Económico y fácil de encontrar | Competitivo solo en línea |\n| Ideal para... | Uso diario en escuela/oficina | Si buscas tinta gel y compras por internet |\n\n**En conclusión:** Para el consumidor mexicano promedio, **BIC es mejor** por su accesibilidad, precio y confianza. Deli es una marca que está creciendo y ofrece buena calidad, especialmente en gel, pero aún no tiene la penetración ni la disponibilidad de BIC en México. Si puedes conseguir Deli a buen precio en línea, dales una oportunidad, pero para uso diario y sin complicaciones, **BIC es la apuesta más segura**. 🇲🇽\n\nFuentes recuperadas por búsqueda web:\n- Stationery - Global Market Share and Ranking, Overall Sales and Demand Forecast 2026-2032 — https://www.qyresearch.com/reports/5493412/stationery\n- Global Stationery Market Research Report 2025 — https://www.qyresearch.com/reports/3470624/stationery\n- Best Black Pens in Bulk for Offices, Schools, and Creative Projects — https://redleafprintshop.com/best-black-pens-in-bulk/#main\n- Global Stationery Sales Market Report, Competitive Analysis and Regional Opportunities 2026-2032 — https://www.qyresearch.com/reports/5555450/stationery\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico\n- wongchun119的个人空间 — https://bbs.fobshanghai.com/blog.php?tid=8709243\n- 墨西哥书画行业头部企业市场占有率及排名介绍-行业政策-丝路印象-丝路印象 — https://www.zcqtz.com/news/2988046.html\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749\n- 墨西哥文具市场规模、份额和增长趋势-行业政策-丝路印象-丝路印象 — https://www.zcqtz.com/news/3033749.html",
       "retrieved_at": "2026-07-16T10:23:09.457531Z",
       "is_mock": false,
@@ -311,11 +346,14 @@
         "https://www.zcqtz.com/news/2988046.html",
         "https://www.zcqtz.com/news3033749",
         "https://www.zcqtz.com/news/3033749.html"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q04",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Con gusto te ayudo! Elegir la \"mejor\" papelería online en México depende de lo que busques (precio, variedad, rapidez de entrega o especialización). Con base en el mercado actual, estas son las opciones más destacadas:\n\n---\n\n## 🏆 Principales papelerías online en México\n\n### 1. **Office Depot México** – La más completa\n- **Lo mejor:** Catálogo enorme que incluye desde lápices hasta muebles de oficina, cómputo, impresión y limpieza.\n- **Entrega:** Ofrecen envío exprés (3 horas en CDMX) y envíos a todo el país.\n- **Promociones frecuentes:** Descuentos por volumen y meses sin intereses.\n- Ideal para oficinas, escuelas y negocios.\n\n### 2. **Lumen** – La favorita para creativos y estudiantes\n- **Lo mejor:** Especialistas en papelería fina, arte, diseño, bellas artes y material escolar.\n- **Marcas exclusivas:** Moleskine, Faber-Castell, Prismacolor, Copic, entre otras.\n- **Sucursales físicas** en varias ciudades + tienda en línea con envíos a toda la república.\n- Perfecta si buscas cuadernos de calidad, colores profesionales o material para manualidades.\n\n### 3. **Papelería del Ahorro** – Precios bajos\n- Tienda 100% en línea con precios muy competitivos en artículos básicos de oficina y escuela.\n- Ideal para compras de mayoreo o si buscas ahorrar en lo esencial.\n\n### 4. **Pedidos.com** – Ultra rápida en CDMX\n- Enfocada en entregas *exprés* (3 horas o menos en CDMX).\n- Venden artículos de oficina, cómputo, limpieza y mobiliario.\n- Muy útil para emergencias de oficina.\n\n### 5. **Amazon México** y **Mercado Libre**\n- No son papelerías exclusivas, pero tienen una oferta masiva de marcas (Scribe, Norma, Pelikan, Staedtler, etc.).\n- Ventaja: comparar precios fácilmente, leer reseñas y recibir en 1 o 2 días con Prime/Full.\n\n### 6. **Scrapfer** (para manualidades y scrapbooking)\n- Tienda especializada en herramientas para scrapbook, suajadoras, tintas y materiales creativos.\n- Ideal si te gusta el *lettering*, las manualidades o las fiestas temáticas.\n\n---\n\n## 🔍 Recomendación rápida según tu necesidad\n\n| Si buscas... | Mejor opción |\n|---|---|\n| Mayor variedad y envío rápido | **Office Depot** |\n| Material escolar y artístico de calidad | **Lumen** |\n| Precios bajos y básicos | **Papelería del Ahorro** |\n| Entrega ultrarrápida en CDMX | **Pedidos.com** |\n| Comparar marcas y ofertas | **Amazon MX** |\n| Manualidades y scrapbooking | **Scrapfer** |\n\n---\n\n**Mi recomendación personal:** Para la mayoría de los consumidores, **Office Depot México** y **Lumen** son las mejores papelerías online del país por su surtido, confiabilidad y cobertura de envíos. Si buscas algo específico como material de arte, Lumen es insuperable; si necesitas de todo un poco, Office Depot es tu mejor apuesta.\n\n¿Qué tipo de artículos estás buscando? Así puedo ser más preciso en la recomendación. 😊\n\nFuentes recuperadas por búsqueda web:\n- CHOCOPAPE — https://www.top-rated.online/cities/Nicol%C3%A1s+Romero/place/p/15643651/CHOCOPAPE\n- Pedidos.com - Todo para tu espacio de trabajo | Pedidos.com — https://www.ipaddress.com/website/pedidos.com/\n- Bozz Internet & Papeleria — https://www.top-rated.online/cities/Cortazar/place/p/16144562/Bozz+Internet+%26+Papeleria\n- mail.scrapfer.com.mx - Scrapfer. Las mejores herramientas para scrapbook o manualidades — https://www.ipaddress.com/website/mail.scrapfer.com.mx/\n- The Best Shopify Store for Escritorio in 2026 — https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank",
       "retrieved_at": "2026-07-16T10:23:31.848696Z",
       "is_mock": false,
@@ -326,11 +364,14 @@
         "https://www.top-rated.online/cities/Cortazar/place/p/16144562/Bozz+Internet+%26+Papeleria",
         "https://www.ipaddress.com/website/mail.scrapfer.com.mx/",
         "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q06",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "¡Claro! Deli (得力) tiene varios kits de oficina. Los más comunes en el mercado mexicano son los **kits para nuevo ingreso o \"新人入职套装\"**. Te comparto lo que suelen incluir según los modelos más populares:\n\n---\n\n### 🎯 Kit Deli 9667 (14 piezas) – El más completo\n\nEste es el kit más conocido para oficina. Incluye:\n\n1. **Bolígrafos neutros** (punto fino, tinta negra/azul) – con punta de carburo de tungsteno para escritura suave.\n2. **Organizador de documentos de 3 niveles** – de PP grueso para clasificar papeles.\n3. **Carpeta portadocumentos / fólder** – con bolsillos interiores.\n4. **Calculadora de 12 dígitos** – con pantalla LCD clara.\n5. **Tijeras** – mango ergonómico ABS, hoja de acero inoxidable.\n6. **Portalápices multifuncional** – transparente con divisiones.\n7. **Notas adhesivas (post-it)** – papel de 80g, reutilizables.\n8. **Engrapadora** – tamaño estándar para escritorio.\n9. **Grapas de repuesto**.\n10. **Regla de plástico de 20 cm**.\n11. **Cúter / exacto pequeño**.\n12. **Corrector en cinta**.\n13. **Pegamento de 50 ml**.\n14. **Libreta / cuaderno de notas** (tamaño A5, 30 hojas aprox.).\n\n---\n\n### 📦 ¿Dónde conseguirlo en México?\n\nDeli tiene presencia en plataformas como **Amazon México**, **Mercado Libre** y en papelerías como **Office Depot** o **Office Max**. También lo encuentras en tiendas de mayoreo como **Lumen** o **Grupo Gayosso**. Los precios van desde **$250 hasta $550 MXN** dependiendo del número de piezas y la presentación.\n\n---\n\n### ⚠️ Tip\n\nSi buscas un kit más básico (de 12 piezas), Deli también maneja el modelo **79015 / 9665** que incluye bolígrafos, regla, clip, engrapadora, tijeras y libreta, ideal para estudiantes o para empezar en un trabajo nuevo.\n\n¿Te interesa algún modelo en particular o el precio actual en alguna tienda específica? ¡Avísame y lo busco!\n\nFuentes recuperadas por búsqueda web:\n- 得力9667新人入职套装 办公文具12件套/文具礼包/文具礼盒套装 办公用品【价格 采购 图片】-立创MRO工业品 — https://item.szlcsc.com/mro/3405592.html?mro=1&fromZone=l_c__%2522catalog%2522&spm=sc.cid.xh3.zy.t___sc.bid.ca48.48-89&lcsc_vid=FlNaVQZeE1kNUFJRTwJdUAZQEQJbX11TT1ZbVldUQVYxVlNSQlJbUVJSTlZYVjtW&redirect_source=item\n- officepro總務倉庫 - 辦公文具、辦公用紙、辦公文具、電腦耗材、電腦週邊、事務機器、茶水間用品、生活百貨！ — http://www.officepro.com.tw/prdt/49059115.aspx\n- deli 得力 9667 新入职人员办公文具套装 14件套 【报价 价格 评测 怎么样】-什么值得买 — https://wiki.m.smzdm.com/p/1we44x1/\n- Budget-Friendly Basics: Affordable Office Supplies and Stationery Essentials - Deli Group Co., Ltd. — https://my.deliworld.com/affordable-office-supplies-and-stationery-essentials.html\n- https://imt.mx/images/files/trn/licitaciones/2022/LA-009A00001-E86-2022.pdf#12#8 — https://imt.mx/images/files/trn/licitaciones/2022/LA-009A00001-E86-2022.pdf#12#8",
       "retrieved_at": "2026-07-16T10:23:51.549750Z",
       "is_mock": false,
@@ -341,11 +382,14 @@
         "https://wiki.m.smzdm.com/p/1we44x1/",
         "https://my.deliworld.com/affordable-office-supplies-and-stationery-essentials.html",
         "https://imt.mx/images/files/trn/licitaciones/2022/LA-009A00001-E86-2022.pdf#12#8"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     },
     {
       "question_id": "q09",
       "provider": "deepseek",
+      "model": "",
       "raw_text": "## Comparativa: Deli vs Faber-Castell en México\n\nAmbas marcas son populares en México, pero están en categorías distintas. Te explico las diferencias clave:\n\n### 🏆 Calidad general\n\n**Faber-Castell** (alemana, desde 1761) es una marca **premium**. Usa tecnología SV que une la mina a la madera para evitar que se rompa al caer. Es la opción ideal para dibujo profesional, artistas y quienes buscan durabilidad superior. Su línea *Polychromos* (lápices de colores) es referencia mundial en arte.\n\n**Deli** (china, desde 1995) es una marca de **alta relación calidad-precio**. No es una marca de arte profesional, pero ofrece productos muy decentes para uso escolar, de oficina y principiantes. Sus lápices cumplen con estándares de seguridad CE EN-71 y son de los más seguros entre las marcas chinas.\n\n### 📊 Comparativa por producto\n\n| Producto | Deli | Faber-Castell |\n|---|---|---|\n| **Gomas de borrar** | La goma *Macaron* de Deli limpia mejor que la Faber-Castell estándar, con menos residuos. Mucho más barata. ✅ | Goma más dura, tiende a agrietarse. Excelente calidad pero más cara. |\n| **Lápices de colores** | Pigmento vibrante, buena mezcla de colores. Ideal para estudiantes. Sin clasificación de resistencia a la luz. | Los *Polychromos* son profesionales, con pigmento de alta resistencia a la luz (lightfastness). |\n| **Lápices grafito** | Buenos para escritura y office. Precio muy bajo (~$0.50 c/u) | Superiores en dureza, resistencia y durabilidad de la mina. |\n| **Plumas y bolígrafos** | Amplia variedad, buena tinta, económicos. | Precio más alto, construcción más sólida. |\n\n### 🎯 ¿Cuál te conviene?\n\n- **Para la escuela/oficina del día a día**: **Deli** te da más por menos. Un bolígrafo Deli de $10 pesos rinde bien y no mancha. Sus gomas *Macaron* son excelentes.\n- **Para arte, dibujo profesional o trabajos que requieran durabilidad**: **Faber-Castell** es la mejor inversión. Sus lápices aguantan años y la calidad de pigmento es notablemente superior.\n- **Para estudiantes de arte principiantes**: Deli es un excelente punto de partida sin gastar mucho; cuando subas de nivel, migra a Faber-Castell.\n\n### 💰 Disponibilidad en México\n\nAmbas se consiguen en **Amazon México, Mercado Libre, Office Depot, Lumen y papelerías locales**. Deli es más barata y fácil de encontrar en tamaños económicos (ej. cajas de 12 bolígrafos por ~$50). Faber-Castell suele venderse por pieza o en sets más caros.\n\n### Veredicto\n\n> **Deli gana en precio-accesibilidad; Faber-Castell gana en calidad profesional.** Para el 90% del uso escolar y de oficina, Deli es más que suficiente. Para arte fino o productos que duren décadas, Faber-Castell no tiene competencia.\n\nFuentes recuperadas por búsqueda web:\n- 这三块橡皮，不错呦 — https://www.xiaohongshu.com/discovery/item/69b7c255000000001e00e2e5\n- 【辉柏嘉(FABER-CASTELL)0.38mm办公文具和得力1.0mm黑色办公中性笔】哪个好_对比区别_参数对比-苏宁易购 — https://m.suning.com/prdCom/0000000000-11040277801_0000000000-12450922581_0-0_0-0.html\n- 辉柏嘉(FABER-CASTELL)黑色/蓝色/红色 0.7mm办公文具和得力(deli)S26办公文具哪个好 — https://www.suning.com/prdCom/0000000000-11040249865_0000000000-12447821809_0-0_0-0.html\n- 钢笔橡皮擦测试 — https://www.xiaohongshu.com/discovery/item/67161d9d0000000016023920\n- 得力品牌的品质与性价比究竟如何？ — https://www.163.com/dy/article/JFJC2VUU0556A727.html\n- 世界上最好的橡皮 — https://www.zeelive.com.tw/a/%e4%b8%96%e7%95%8c%e4%b8%8a%e6%9c%80%e5%a5%bd%e7%9a%84%e6%a9%a1%e7%9a%ae.html\n- Cheap Set of Coloured Pencils — Art Reviews — The Art Gear Guide — http://www.theartgearguide.com/home/tag/Cheap+Set+of+Coloured+Pencils\n- 2026铅笔品牌排行榜 — https://www.cnpp100.com/pinpai/list_3977.html\n- Deli Colored Pencil Review, Are They Faber Castell Polychromos Alternative — The Art Gear Guide — http://www.theartgearguide.com/home/review-of-the-deli-colored-pencils-are-they-faber-castell-polychromos-alternative\n- r/ColoredPencils - Subreddit Stats & Analysis — https://gummysearch.com/r/ColoredPencils/\n- https://www.gob.mx/cms/uploads/attachment/file/119120/Estudio_Utiles.pdf#3#2 — https://www.gob.mx/cms/uploads/attachment/file/119120/Estudio_Utiles.pdf#3#2",
       "retrieved_at": "2026-07-16T10:24:28.852624Z",
       "is_mock": false,
@@ -362,12 +406,16 @@
         "http://www.theartgearguide.com/home/review-of-the-deli-colored-pencils-are-they-faber-castell-polychromos-alternative",
         "https://gummysearch.com/r/ColoredPencils/",
         "https://www.gob.mx/cms/uploads/attachment/file/119120/Estudio_Utiles.pdf#3#2"
-      ]
+      ],
+      "source_annotations": [],
+      "search_queries": []
     }
   ],
   "analyses": [
     {
       "question_id": "q01",
+      "provider": "",
+      "model": "",
       "brand_mentioned": false,
       "brand_position": null,
       "competitors": [
@@ -468,6 +516,8 @@
     },
     {
       "question_id": "q08",
+      "provider": "",
+      "model": "",
       "brand_mentioned": false,
       "brand_position": null,
       "competitors": [],
@@ -531,6 +581,8 @@
     },
     {
       "question_id": "q20",
+      "provider": "",
+      "model": "",
       "brand_mentioned": false,
       "brand_position": null,
       "competitors": [],
@@ -586,6 +638,8 @@
     },
     {
       "question_id": "q02",
+      "provider": "",
+      "model": "",
       "brand_mentioned": true,
       "brand_position": 1,
       "competitors": [],
@@ -601,6 +655,8 @@
     },
     {
       "question_id": "q03",
+      "provider": "",
+      "model": "",
       "brand_mentioned": true,
       "brand_position": 2,
       "competitors": [
@@ -669,6 +725,8 @@
     },
     {
       "question_id": "q04",
+      "provider": "",
+      "model": "",
       "brand_mentioned": false,
       "brand_position": null,
       "competitors": [],
@@ -700,6 +758,8 @@
     },
     {
       "question_id": "q06",
+      "provider": "",
+      "model": "",
       "brand_mentioned": true,
       "brand_position": 1,
       "competitors": [],
@@ -731,6 +791,8 @@
     },
     {
       "question_id": "q09",
+      "provider": "",
+      "model": "",
       "brand_mentioned": true,
       "brand_position": 2,
       "competitors": [
@@ -886,8 +948,145 @@
         "sov": 0.0435
       }
     ],
-    "questions_checked": 8
+    "questions_checked": 8,
+    "branded": {
+      "visibility_rate": 1.0,
+      "sov": 0.4,
+      "avg_position": 1.5,
+      "citation_rate": 1.0,
+      "sentiment_summary": {
+        "pos": 3,
+        "neu": 0,
+        "neg": 1
+      },
+      "competitor_ranking": [
+        {
+          "name": "Faber-Castell",
+          "mention_count": 2,
+          "avg_position": 2.0,
+          "sov": 0.2
+        },
+        {
+          "name": "BIC",
+          "mention_count": 1,
+          "avg_position": 1.0,
+          "sov": 0.1
+        },
+        {
+          "name": "Paper Mate",
+          "mention_count": 1,
+          "avg_position": 4.0,
+          "sov": 0.1
+        },
+        {
+          "name": "Newell Brands",
+          "mention_count": 1,
+          "avg_position": 5.0,
+          "sov": 0.1
+        },
+        {
+          "name": "M&G Stationery",
+          "mention_count": 1,
+          "avg_position": 6.0,
+          "sov": 0.1
+        }
+      ],
+      "questions_checked": 4
+    },
+    "unbranded": {
+      "visibility_rate": 0.0,
+      "sov": 0.0,
+      "avg_position": null,
+      "citation_rate": 1.0,
+      "sentiment_summary": {
+        "pos": 0,
+        "neu": 4,
+        "neg": 0
+      },
+      "competitor_ranking": [
+        {
+          "name": "Scribe",
+          "mention_count": 1,
+          "avg_position": 1.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Norma",
+          "mention_count": 1,
+          "avg_position": 2.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Sigel",
+          "mention_count": 1,
+          "avg_position": 3.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "European",
+          "mention_count": 1,
+          "avg_position": 4.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "KIP",
+          "mention_count": 1,
+          "avg_position": 5.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "BIC",
+          "mention_count": 1,
+          "avg_position": 6.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Faber-Castell",
+          "mention_count": 1,
+          "avg_position": 7.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Newell Brands",
+          "mention_count": 1,
+          "avg_position": 8.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Sharpie",
+          "mention_count": 1,
+          "avg_position": 9.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Paper Mate",
+          "mention_count": 1,
+          "avg_position": 10.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Parker",
+          "mention_count": 1,
+          "avg_position": 11.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Staedtler",
+          "mention_count": 1,
+          "avg_position": 12.0,
+          "sov": 0.0769
+        },
+        {
+          "name": "Maped",
+          "mention_count": 1,
+          "avg_position": 13.0,
+          "sov": 0.0769
+        }
+      ],
+      "questions_checked": 4
+    }
   },
+  "platform_results": [],
   "site_audit": {
     "crawlable": true,
     "robots_ok": true,
@@ -900,12 +1099,12 @@
       {
         "severity": "high",
         "code": "NO_HREFLANG_ES_MX",
-        "detail": "未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）"
+        "detail": "本次抓取的 15 页范围内未发现 es-MX 声明，墨西哥用户与本地化 AI 检索难以定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）"
       },
       {
         "severity": "high",
         "code": "NO_SPANISH_CONTENT",
-        "detail": "站内未检测到西班牙语内容，目标市场语言完全缺位"
+        "detail": "本次抓取的 15 页范围内未检测到西班牙语内容，建议扩大抓取后复核并补齐目标市场内容"
       }
     ],
     "snapshot_mode": false
@@ -954,7 +1153,7 @@
       "gap_type": "signal",
       "title": "站点信号缺失: NO_HREFLANG_ES_MX",
       "evidence": [
-        "未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）"
+        "本次抓取的 15 页范围内未发现 es-MX 声明，墨西哥用户与本地化 AI 检索难以定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）"
       ],
       "related_questions": []
     },
@@ -962,7 +1161,7 @@
       "gap_type": "signal",
       "title": "站点信号缺失: NO_SPANISH_CONTENT",
       "evidence": [
-        "站内未检测到西班牙语内容，目标市场语言完全缺位"
+        "本次抓取的 15 页范围内未检测到西班牙语内容，建议扩大抓取后复核并补齐目标市场内容"
       ],
       "related_questions": []
     }
@@ -1010,6 +1209,8 @@
     "run_id": "f141d182",
     "model": "deepseek-v4-flash",
     "web_search_enabled": true,
+    "providers": [],
+    "models": {},
     "notes": []
   }
 }
