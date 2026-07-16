@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
+web/node_modules/
+web/*.tsbuildinfo
 data/*
 !data/示例产物/
 .DS_Store

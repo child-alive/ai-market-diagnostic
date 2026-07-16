@@ -590,3 +590,65 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 1. 提交第五部独立 commit；
 2. 进入第六部：回放模式优先的 Vue 3 + TypeScript 双受众演示网页，随后增加隔离的
    FastAPI 实况端点、限流/并发/超时降级与部署手册；不得破坏 CLI 和静态报告主件。
+
+### 冲刺-P2 第六部：双受众演示网页与 ECS 部署交付
+- [x] 新增独立 `web/` Vue 3 + TypeScript + Vite 项目并提交生产构建 `web/dist/`；
+      `base=./`，静态资源与完整报告可在 IP:端口和子目录回放。`web/public/demo-report.json`
+      完整复制真实 `37b442ec`，`full-report.html` 保留提交主件入口；前端不重算或改写指标。
+- [x] 默认回放模式按 7 阶段自动推进：Prompt discovery → AI retrieval → Signal extraction
+      → Site audit → Query Fanout → Gap analysis → Recommendations；提供暂停、继续、重置、
+      逐阶段选择。首屏直接呈现“AI 认识 Deli，但不会主动推荐它”及 5 个主无品牌词 /
+      6 个 Fanout 均 0 命中的限定洞察，不使用旧混算数字。
+- [x] 产品 / 技术双视角：产品视角展示双语问题、回答摘要、分层指标、站点信号、Fanout、
+      缺口和 P0/P1/P2；技术视角展开同阶段原始 JSON、run/provider/mode/mock 标记、来源链接
+      与等价 CLI / 模块调用。窄屏与桌面响应式、键盘焦点和 reduced-motion 已处理。
+- [x] `src.demo_api` 提供只读静态托管、`GET /api/health` 与
+      `POST /api/live-diagnose/stream`；实况请求只接受 3~5 数量，不接受任意 Prompt 文本，
+      固定从版本内高价值无品牌词选择，Key 只读服务端环境。前端只有显式点击后才调用。
+- [x] `src.demo_worker` 在独立 Python 子进程中逐题调用 DeepSeek Web Search，以 JSON Lines
+      送入 SSE；回答采用本地启发式分析，避免额外 LLM 抽取调用。总超时会 terminate / kill
+      子进程，不出现客户端已失败但后台线程仍耗额度的情况；失败、断连和缺 Key 均引导回放。
+- [x] 防护：每 IP 每小时 2 次滑动窗口、全局并发 1、默认 180 秒总超时、SSE no-store /
+      no-buffer、64KB Nginx body 上限、安全响应头；部署固定 Uvicorn 单 worker，FastAPI
+      只监听 `127.0.0.1:8000`。实况不写 SQLite、不覆盖示例产物、不混入主指标。
+- [x] 新增 5 个零额度测试：固定高价值 unbranded Prompt Set 与品牌泄漏、Mock Worker
+      JSON Lines 事件、缺 Key 503 fail-closed、3~5 输入上限、每小时两次滑动窗口。全量
+      `55 passed`，测试不调用真实 API。
+- [x] 本地 HTTP 验收：Uvicorn `127.0.0.1:8765` 下 `/`、`demo-report.json`、
+      `full-report.html`、`/api/health` 均 200；健康页报告 replay/live 可用与 3~5 限制。
+- [x] Codex 内置浏览器再次尝试后成功访问本机端口；默认窄屏与 1440×900 桌面均完成
+      实际渲染，产品/技术视角与实况开关均可操作，控制台 0 error。首轮桌面截图发现标题
+      末字孤行，收窄橙色副标题字号并重构建后修复。这说明先前失败是当时浏览器会话的
+      隔离/连接状态，不是用户缺少 macOS 文件或网络权限；用户无需再授权。
+- [x] 真实网页实况验收：2026-07-17 固定 q05 / q07 / q06，浏览器逐题收到 SSE；
+      3/3 `WEB GROUNDED`，来源分别 3 / 7 / 10、合计 20，三题均未提及 Deli，最终状态
+      `DONE`。该运行只验证网页链路，不保存原文、不回写 `37b442ec`、不混入任何主指标。
+- [x] 新增 1200×630 社交预览图 `web/public/og.png`，文字、run_id、0% 指标与网站首屏
+      人工核对一致；Vite 构建会复制到 dist，并在 Open Graph / X meta 中引用。
+- [x] 新增 `deploy/deploy.sh`、`install_remote.sh` 与 `deploy/部署手册.md`：rsync 不上传/
+      覆盖 `.env`，远端使用 Nginx 静态托管 + Systemd 单 worker FastAPI，支持 IP:端口、
+      UFW 已启用时只追加必要端口，并给出 server-only Key 配置、健康检查与排错步骤。
+
+### 决策记录（第六部）
+- 追加指令原先写“实况 3~5 个无品牌词”，旧 PLAN 可选项曾写“输入品牌”。对公网演示
+  采用更窄的固定 Prompt Set，不开放任意品牌/问题输入：可预测额度、防 Prompt 注入，也避免
+  评审者把一次临场输入误解为可复现市场测量。PLAN Stage 4 对应项已同步为实际实现。
+- 总超时使用可终止子进程而非 `asyncio.to_thread`：Python 无法可靠取消已进入 httpx 的
+  后台线程，若超时后释放并发锁会形成隐藏并发；子进程才能在超时/断连时真正停止上游工作。
+- 回放数据提交完整 `report.json` 而不是人为裁剪 JSON：技术视角和完整报告可追溯到同一
+  run，避免回放层出现第二套口径；代价是 dist 较大，但 2 核 2G 静态托管可轻松承受。
+- 使用站点构建技能后，首屏强化产品故事、补响应式/无障碍/生产构建与社交预览验收；没有
+  引入 Sites 托管或 `.openai/hosting.json`，因为用户明确要求自有 ECS、IP:端口与用户执行
+  部署。擅自发布到另一平台会偏离追加指令并产生未经请求的外部状态。
+- 在线 URL 当前明确标为“用户部署后回填”，不把本机 `127.0.0.1` 冒充公网交付；静态
+  `report.html` 继续是主件，网页是彼此独立的 Stage 4 / 冲刺增强。
+- Fable5 恢复后应从 commit `39572fa` 与本节对应网页 commit 开始独立复核；无需重复
+  真实 3 题实况，否则会额外消耗额度并触发每 IP 限流。
+
+### 下一步
+1. [x] 最终闸门完成：从 `npm ci` 干净安装后 Vite 生产构建成功；`55 passed`；默认
+   Mock 为 20 / 8 / 7 / 7；两个 shell 脚本 `bash -n` 通过；public/dist 与
+   `data/示例产物` 字节一致；dist JSON 为 `37b442ec` 的 8 主回答 / 6 Fanout；OG 图
+   为 1200×630；本地 HTTP/health/静态图均成功；密钥特征 0 命中；`git diff --check` 通过。
+2. 提交第六部独立 commit；
+3. 用户有 ECS 公网 IP / SSH 后执行部署脚本，把 URL 回填 `SUBMISSION.md`。

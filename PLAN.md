@@ -198,7 +198,7 @@ DiagnosticReport: brand_profile, questions[], metrics, site_audit, gaps[],
 ### Stage 4 — 超预期加分项（可选，按剩余时间/额度取舍，逐项独立）
 按性价比排序：
 1. [x] DeepSeek V4 + 原生 Web Search：真实回答携带 API 返回的可点击来源 URL
-2. [ ] FastAPI 暴露 `POST /diagnose` + 极简 Vue3+TS 前端页（输入品牌 → 展示报告）——呼应简历技术栈
+2. [x] FastAPI 受限实况 SSE + Vue3+TS 双受众回放页（固定 Prompt Set，避免公开任意输入消耗）
 3. [ ] 第二个真实 Provider（如可访问的 Gemini API 或 SERP API），报告呈现跨平台对比
 4. [x] Query Fanout：每个高价值问题自动派生 3~5 个子问法并抽样检测
 5. [ ] 5 分钟演示视频/GIF
