@@ -278,3 +278,96 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 ### 决策记录（FreeModel）
 - 不将 FreeModel 接入本项目：即使充值后普通聊天可用，其自动路由开放模型也不等于 OpenAI 官方
   `gpt-5-search-api`，现有证据不足以证明它会返回原生 `url_citation`；接入会破坏“按真实平台分别测量”的口径
+
+---
+
+## 交接说明（session-02 结束，Codex → Claude Fable5）
+
+### 当前状态一句话
+Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gemini Provider 代码、
+多平台数据切片与报告、引用证据预审。**DeepSeek 联网真实链路已完整验收；OpenAI/Gemini 因官方额度/
+工具权限尚未完成联网真实验收。** 工作树应为干净状态，无未提交半成品。
+
+### 接手前必做（仍按原协议）
+1. 完整阅读：`PLAN.md` → `PROGRESS.md` → `src/models.py`；本章节不能替代前文决策记录；
+2. `git status --short`：预期无输出；
+3. `.venv/bin/python -m pytest -q`：交接时为 `28 passed`；
+4. `.venv/bin/python -m src.main --mock`：预期 `20 问题 / 8 回答 / 7 缺口 / 7 建议`；
+5. 可用 `.venv/bin/python -m src.main --run-id f141d182` 验证 DeepSeek V4 真实历史报告重渲染，
+   不会重新调用 API。
+
+### 已真实验收与只完成代码的边界
+
+| 平台/链路 | 当前事实 | 可否对外声称真实通过 |
+| --- | --- | --- |
+| DeepSeek V4 普通生成/JSON 抽取 | 已真实联调 | 是 |
+| DeepSeek V4 服务端 Web Search | 完整 Top-8 真实运行，`run_id=f141d182`，8/8 grounded，64 URL | 是 |
+| OpenAI `gpt-5-search-api` | 请求到官方端点但返回 `429 insufficient_quota` | 否，仅代码+伪响应单测通过 |
+| Gemini `gemini-3.5-flash` Interactions + Search | Key 有效，联网请求返回 `429 RESOURCE_EXHAUSTED` | 否，仅代码+伪响应单测通过 |
+| Gemini 3 Flash 普通 `generateContent` | 不带工具最小请求返回 200 | 只能声称普通生成可用，不能声称联网可用 |
+| Gemini `google_search` Grounding | 3/3.1 系列返回 429；2.5 系列对新用户返回 404 停用 | 否 |
+| FreeModel 中转 | 模型列表可读，Chat/Search 均余额不足；模型池不含 `gpt-5-search-api` | 不接入，不算 OpenAI 平台 |
+
+### 本机配置与保密
+- `.env` 已存在、权限 `600`、被 gitignore；DeepSeek/OpenAI/Gemini 三个平台字段均已填写，**禁止读取、
+  打印、复制或提交任何 Key**；接手只可输出 `bool(key)` 之类的配置状态；
+- 用户曾在对话中提供 FreeModel Key，但本项目没有把它写入 `.env`、源码或 Git；不要从聊天复制进仓库；
+- 不传 `--providers` 时仍优先 DeepSeek 单平台，不会意外消耗三份额度；`--providers auto` 会调用全部
+  已配置平台，当前会因 OpenAI/Gemini 额度问题中途失败，修复额度前不要跑全量；
+- 上层目录的业务 PDF/docx 继续保持不入库。
+
+### 代码地图（继续开发先看这些）
+- `src/main.py`：Provider 选择、`--providers`、证据预审开关、多平台组装、存储与渲染；
+- `src/providers/deepseek.py`：唯一完成真实联网验收的 Provider；不要重构；
+- `src/providers/openai_search.py`：Search in ChatGPT 专用请求与 `url_citation` 解析；
+- `src/providers/gemini_search.py`：Interactions API + `google_search` 与文本区间引用解析；
+- `src/pipeline/evidence.py`：页面抓取、陈述拆分、词面证据匹配；结果永远要求人工复核；
+- `src/report/templates/report.html.j2`：主平台指标、跨平台表、来源证据预审与限制文案；
+- `src/storage.py`：完整 `DiagnosticReport` JSON 的 SQLite runs 存档；
+- `tests/test_openai_search.py` / `test_gemini_search.py` / `test_multiplatform.py` /
+  `test_evidence.py`：新 Stage 4 行为的回归边界。
+
+### 必须保持的设计约定
+- Pydantic 契约字段可增不可改名；旧 SQLite/JSON 必须能靠默认值加载；
+- 顶层 `answers/analyses/metrics` 永远是主平台兼容切片；完整平台结果在 `platform_results`；
+- 不把多平台指标混成平均值；缺口/建议目前只基于主平台，并在 `meta.notes` 明示；
+- 缺口与建议继续规则驱动，禁止改成不可追溯的二次 LLM 生成；
+- 只有原问题出现 Deli 时才加“得力文具”消歧；禁止向通用品类问题泄露目标品牌；
+- Citation Rate 仅表示“API 返回来源”，不等于来源支撑结论；
+- `--verify-evidence` 默认关闭、有限额、只做词面机器预审；禁止把结果表述为人工事实核查；
+- 不因代理能返回普通 Chat Completions 就把它记为 ChatGPT/Gemini 平台结果；必须验证原生搜索与引用契约。
+
+### 建议 Claude Fable5 先讨论、再选择的继续路径
+1. **先确认交付目标**：如果目标是尽快提交求职测试，当前 DeepSeek 真实示例 + 多平台可扩展代码已足够，
+   不建议为了可选 Stage 4 无限追逐免费 Key；
+2. **若必须完成第二真实平台**：优先确认 `.env` 的 Gemini Key 所属项目是否与用户截图中的
+   AI Studio project 一致，并查 Google Search Grounding 的独立额度/权限；只做 1 题 Search 冒烟，成功后再改
+   `GEMINI_MODEL` 或 Provider；
+3. **OpenAI**：官方 Key 已确认缺 API credits；ChatGPT 免费/Plus 与 API 账单分离。没有官方额度时保持
+   “代码完成、真实未验收”，不要用普通中转结果冒充；
+4. **若暂不解决平台额度**：按 PLAN 剩余可选项中，Query Fanout 比 FastAPI 前端更贴近题目业务；但开始前
+   必须与用户确认是否值得继续扩大范围；
+5. 任一新任务完成后继续更新本文件并按 `stage4: 完成 xxx` 提交；禁止在工作树留下半成品。
+
+### 推荐的最小真实验证顺序（额度修复后）
+```bash
+# 先单平台、单题；不要直接 auto / Top-8
+.venv/bin/python -m src.main --providers gemini --top-n 1
+.venv/bin/python -m src.main --providers openai --top-n 1
+
+# 单题联网成功后再带页面证据预审
+.venv/bin/python -m src.main --providers gemini --top-n 1 \
+  --verify-evidence --evidence-max-claims 1 --evidence-max-sources 1
+
+# 两个平台均单题通过后，最后才运行全平台
+.venv/bin/python -m src.main --providers auto --verify-evidence
+```
+
+### 交接时最终验证事实
+- pytest：`28 passed`；
+- mock：`20 / 8 / 7 / 7`；
+- Key 配置状态：DeepSeek/OpenAI/Gemini 均为已配置（不代表均有额度）；
+- 最新真实完整报告仍是 DeepSeek `run_id=f141d182`；
+- 交接前最后一次 mock 基线会把工作输出 `data/report.{json,html}` 覆盖为 Mock；仓库中用于提交展示的
+  DeepSeek V4 真实样例是 `data/示例产物/report.{json,html}`，不要混淆；
+- 交接前共 24 个 commit；本交接 commit 完成后应为 25 个。
