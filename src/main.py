@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime, timezone
 
 from .config import DATA_DIR, DELI_PROFILE, Settings
-from .models import DiagnosticReport, ReportMeta
+from .models import DiagnosticReport, ReportMeta, RunMode
 from .pipeline import analysis, gaps, question_gen, recommend, site_audit, visibility
 from .providers import MockProvider
 from .providers.base import AnswerProvider
@@ -20,7 +20,10 @@ from .report import render
 
 
 def build_provider(settings: Settings) -> AnswerProvider:
-    # TODO(Stage 1): hybrid 模式返回 DeepSeekProvider
+    if settings.mode == RunMode.HYBRID:
+        from .providers.deepseek import DeepSeekProvider
+
+        return DeepSeekProvider(settings)
     return MockProvider()
 
 

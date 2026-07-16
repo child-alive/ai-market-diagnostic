@@ -27,6 +27,15 @@
 
 **Stage 0 完成 ✅**
 
+### Stage 1 — MVP 完整链路
+- [x] Stage1-T1 question_gen：DeepSeek 实时生成（22 条，含题目指定问题）+ 失败/无 key 回退种子；
+      providers/deepseek.py（Client 带 1 次重试 + JSON mode；DeepSeekProvider 扮演 AI 回答引擎）
+      ⚠️ 本机无 DEEPSEEK_API_KEY，真实调用路径未经实测，仅验证 mock 回退路径
+- [ ] Stage1-T2 answer_analysis：结构化抽取 + 指标聚合
+- [ ] Stage1-T3 gap_analysis + recommendations
+- [ ] Stage1-T4 最简 report.html
+- [ ] Stage1-T5 docs/方案说明.md 初稿
+
 ### 决策记录
 - 项目根目录定为 `聚路国际/ai-market-diagnostic/`（PLAN §5 结构），
   业务 PDF 与测试题 docx 留在上层目录、不入库（含公司资料，不适合进代码仓库）。
