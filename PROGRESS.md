@@ -46,11 +46,59 @@
 
 **Stage 1 完成 ✅（MVP 达成，满足题目最低交付要求）**
 
+### Stage 2 — 网站诊断 + 指标完备
+- [x] Stage2-T1 site_audit 全部检查项：robots/sitemap/es-MX hreflang/JSON-LD/meta/西语内容检测；
+      限速 1 req/s、≤15 页、超时 15s；mock 或网络失败降级 fixtures/site_snapshot（得力官网真实快照 2026-07-16 抓取）。
+      新增 CLI 旗标 `--live-audit`：mock 模式下仍实抓官网（其余环节维持 mock）
+- [x] Stage2-T2 指标补齐（SOV/AvgPosition/Sentiment/竞品榜）——已在 Stage1-T2 一并完成
+- [x] Stage2-T3 缺口分析接入 site_audit 证据（high/medium issue → signal 缺口 → P0 技术修复建议）——已在 Stage1-T3 预埋并验证
+- [x] Stage2-验收（部分）：`--mock --live-audit` 对得力真实官网实抓 15 页成功，
+      确认：无 es-MX hreflang（仅 en/vi/zh-TW/zh-CN/ko/ru/en-EU）、无西语内容、有 JSON-LD、robots/sitemap 正常；
+      产物快照已存 data/示例产物/report.{json,html}
+- [ ] Stage2-T4 SQLite 落库（storage.py 仍是空壳）+ `--run-id` 重渲染历史报告 ← **未开始，下一个任务**
+
 ### 决策记录
 - 项目根目录定为 `聚路国际/ai-market-diagnostic/`（PLAN §5 结构），
   业务 PDF 与测试题 docx 留在上层目录、不入库（含公司资料，不适合进代码仓库）。
 - DeepSeek API 调用采用 httpx 直连（OpenAI 兼容协议），不引入 openai SDK，
   理由：依赖最小化，且 Provider 抽象层本就要求自行封装重试/降级。
 
-### 下一步
-- 执行 Stage0-T1。
+---
+
+## 交接说明（session-01 结束，Claude Code → Codex）
+
+### 当前状态一句话
+Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ Stage 2 完成约 3/4，
+仅剩 SQLite 落库；工作树干净，全部工作已 commit，无半成品。
+
+### 接手前必做
+1. 按 PLAN.md §11 顺序读：`PLAN.md` → 本文件 → `src/models.py`；
+2. 跑基线确认未破坏：`cd ai-market-diagnostic && .venv/bin/python -m src.main --mock`
+   （或 `pip install -r requirements.txt` 后用系统 python）。
+   预期输出：问题 20 条 / 回答 8 条 / 缺口 7 项 / 建议 7 条，data/ 下产出 report.json + report.html。
+
+### 环境要点（踩过的坑）
+- 本机 python3 = 3.10.6，项目 venv 在 `ai-market-diagnostic/.venv`（已 gitignore）；
+- **本机没有 DEEPSEEK_API_KEY**：hybrid 真实链路（question_gen LLM 生成、DeepSeekProvider、
+  llm_analyze）代码已写但从未实测，拿到 key 后先小规模验证这三处的 JSON 解析；
+- 本机网络可直连 deliworld.com，site_audit 实抓已验证（约 20 秒，限速 1 req/s）；
+- 上层目录的业务 PDF 与测试题 docx 刻意不入库；
+- pandoc/pdftoppm 本机不可用（读 docx/pdf 需用 python zipfile/pypdf）。
+
+### 剩余任务清单（按 PLAN 顺序）
+1. **Stage2-T4（下一个）**：`src/storage.py` SQLite 落库——runs 表存每次运行的 report JSON，
+   `main.py` 加 `--run-id` 参数从库中重渲染历史报告；完成后 Stage 2 全部验收；
+2. **Stage 3**：report.html 视觉升级（指标卡片/ECharts 竞品柱状图/中西双语标签，PLAN §7 Stage3 清单）、
+   方案说明定稿（补网站诊断实测结果）、README 定稿、pytest 约 10 个用例
+   （重点：analysis.heuristic_analyze 与 aggregate_metrics——纯函数好测）；
+3. **Stage 4（可选）**：FastAPI + 前端 / 第二 Provider / Query Fanout / 演示视频。
+
+### 关键设计约定（勿破坏）
+- 模块间只经 `src/models.py` 的 Pydantic 契约传数据；字段可增不可改名；
+- mock 数据三层标注（is_mock 字段 / 报告 MOCK 角标 / 方案说明）；
+- fixtures 的 8 条回答是分层设计的（5 无品牌 / 2 靠后 / 1 前列），改动会破坏演示结论层次；
+- visibility 的 Top-N 按 value_score 稳定排序选取，恰好命中 8 条 fixtures，
+  改种子分值前先确认不影响命中集合；
+- 缺口/建议是规则驱动（不再调 LLM），保证与指标自洽，勿改成二次 LLM 生成。
+
+### 决策记录

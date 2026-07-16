@@ -34,6 +34,7 @@ class Settings:
         default_factory=lambda: os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
     )
     force_mock: bool = False
+    force_live_audit: bool = False  # mock 模式下仍对官网做实时诊断（其余环节维持 mock）
 
     @property
     def mode(self) -> RunMode:

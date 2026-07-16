@@ -61,9 +61,11 @@ def main() -> None:
     parser.add_argument("--mock", action="store_true", help="强制全 Mock 模式")
     parser.add_argument("--top-n", type=int, default=visibility.DEFAULT_TOP_N,
                         help="可见度检测的问题数（默认 8）")
+    parser.add_argument("--live-audit", action="store_true",
+                        help="mock 模式下仍对官网做实时诊断（其余环节维持 mock）")
     args = parser.parse_args()
 
-    settings = Settings(force_mock=args.mock)
+    settings = Settings(force_mock=args.mock, force_live_audit=args.live_audit)
     print(f"[run] mode={settings.mode.value}")
 
     report = run_diagnostic(settings, top_n=args.top_n)
