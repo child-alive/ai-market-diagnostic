@@ -266,3 +266,15 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 ### 决策记录（官方 API 与代理）
 - 暂不直接切换未知中转站：本项目要求平台原生联网搜索与文本区间引用；普通 OpenAI 兼容代理即使能聊天，
   也可能不支持 `gpt-5-search-api`、`web_search_options`、Google Search Grounding 或原生引用注解，届时测到的不是同一条链路
+
+### Stage4-T6 — FreeModel 中转站兼容性诊断
+- [x] 根据 Key 前缀与服务商公开文档确认 Base URL 为 `https://api.freemodel.dev/v1`；测试只在内存中使用 Key，
+      未写入 `.env`、源码、日志、Git 或进度文档
+- [x] `GET /v1/models` 返回 200，共 7 个 `gpt-5.x-*` / codex 命名的路由模型；列表中没有项目要求的
+      `gpt-5-search-api`，公开文档仅声明 OpenAI/Anthropic 格式兼容与开放模型自动路由，未声明 Search in ChatGPT 链路
+- [x] `model=auto` 普通 Chat Completions 与携带 `web_search_options` 的测试均返回
+      `401 Insufficient balance`；因此当前 Key 不能完成回答测试，也无法验证搜索参数是否被执行或忽略
+
+### 决策记录（FreeModel）
+- 不将 FreeModel 接入本项目：即使充值后普通聊天可用，其自动路由开放模型也不等于 OpenAI 官方
+  `gpt-5-search-api`，现有证据不足以证明它会返回原生 `url_citation`；接入会破坏“按真实平台分别测量”的口径
