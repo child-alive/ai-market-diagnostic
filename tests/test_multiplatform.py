@@ -7,8 +7,15 @@ import pytest
 
 from src import main
 from src.config import Settings
-from src.models import AIAnswer, UserQuestion
+from src.models import (
+    AIAnswer,
+    EvidenceMetrics,
+    EvidenceReview,
+    EvidenceStatus,
+    UserQuestion,
+)
 from src.providers.base import AnswerProvider
+from src.report.render import write_html
 
 
 class FakeSearchProvider(AnswerProvider):
@@ -94,3 +101,44 @@ def test_run_diagnostic_keeps_primary_compatibility_and_platform_metrics(
     assert all(a.provider == "openai" for a in report.analyses)
     assert report.metrics == report.platform_results[0].metrics
     assert "主平台 openai" in report.meta.notes[0]
+
+
+def test_report_renders_platform_comparison_and_machine_evidence_warning(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    providers = [
+        FakeSearchProvider("openai", "gpt-test", "Deli es recomendada junto con BIC."),
+        FakeSearchProvider("gemini", "gemini-test", "BIC y Norma son populares."),
+    ]
+    monkeypatch.setattr(main, "build_providers", lambda settings, names: providers)
+    report = main.run_diagnostic(
+        clean_settings(force_mock=True),
+        top_n=1,
+        provider_names=["openai", "gemini"],
+    )
+    report.platform_results[0].evidence_reviews = [
+        EvidenceReview(
+            provider="openai",
+            question_id=report.answers[0].question_id,
+            claim="Deli es recomendada.",
+            source_url="https://example.com/evidence",
+            source_title="Fuente de prueba",
+            evidence_quote="Deli es una marca recomendada para oficinas.",
+            status=EvidenceStatus.SUPPORTED,
+            support_score=0.75,
+        )
+    ]
+    report.platform_results[0].evidence_metrics = EvidenceMetrics(
+        total_claims=1,
+        supported=1,
+        support_rate=1.0,
+    )
+
+    html = write_html(report, tmp_path).read_text(encoding="utf-8")
+
+    assert "多平台横向对比" in html
+    assert "OPENAI" in html and "GEMINI" in html
+    assert "机器预审 · 需人工复核" in html
+    assert 'href="https://example.com/evidence"' in html
+    assert "来自 DeepSeek Web Search" not in html

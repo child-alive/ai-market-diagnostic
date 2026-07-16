@@ -13,8 +13,8 @@ import uuid
 from datetime import datetime, timezone
 
 from .config import DATA_DIR, DELI_PROFILE, Settings
-from .models import DiagnosticReport, PlatformResult, ReportMeta, RunMode
-from .pipeline import analysis, gaps, question_gen, recommend, site_audit, visibility
+from .models import DiagnosticReport, EvidenceMetrics, PlatformResult, ReportMeta, RunMode
+from .pipeline import analysis, evidence, gaps, question_gen, recommend, site_audit, visibility
 from .providers import GeminiSearchProvider, MockProvider, OpenAISearchProvider
 from .providers.base import AnswerProvider
 from .report import render
@@ -95,6 +95,9 @@ def run_diagnostic(
     settings: Settings,
     top_n: int = visibility.DEFAULT_TOP_N,
     provider_names: list[str] | None = None,
+    verify_evidence: bool = False,
+    evidence_max_sources: int = 3,
+    evidence_max_claims: int = 3,
 ) -> DiagnosticReport:
     profile = DELI_PROFILE
     providers = build_providers(settings, provider_names)
@@ -104,6 +107,14 @@ def run_diagnostic(
     for provider in providers:
         platform_answers = visibility.check_visibility(questions, provider, top_n)
         platform_analyses = analysis.analyze_answers(platform_answers, profile, settings)
+        evidence_reviews = []
+        evidence_metrics = EvidenceMetrics()
+        if verify_evidence:
+            evidence_reviews, evidence_metrics = evidence.verify_answers(
+                platform_answers,
+                max_sources=evidence_max_sources,
+                max_claims=evidence_max_claims,
+            )
         platform_results.append(
             PlatformResult(
                 provider=provider.name,
@@ -111,6 +122,8 @@ def run_diagnostic(
                 answers=platform_answers,
                 analyses=platform_analyses,
                 metrics=analysis.aggregate_metrics(platform_analyses),
+                evidence_reviews=evidence_reviews,
+                evidence_metrics=evidence_metrics,
             )
         )
 
@@ -173,6 +186,23 @@ def main() -> None:
             "传 auto 运行全部已配置平台（默认保持单平台）"
         ),
     )
+    parser.add_argument(
+        "--verify-evidence",
+        action="store_true",
+        help="抓取引用页面并对答案陈述做证据预审（会增加网络请求）",
+    )
+    parser.add_argument(
+        "--evidence-max-sources",
+        type=int,
+        default=3,
+        help="DeepSeek 每条回答最多预审的来源数（默认 3）",
+    )
+    parser.add_argument(
+        "--evidence-max-claims",
+        type=int,
+        default=3,
+        help="每条回答最多预审的陈述数（默认 3）",
+    )
     args = parser.parse_args()
 
     if args.run_id:
@@ -190,6 +220,8 @@ def main() -> None:
 
     if args.mock and args.providers:
         parser.error("--mock 不能与 --providers 同时使用")
+    if args.evidence_max_sources < 1 or args.evidence_max_claims < 1:
+        parser.error("证据预审的 max-sources / max-claims 必须大于 0")
     provider_names = None
     if args.providers:
         provider_names = [name.strip().lower() for name in args.providers.split(",") if name.strip()]
@@ -206,6 +238,9 @@ def main() -> None:
             settings,
             top_n=args.top_n,
             provider_names=provider_names,
+            verify_evidence=args.verify_evidence,
+            evidence_max_sources=args.evidence_max_sources,
+            evidence_max_claims=args.evidence_max_claims,
         )
     except ValueError as exc:
         parser.error(str(exc))
@@ -217,6 +252,13 @@ def main() -> None:
           f"| 缺口 {len(report.gaps)} 项 | 建议 {len(report.recommendations)} 条")
     print(f"[db]   run_id={report.meta.run_id} → {storage.DEFAULT_DB_PATH}")
     print(f"[platforms] {', '.join(report.meta.providers)}")
+    if args.verify_evidence:
+        summary = ", ".join(
+            f"{result.provider} {result.evidence_metrics.supported}/"
+            f"{result.evidence_metrics.total_claims} supported"
+            for result in report.platform_results
+        )
+        print(f"[evidence] {summary}")
     print(f"[out]  {json_path}")
     print(f"[out]  {html_path}  ← 双击用浏览器打开")
 

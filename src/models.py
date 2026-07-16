@@ -64,6 +64,15 @@ class IssueSeverity(str, Enum):
     LOW = "low"
 
 
+class EvidenceStatus(str, Enum):
+    SUPPORTED = "supported"
+    PARTIAL = "partial"
+    NOT_FOUND = "not_found"
+    INACCESSIBLE = "inaccessible"
+    UNMAPPED = "unmapped"
+    CONTRADICTED = "contradicted"  # 预留给后续语义/人工核验
+
+
 # ---------------------------------------------------------------- 输入
 
 class BrandProfile(BaseModel):
@@ -161,6 +170,31 @@ class VisibilityMetrics(BaseModel):
     questions_checked: int = 0
 
 
+class EvidenceReview(BaseModel):
+    provider: str
+    question_id: str
+    claim: str
+    source_url: str = ""
+    source_title: str = ""
+    evidence_quote: str = ""
+    status: EvidenceStatus
+    support_score: float = 0.0
+    verification_method: str = "lexical_page_match"
+    requires_human_review: bool = True
+    error: str = ""
+
+
+class EvidenceMetrics(BaseModel):
+    total_claims: int = 0
+    supported: int = 0
+    partial: int = 0
+    not_found: int = 0
+    inaccessible: int = 0
+    unmapped: int = 0
+    contradicted: int = 0
+    support_rate: float = 0.0
+
+
 class PlatformResult(BaseModel):
     """单个 AI 平台的完整检测切片；顶层旧字段仍保留主平台结果。"""
 
@@ -169,6 +203,8 @@ class PlatformResult(BaseModel):
     answers: list[AIAnswer] = Field(default_factory=list)
     analyses: list[AnswerAnalysis] = Field(default_factory=list)
     metrics: VisibilityMetrics
+    evidence_reviews: list[EvidenceReview] = Field(default_factory=list)
+    evidence_metrics: EvidenceMetrics = Field(default_factory=EvidenceMetrics)
 
 
 # ---------------------------------------------------------------- ④ 网站诊断

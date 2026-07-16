@@ -138,6 +138,10 @@
   .badge.fail, .badge.P0 { color: #a72932; border-color: #edbcc0; background: #fff0f1; }
   .badge.P1 { color: #965900; border-color: #efd09a; background: #fff7e8; }
   .badge.P2 { color: #466176; border-color: #cbdbea; background: #f1f6fa; }
+  .badge.supported { color: #11684f; border-color: #a8dccb; background: #e9f8f2; }
+  .badge.partial { color: #965900; border-color: #efd09a; background: #fff7e8; }
+  .badge.not_found, .badge.contradicted { color: #a72932; border-color: #edbcc0; background: #fff0f1; }
+  .badge.inaccessible, .badge.unmapped { color: #526d84; border-color: #cbdbea; background: #f1f6fa; }
   .score { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; color: #fff; background: var(--blue); font-weight: 750; }
   .question-text { min-width: 250px; color: var(--navy); font-weight: 620; }
   .question-zh { min-width: 175px; color: var(--muted); }
@@ -156,6 +160,13 @@
   .source-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
   .source-list a { display: inline-block; max-width: 230px; overflow: hidden; padding: 4px 8px; border: 1px solid #b9ddcf; border-radius: 8px; color: #126a54; background: #eefaf6; font-size: 10px; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
   .source-list a:hover { border-color: #67b69b; background: #e2f6ef; }
+  .platform-name { color: var(--navy); font-weight: 750; text-transform: uppercase; }
+  .model-name { max-width: 210px; color: var(--muted); font: 10px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+  .review-claim { min-width: 230px; color: var(--navy); font-weight: 620; }
+  .review-quote { min-width: 250px; color: #506579; }
+  .review-source { max-width: 230px; overflow-wrap: anywhere; }
+  .review-source a { color: var(--blue); text-decoration: none; }
+  .review-source a:hover { text-decoration: underline; }
   .audit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
   .audit-item { padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
   .audit-item small { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
@@ -214,6 +225,9 @@
 {% for a in r.analyses %}{% if analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
 {% set mock_count = r.answers|selectattr("is_mock")|list|length %}
 {% set grounded_count = r.answers|selectattr("search_grounded")|list|length %}
+{% set primary_provider = r.platform_results[0].provider if r.platform_results else (r.answers[0].provider if r.answers else "unknown") %}
+{% set evidence_ns = namespace(total=0) %}
+{% for p in r.platform_results %}{% set evidence_ns.total = evidence_ns.total + (p.evidence_reviews|length) %}{% endfor %}
 
 <main class="page">
   <header class="hero">
@@ -225,7 +239,7 @@
       <div><small>Idioma / 语言</small><strong>{{ r.brand_profile.language }}</strong></div>
       <div><small>Categoría / 品类</small><strong>{{ r.brand_profile.category }}</strong></div>
     </div>
-    <div class="run-stamp">{{ r.meta.generated_at.strftime("%Y-%m-%d · %H:%M UTC") }}<br>RUN {{ r.meta.run_id }}{% if r.meta.model %}<br>{{ r.meta.model }}{% if r.meta.web_search_enabled %} · WEB SEARCH{% endif %}{% endif %}</div>
+    <div class="run-stamp">{{ r.meta.generated_at.strftime("%Y-%m-%d · %H:%M UTC") }}<br>RUN {{ r.meta.run_id }}{% if r.meta.providers %}<br>{{ r.meta.providers|join(" · ")|upper }}{% elif r.meta.model %}<br>{{ r.meta.model }}{% endif %}{% if r.meta.web_search_enabled %} · WEB SEARCH{% endif %}</div>
   </header>
 
   {% if r.meta.mode.value == "mock" or mock_count %}
@@ -238,7 +252,7 @@
   {% if grounded_count %}
   <div class="data-notice grounded">
     <span class="badge real">WEB SEARCH</span>
-    <div><strong>{{ grounded_count }}/{{ r.answers|length }} 条 AI 回答启用了 DeepSeek 联网搜索。</strong> Citation URL 直接来自 API 的 <code>web_search_tool_result</code>，可在回答卡片中点击查看；原型尚未逐句人工核对每个来源与结论的支持关系。</div>
+    <div><strong>主平台 {{ primary_provider|upper }} 的 {{ grounded_count }}/{{ r.answers|length }} 条回答启用了联网搜索。</strong> 来源 URL 直接来自对应平台 API，可在回答卡片中查看；{% if evidence_ns.total %}本次另做了页面级机器证据预审，但全部结果仍需人工复核。{% else %}本次未运行页面级证据预审，不能据此认定每个来源都支持对应结论。{% endif %}</div>
   </div>
   {% endif %}
 
@@ -290,9 +304,36 @@
     </div>
   </section>
 
+  {% if r.platform_results|length > 1 %}
+  <section id="platform-comparison">
+    <div class="section-head">
+      <div><p class="section-kicker">02 · Platforms</p><h2>多平台横向对比 <small>Comparativa · {{ r.platform_results|length }}</small></h2></div>
+      <p class="section-note">各平台独立提问、独立统计，不混合成一个平均值；内容缺口与行动建议仍以主平台 {{ primary_provider|upper }} 为准。</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>平台</th><th>模型</th><th>回答</th><th>联网回答</th><th>可见度</th><th>SOV</th><th>平均排名</th><th>引用率</th><th>证据预审</th></tr></thead>
+        <tbody>
+          {% for p in r.platform_results %}
+          {% set p_grounded = p.answers|selectattr("search_grounded")|list|length %}
+          <tr>
+            <td><span class="platform-name">{{ p.provider }}</span>{% if loop.first %}<br><span class="badge">主平台</span>{% endif %}</td>
+            <td class="model-name">{{ p.model or "—" }}</td>
+            <td>{{ p.answers|length }}</td><td>{{ p_grounded }}/{{ p.answers|length }}</td>
+            <td class="strong">{{ "%.0f%%"|format(p.metrics.visibility_rate*100) }}</td><td>{{ "%.1f%%"|format(p.metrics.sov*100) }}</td>
+            <td>{{ p.metrics.avg_position if p.metrics.avg_position is not none else "—" }}</td><td>{{ "%.0f%%"|format(p.metrics.citation_rate*100) }}</td>
+            <td>{% if p.evidence_reviews %}{{ p.evidence_metrics.supported }}/{{ p.evidence_metrics.total_claims }} 支持<br><span class="badge partial">机器预审</span>{% else %}<span class="badge unmapped">未运行</span>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
   <section id="questions">
     <div class="section-head">
-      <div><p class="section-kicker">02 · Demand</p><h2>用户问题地图 <small>Mapa de preguntas · {{ r.questions|length }}</small></h2></div>
+      <div><p class="section-kicker">{{ "03" if r.platform_results|length > 1 else "02" }} · Demand</p><h2>用户问题地图 <small>Mapa de preguntas · {{ r.questions|length }}</small></h2></div>
       <p class="section-note">问题按品牌词 / 地区排名词 / 品类词与 TOFU / MOFU / BOFU 双维度分类。</p>
     </div>
     <div class="table-wrap">
@@ -321,8 +362,8 @@
 
   <section id="answers">
     <div class="section-head">
-      <div><p class="section-kicker">03 · Evidence</p><h2>AI 回答与证据 <small>Respuestas analizadas</small></h2></div>
-      <p class="section-note">每条回答保留品牌顺位、竞品、引用来源与证据句；原文可展开查看。</p>
+      <div><p class="section-kicker">{{ "04" if r.platform_results|length > 1 else "03" }} · Evidence</p><h2>主平台回答与引用 <small>{{ primary_provider|upper }} · Respuestas</small></h2></div>
+      <p class="section-note">此处展示主平台回答；“API 返回来源”与“来源支持结论”是两个不同层级。</p>
     </div>
     <div class="answers">
       {% for a in r.answers %}
@@ -330,13 +371,14 @@
       <article class="answer-card">
         <div class="answer-head"><h3>{{ a.question_id }} · {% if an.brand_mentioned %}品牌已进入答案{% else %}品牌未进入答案{% endif %}</h3><div>{% if a.is_mock %}<span class="badge mock">MOCK</span>{% else %}<span class="badge real">{{ a.provider|upper }}</span>{% endif %} {% if a.search_grounded %}<span class="badge real">WEB SEARCH · {{ a.source_urls|length }}</span>{% endif %} {% if an.parse_degraded %}<span class="badge mock">解析降级</span>{% endif %}</div></div>
         <div class="answer-meta">
+          {% if a.model %}<span class="badge">{{ a.model }}</span>{% endif %}
           <span class="badge {{ 'pass' if an.brand_mentioned else 'fail' }}">提及 {{ "是 · 第 %d 位"|format(an.brand_position) if an.brand_mentioned else "否" }}</span>
           <span class="badge">情感 {{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}</span>
           <span class="badge">引用 {{ an.citations|length }}</span>
         </div>
         <p class="evidence"><strong>竞品：</strong>{{ an.competitors|map(attribute="name")|join("、") or "无" }}</p>
         {% if a.search_grounded and an.citations %}
-        <p class="evidence"><strong>联网检索来源：</strong>以下 URL 来自 DeepSeek Web Search 返回结果</p>
+        <p class="evidence"><strong>联网检索来源：</strong>以下 URL 来自 {{ a.provider|upper }} API 返回结果；此标签本身不等于内容已核验</p>
         <ul class="source-list">{% for c in an.citations %}<li><a href="{{ c.url }}" target="_blank" rel="noopener noreferrer" title="{{ c.url }}">{{ c.domain }}</a></li>{% endfor %}</ul>
         {% else %}
         <p class="evidence"><strong>声明引用源（未核验）：</strong>{{ an.citations|map(attribute="domain")|join("、") or "无" }}</p>
@@ -348,9 +390,41 @@
     </div>
   </section>
 
+  {% if evidence_ns.total %}
+  <section id="evidence-review">
+    <div class="section-head">
+      <div><p class="section-kicker">Verification · Machine pre-audit</p><h2>来源证据预审 <small>{{ evidence_ns.total }} 条陈述</small></h2></div>
+      <p class="section-note"><span class="badge partial">机器预审 · 需人工复核</span> 仅比较回答陈述与来源页面的词面覆盖，不等同于事实核查，也不输出“已人工审核”。</p>
+    </div>
+    <div class="data-notice">
+      <span class="badge partial">LIMITATION</span>
+      <div><strong>如何阅读：</strong>“支持”表示页面找到了高度重合的证据片段；“部分支持/未找到”表示需要重点人工检查；“无法访问/未映射”表示当前链路无法形成判断。机器预审不能识别所有语义改写、时间变化或上下文矛盾。</div>
+    </div>
+    {% for p in r.platform_results if p.evidence_reviews %}
+    <div class="panel-title"><h3>{{ p.provider|upper }} · {{ p.model }} · 支持 {{ p.evidence_metrics.supported }}/{{ p.evidence_metrics.total_claims }}</h3><span class="badge partial">支持率 {{ "%.0f%%"|format(p.evidence_metrics.support_rate*100) }}</span></div>
+    <div class="table-wrap" style="margin-bottom:18px">
+      <table>
+        <thead><tr><th>状态</th><th>问题</th><th>待核陈述</th><th>页面证据片段</th><th>来源</th><th>词面分</th></tr></thead>
+        <tbody>
+          {% for review in p.evidence_reviews %}
+          <tr>
+            <td><span class="badge {{ review.status.value }}">{{ {"supported":"支持","partial":"部分支持","not_found":"未找到","inaccessible":"无法访问","unmapped":"未映射","contradicted":"疑似矛盾"}[review.status.value] }}</span></td>
+            <td class="rank">{{ review.question_id }}</td><td class="review-claim">{{ review.claim or "—" }}</td>
+            <td class="review-quote">{{ review.evidence_quote or review.error or "—" }}</td>
+            <td class="review-source">{% if review.source_url %}<a href="{{ review.source_url }}" target="_blank" rel="noopener noreferrer">{{ review.source_title or review.source_url }}</a>{% else %}—{% endif %}</td>
+            <td>{{ "%.0f%%"|format(review.support_score*100) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
   <section id="site-audit">
     <div class="section-head">
-      <div><p class="section-kicker">04 · Foundation</p><h2>网站可引用性诊断 <small>Auditoría del sitio</small></h2></div>
+      <div><p class="section-kicker">Foundation</p><h2>网站可引用性诊断 <small>Auditoría del sitio</small></h2></div>
       <p class="section-note">{% if s.snapshot_mode %}<span class="badge mock">SNAPSHOT · 快照模式</span>{% else %}<span class="badge real">LIVE AUDIT · 实时抓取</span>{% endif %} 共检查 {{ s.pages_checked }} 页</p>
     </div>
     <div class="audit-grid">
@@ -377,7 +451,7 @@
 
   <section id="gaps">
     <div class="section-head">
-      <div><p class="section-kicker">05 · Opportunity</p><h2>内容与信号缺口 <small>Brechas · {{ r.gaps|length }}</small></h2></div>
+      <div><p class="section-kicker">Opportunity</p><h2>内容与信号缺口 <small>Brechas · {{ r.gaps|length }}</small></h2></div>
       <p class="section-note">每个缺口均由问题、回答指标或网站检查结果提供证据，不做无依据推断。</p>
     </div>
     <div class="cards">
@@ -394,7 +468,7 @@
 
   <section id="recommendations">
     <div class="section-head">
-      <div><p class="section-kicker">06 · Action</p><h2>优先行动路线图 <small>Plan de acción · {{ r.recommendations|length }}</small></h2></div>
+      <div><p class="section-kicker">Action</p><h2>优先行动路线图 <small>Plan de acción · {{ r.recommendations|length }}</small></h2></div>
       <p class="section-note">P0 立即处理，P1 进入近期内容排期，P2 作为规模化能力建设。</p>
     </div>
     <div class="cards">
@@ -414,7 +488,7 @@
 
   <footer>
     <strong>AI 海外市场诊断智能体 · Prototype</strong><br>
-    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }}{% if r.meta.model %} · 模型 {{ r.meta.model }}{% endif %} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照；WEB SEARCH 来源 URL 来自 DeepSeek API，尚未逐句人工核验。
+    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }}{% if r.meta.providers %} · 平台 {{ r.meta.providers|join(", ") }}{% elif r.meta.model %} · 模型 {{ r.meta.model }}{% endif %} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照；WEB SEARCH URL 来自对应平台 API。{% if evidence_ns.total %}来源支持关系仅完成机器预审，全部结果仍需人工复核。{% else %}来源支持关系未做页面级核验。{% endif %}
   </footer>
 </main>
 
