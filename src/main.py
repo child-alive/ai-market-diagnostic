@@ -68,10 +68,12 @@ def main() -> None:
 
     report = run_diagnostic(settings, top_n=args.top_n)
     json_path = render.write_json(report, DATA_DIR)
+    html_path = render.write_html(report, DATA_DIR)
 
     print(f"[done] 问题 {len(report.questions)} 条 | AI 回答 {len(report.answers)} 条 "
           f"| 缺口 {len(report.gaps)} 项 | 建议 {len(report.recommendations)} 条")
     print(f"[out]  {json_path}")
+    print(f"[out]  {html_path}  ← 双击用浏览器打开")
 
 
 if __name__ == "__main__":

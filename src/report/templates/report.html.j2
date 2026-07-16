@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>AI 海外市场诊断报告 — {{ r.brand_profile.brand_name }} × {{ r.brand_profile.market }}</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Segoe UI", sans-serif; margin: 2rem auto; max-width: 1000px; padding: 0 1rem; color: #1a2b3c; }
+  h1 { border-bottom: 3px solid #1e6fd9; padding-bottom: .5rem; }
+  h2 { color: #1e6fd9; margin-top: 2.2rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { border: 1px solid #d8e1ec; padding: .45rem .6rem; text-align: left; vertical-align: top; }
+  th { background: #eef4fb; }
+  .metrics { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .card { border: 1px solid #d8e1ec; border-radius: 8px; padding: .8rem 1.2rem; min-width: 130px; }
+  .card .num { font-size: 1.6rem; font-weight: 700; color: #1e6fd9; }
+  .card .label { font-size: .8rem; color: #5b6b7c; }
+  .badge { display: inline-block; font-size: .72rem; padding: .1rem .45rem; border-radius: 4px; background: #fff3cd; color: #8a6d00; border: 1px solid #e6d59a; }
+  .badge.real { background: #d9f2e3; color: #14683c; border-color: #a7d9bd; }
+  .prio-P0 { color: #c0392b; font-weight: 700; } .prio-P1 { color: #d97b1e; font-weight: 700; } .prio-P2 { color: #5b6b7c; font-weight: 700; }
+  .evidence { color: #5b6b7c; font-size: .84rem; margin: .15rem 0; }
+  footer { margin-top: 3rem; color: #8a97a5; font-size: .8rem; }
+</style>
+</head>
+<body>
+
+<h1>AI 海外市场诊断报告 <small>Diagnóstico de visibilidad en IA</small></h1>
+<p>
+  品牌 <b>{{ r.brand_profile.brand_name }}</b>（{{ r.brand_profile.brand_aliases|join(" / ") }}）
+  ｜市场 <b>{{ r.brand_profile.market }}</b>
+  ｜品类 {{ r.brand_profile.category }}
+  ｜生成时间 {{ r.meta.generated_at.strftime("%Y-%m-%d %H:%M UTC") }}
+  ｜运行模式
+  {% if r.meta.mode.value == "mock" %}<span class="badge">MOCK 模拟数据</span>
+  {% else %}<span class="badge real">{{ r.meta.mode.value|upper }}</span>{% endif %}
+</p>
+
+<h2>一、AI 可见度指标 <small>Métricas</small></h2>
+{% set m = r.metrics %}
+<div class="metrics">
+  <div class="card"><div class="num">{{ "%.0f%%"|format(m.visibility_rate*100) }}</div><div class="label">Visibility 可见度</div></div>
+  <div class="card"><div class="num">{{ "%.1f%%"|format(m.sov*100) }}</div><div class="label">SOV 话语权</div></div>
+  <div class="card"><div class="num">{{ m.avg_position if m.avg_position is not none else "—" }}</div><div class="label">Avg Position 平均排名</div></div>
+  <div class="card"><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="label">Citation Rate 引用率</div></div>
+  <div class="card"><div class="num">{{ m.sentiment_summary.get("pos",0) }}/{{ m.sentiment_summary.get("neu",0) }}/{{ m.sentiment_summary.get("neg",0) }}</div><div class="label">情感 正/中/负</div></div>
+  <div class="card"><div class="num">{{ m.questions_checked }}</div><div class="label">检测问题数</div></div>
+</div>
+
+<h3>竞品话语权排行</h3>
+<table>
+  <tr><th>#</th><th>品牌</th><th>提及回答数</th><th>平均排名</th><th>SOV</th></tr>
+  {% for c in m.competitor_ranking %}
+  <tr><td>{{ loop.index }}</td><td>{{ c.name }}</td><td>{{ c.mention_count }}</td>
+      <td>{{ c.avg_position if c.avg_position is not none else "—" }}</td>
+      <td>{{ "%.1f%%"|format(c.sov*100) }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>二、用户问题清单 <small>Preguntas ({{ r.questions|length }})</small></h2>
+{% set checked_ids = r.answers|map(attribute="question_id")|list %}
+{% set analysis_map = {} %}
+{% for a in r.analyses %}{% if analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
+<table>
+  <tr><th>ID</th><th>问题（西语）</th><th>中文</th><th>分类</th><th>漏斗</th><th>价值</th><th>检测结果</th></tr>
+  {% for q in r.questions %}
+  <tr>
+    <td>{{ q.id }}</td><td>{{ q.text_local }}</td><td>{{ q.text_zh }}</td>
+    <td>{{ {"brand":"品牌词","regional":"地区排名词","category":"品类排名词"}[q.tier.value] }}</td>
+    <td>{{ q.funnel.value }}</td><td>{{ q.value_score }}</td>
+    <td>
+      {% if q.id in checked_ids %}
+        {% set an = analysis_map[q.id] %}
+        {% if an.brand_mentioned %}✅ 第 {{ an.brand_position }} 位{% else %}❌ 未提及{% endif %}
+      {% else %}未检测{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>三、AI 回答明细 <small>Respuestas analizadas</small></h2>
+{% for a in r.answers %}
+{% set an = analysis_map[a.question_id] %}
+<h3>{{ a.question_id }} {% if a.is_mock %}<span class="badge">MOCK</span>{% else %}<span class="badge real">{{ a.provider }}</span>{% endif %}
+    {% if an.parse_degraded %}<span class="badge">解析降级</span>{% endif %}</h3>
+<p class="evidence">品牌提及: {{ "是，第 %d 位"|format(an.brand_position) if an.brand_mentioned else "否" }}
+   ｜情感: {{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}
+   ｜竞品: {{ an.competitors|map(attribute="name")|join(", ") or "无" }}
+   ｜引用源: {{ an.citations|map(attribute="domain")|join(", ") or "无" }}</p>
+{% if an.evidence_quote %}<p class="evidence">证据: “{{ an.evidence_quote }}”</p>{% endif %}
+<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">{{ a.raw_text }}</pre></details>
+{% endfor %}
+
+<h2>四、网站诊断 <small>Auditoría del sitio</small></h2>
+{% set s = r.site_audit %}
+{% if s %}
+<p>{% if s.snapshot_mode %}<span class="badge">快照模式（未实时抓取）</span>{% endif %}</p>
+<table>
+  <tr><th>检查项</th><th>结果</th></tr>
+  <tr><td>可抓取</td><td>{{ "✅" if s.crawlable else "❌" }}</td></tr>
+  <tr><td>robots.txt 允许</td><td>{{ "✅" if s.robots_ok else "❌" }}</td></tr>
+  <tr><td>sitemap</td><td>{{ "✅" if s.sitemap_found else "❌" }}</td></tr>
+  <tr><td>es-MX hreflang</td><td>{{ "✅" if s.has_es_mx_hreflang else "❌" }}</td></tr>
+  <tr><td>结构化数据 (JSON-LD)</td><td>{{ "✅" if s.has_structured_data else "❌" }}</td></tr>
+  <tr><td>西语内容</td><td>{{ "✅" if s.spanish_content_found else "❌" }}</td></tr>
+  <tr><td>已检查页面数</td><td>{{ s.pages_checked }}</td></tr>
+</table>
+{% if s.issues %}
+<h3>发现的问题</h3>
+<table><tr><th>严重度</th><th>代码</th><th>说明</th></tr>
+{% for i in s.issues %}<tr><td>{{ i.severity.value }}</td><td>{{ i.code }}</td><td>{{ i.detail }}</td></tr>{% endfor %}
+</table>{% endif %}
+{% endif %}
+
+<h2>五、内容缺口 <small>Brechas de contenido ({{ r.gaps|length }})</small></h2>
+{% for g in r.gaps %}
+<h3>{{ loop.index }}. [{{ {"page":"页面","topic":"主题","signal":"信号"}[g.gap_type.value] }}] {{ g.title }}</h3>
+{% for e in g.evidence %}<p class="evidence">• {{ e }}</p>{% endfor %}
+{% endfor %}
+
+<h2>六、行动建议 <small>Plan de acción ({{ r.recommendations|length }})</small></h2>
+<table>
+  <tr><th>优先级</th><th>行动</th><th>理由</th><th>预期影响</th><th>工作量</th></tr>
+  {% for rec in r.recommendations %}
+  <tr><td class="prio-{{ rec.priority.value }}">{{ rec.priority.value }}</td>
+      <td>{{ rec.action }}</td><td>{{ rec.reason }}</td>
+      <td>{{ rec.expected_impact }}</td><td>{{ rec.effort.value }}</td></tr>
+  {% endfor %}
+</table>
+
+<footer>
+  运行 ID {{ r.meta.run_id }} ｜模式 {{ r.meta.mode.value }} ｜
+  本报告由 AI 海外市场诊断智能体原型生成；标注 MOCK 的数据为模拟回放，用于演示链路。
+</footer>
+</body>
+</html>
