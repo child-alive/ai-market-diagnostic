@@ -39,7 +39,12 @@
       与关联问题 id）+ 6 建议（P0×2/P1×3/P2×1，理由引用具体指标值）；site_audit signal 缺口留待 Stage 2 接入
 - [x] Stage1-T4 最简 report.html：六大板块齐全（指标卡/竞品榜/问题表/回答明细/缺口/建议），
       MOCK 角标与快照模式标注就位；程序化校验 9 项全过（浏览器预览被环境拒绝，改文本校验）
-- [ ] Stage1-T5 docs/方案说明.md 初稿
+- [x] Stage1-T5 docs/方案说明.md 初稿（需求理解/架构/指标口径/范围取舍/限制与不确定性/下一步；
+      §9 六条独立判断已全部写入 §4 章节）
+- [x] Stage 1 验收：`python -m src.main --mock` 一条命令产出完整 report.html + report.json；
+      无 key/断网纯 Mock 可跑 ✅（真实 DeepSeek 路径已实现但因本机无 key 未实测，见 T1 备注）
+
+**Stage 1 完成 ✅（MVP 达成，满足题目最低交付要求）**
 
 ### 决策记录
 - 项目根目录定为 `聚路国际/ai-market-diagnostic/`（PLAN §5 结构），
