@@ -55,7 +55,10 @@
 - [x] Stage2-验收（部分）：`--mock --live-audit` 对得力真实官网实抓 15 页成功，
       确认：无 es-MX hreflang（仅 en/vi/zh-TW/zh-CN/ko/ru/en-EU）、无西语内容、有 JSON-LD、robots/sitemap 正常；
       产物快照已存 data/示例产物/report.{json,html}
-- [ ] Stage2-T4 SQLite 落库（storage.py 仍是空壳）+ `--run-id` 重渲染历史报告 ← **未开始，下一个任务**
+- [x] Stage2-T4 SQLite 落库：`runs` 表按 `run_id` 保存完整 report JSON 与检索字段；
+      每次新运行自动存档，`--run-id` 可恢复原报告并重渲染 JSON/HTML；不存在的 ID 返回明确 CLI 错误
+
+**Stage 2 完成 ✅**
 
 ### 决策记录
 - 项目根目录定为 `聚路国际/ai-market-diagnostic/`（PLAN §5 结构），
@@ -102,3 +105,24 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 - 缺口/建议是规则驱动（不再调 LLM），保证与指标自洽，勿改成二次 LLM 生成。
 
 ### 决策记录
+
+---
+
+## 2026-07-16 session-02 (Codex)
+
+### 开工与基线
+- [x] 按交接顺序完整阅读 `PLAN.md` → `PROGRESS.md` → `src/models.py`
+- [x] 基线通过：`.venv/bin/python -m src.main --mock`
+      → 问题 20 条 / AI 回答 8 条 / 缺口 7 项 / 建议 7 条；接手时工作树干净、共 11 个 commit
+
+### Stage 2 — 网站诊断 + 指标完备
+- [x] Stage2-T4 SQLite 落库 + `--run-id` 历史重渲染：
+      `data/diagnostic.db` 的 `runs` 表保存完整 `DiagnosticReport` JSON；
+      已验证新运行写入、按 run_id 重渲染以及无效 run_id 报错三条路径
+
+**Stage 2 完成 ✅**
+
+### 下一步
+1. Stage3-T1 报告视觉升级与 Mock 角标全面核对；
+2. Stage3-T2/T3 方案说明与 README 定稿；
+3. Stage3-T4 补充约 10 个 pytest 用例并跑全量验收。
