@@ -1,134 +1,428 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI 海外市场诊断报告 — {{ r.brand_profile.brand_name }} × {{ r.brand_profile.market }}</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
-  body { font-family: -apple-system, "PingFang SC", "Segoe UI", sans-serif; margin: 2rem auto; max-width: 1000px; padding: 0 1rem; color: #1a2b3c; }
-  h1 { border-bottom: 3px solid #1e6fd9; padding-bottom: .5rem; }
-  h2 { color: #1e6fd9; margin-top: 2.2rem; }
-  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
-  th, td { border: 1px solid #d8e1ec; padding: .45rem .6rem; text-align: left; vertical-align: top; }
-  th { background: #eef4fb; }
-  .metrics { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .card { border: 1px solid #d8e1ec; border-radius: 8px; padding: .8rem 1.2rem; min-width: 130px; }
-  .card .num { font-size: 1.6rem; font-weight: 700; color: #1e6fd9; }
-  .card .label { font-size: .8rem; color: #5b6b7c; }
-  .badge { display: inline-block; font-size: .72rem; padding: .1rem .45rem; border-radius: 4px; background: #fff3cd; color: #8a6d00; border: 1px solid #e6d59a; }
-  .badge.real { background: #d9f2e3; color: #14683c; border-color: #a7d9bd; }
-  .prio-P0 { color: #c0392b; font-weight: 700; } .prio-P1 { color: #d97b1e; font-weight: 700; } .prio-P2 { color: #5b6b7c; font-weight: 700; }
-  .evidence { color: #5b6b7c; font-size: .84rem; margin: .15rem 0; }
-  footer { margin-top: 3rem; color: #8a97a5; font-size: .8rem; }
+  :root {
+    --navy: #102a43;
+    --blue: #1769e0;
+    --blue-2: #5b9cf6;
+    --blue-pale: #edf5ff;
+    --ink: #1c2b3a;
+    --muted: #64788d;
+    --line: #dce7f2;
+    --paper: #ffffff;
+    --canvas: #f4f8fc;
+    --green: #147d64;
+    --amber: #a66300;
+    --red: #bd3a40;
+    --shadow: 0 12px 34px rgba(31, 73, 125, .09);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--canvas);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  .page { width: min(1180px, calc(100% - 40px)); margin: 28px auto 64px; }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 310px;
+    padding: 44px 48px;
+    color: #fff;
+    border-radius: 24px;
+    background: linear-gradient(128deg, #0c2847 0%, #1159af 62%, #2c82ed 100%);
+    box-shadow: 0 24px 54px rgba(17, 75, 142, .22);
+  }
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.16);
+  }
+  .hero::before { width: 360px; height: 360px; right: -90px; top: -180px; }
+  .hero::after { width: 230px; height: 230px; right: 110px; bottom: -170px; }
+  .eyebrow { margin: 0 0 18px; font-size: 12px; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; opacity: .78; }
+  h1 { max-width: 720px; margin: 0; font-size: clamp(34px, 5vw, 58px); line-height: 1.08; letter-spacing: -.035em; }
+  h1 span { display: block; margin-top: 12px; font-size: .34em; font-weight: 500; letter-spacing: .04em; opacity: .76; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 34px; font-size: 14px; }
+  .hero-meta div { display: grid; gap: 2px; }
+  .hero-meta small { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
+  .hero-meta strong { font-weight: 650; }
+  .run-stamp { position: absolute; right: 48px; bottom: 42px; text-align: right; font-size: 12px; opacity: .74; }
+  .data-notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 18px 0 28px;
+    padding: 15px 18px;
+    border: 1px solid #f1d292;
+    border-radius: 13px;
+    color: #72500a;
+    background: #fff9e9;
+    font-size: 13px;
+  }
+  .data-notice strong { color: #5c4008; }
+  .summary {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 18px;
+    margin-bottom: 34px;
+  }
+  .panel, .summary-card, .metric, .answer-card, .gap-card, .rec-card {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+  .summary-card { padding: 24px 26px; border-radius: 18px; }
+  .summary-card h2 { margin: 0 0 14px; font-size: 17px; color: var(--navy); }
+  .summary-card p { margin: 0; color: #40556a; }
+  .key-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .key-list li { display: flex; gap: 10px; color: #40556a; }
+  .key-list b { flex: 0 0 28px; color: var(--blue); font-size: 12px; }
+  section { margin-top: 44px; scroll-margin-top: 24px; }
+  .section-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-bottom: 17px; }
+  .section-kicker { margin: 0 0 4px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+  h2 { margin: 0; color: var(--navy); font-size: 25px; letter-spacing: -.02em; }
+  h2 small { margin-left: 8px; color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: .02em; }
+  .section-note { max-width: 360px; margin: 0; color: var(--muted); font-size: 12px; text-align: right; }
+  .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 13px; }
+  .metric { position: relative; overflow: hidden; min-height: 142px; padding: 20px; border-radius: 17px; }
+  .metric::after { content: ""; position: absolute; width: 56px; height: 56px; right: -16px; top: -18px; border-radius: 50%; background: var(--blue-pale); }
+  .metric .label { min-height: 34px; color: var(--muted); font-size: 12px; font-weight: 650; }
+  .metric .num { margin: 10px 0 2px; color: var(--navy); font-size: 31px; font-weight: 760; line-height: 1; letter-spacing: -.04em; }
+  .metric .sub { color: #8797a8; font-size: 10px; }
+  .metric.primary { border-color: #bcd7fb; background: linear-gradient(155deg, #fff 20%, #eef6ff); }
+  .metric.primary .num { color: var(--blue); }
+  .metric .mini-badge { position: absolute; right: 10px; bottom: 10px; }
+  .grid-2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; margin-top: 18px; }
+  .panel { padding: 22px; border-radius: 18px; }
+  .panel-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .panel-title h3 { margin: 0; color: var(--navy); font-size: 15px; }
+  #sov-chart { height: 355px; }
+  .chart-fallback { display: none; padding: 90px 24px; color: var(--muted); text-align: center; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 15px; background: #fff; box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { padding: 12px 13px; border-bottom: 1px solid #e6edf5; text-align: left; vertical-align: top; }
+  th { color: #60758a; background: #f5f9fd; font-size: 10px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: #f8fbff; }
+  .rank { color: #8ba0b3; font-variant-numeric: tabular-nums; }
+  .strong { color: var(--navy); font-weight: 700; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border: 1px solid #cbdbea;
+    border-radius: 999px;
+    color: #557086;
+    background: #f5f9fc;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .badge.mock { color: #855700; border-color: #e9c777; background: #fff6dc; }
+  .badge.real, .badge.pass { color: #11684f; border-color: #a8dccb; background: #e9f8f2; }
+  .badge.fail, .badge.P0 { color: #a72932; border-color: #edbcc0; background: #fff0f1; }
+  .badge.P1 { color: #965900; border-color: #efd09a; background: #fff7e8; }
+  .badge.P2 { color: #466176; border-color: #cbdbea; background: #f1f6fa; }
+  .score { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; color: #fff; background: var(--blue); font-weight: 750; }
+  .question-text { min-width: 250px; color: var(--navy); font-weight: 620; }
+  .question-zh { min-width: 175px; color: var(--muted); }
+  .result-hit { color: var(--green); font-weight: 700; white-space: nowrap; }
+  .result-miss { color: var(--red); font-weight: 650; white-space: nowrap; }
+  .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .answer-card { padding: 20px; border-radius: 16px; }
+  .answer-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .answer-head h3 { margin: 0; color: var(--navy); font-size: 15px; }
+  .answer-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0; }
+  .evidence { margin: 8px 0; color: #5c7185; font-size: 12px; }
+  .quote { padding: 10px 12px; border-left: 3px solid #b5d2f7; color: #405970; background: #f6faff; font-size: 12px; }
+  details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { color: var(--blue); cursor: pointer; font-size: 11px; font-weight: 650; }
+  pre { max-height: 320px; overflow: auto; margin: 10px 0 0; white-space: pre-wrap; color: #475d71; font: 11px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .audit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
+  .audit-item { padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+  .audit-item small { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
+  .audit-item strong { color: var(--navy); font-size: 13px; }
+  .issue-list { display: grid; gap: 8px; margin-top: 14px; }
+  .issue { display: grid; grid-template-columns: 75px 180px 1fr; gap: 14px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 12px; }
+  .issue code { color: #49647c; font-size: 10px; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .gap-card, .rec-card { position: relative; padding: 21px; border-radius: 16px; }
+  .gap-card::before, .rec-card::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; border-radius: 3px; background: var(--blue-2); }
+  .card-top { display: flex; gap: 9px; align-items: center; margin-bottom: 10px; }
+  .card-index { color: #93a5b6; font-size: 10px; font-weight: 750; }
+  .gap-card h3, .rec-card h3 { margin: 0; color: var(--navy); font-size: 15px; }
+  .evidence-list { margin: 11px 0 0; padding: 0; list-style: none; }
+  .evidence-list li { position: relative; margin: 6px 0; padding-left: 14px; color: #5e7285; font-size: 12px; }
+  .evidence-list li::before { content: ""; position: absolute; left: 0; top: .65em; width: 5px; height: 5px; border-radius: 50%; background: #82afe9; }
+  .rec-card.P0::before { background: var(--red); }
+  .rec-card.P1::before { background: #e49a2f; }
+  .rec-card.P2::before { background: #7990a5; }
+  .rec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 13px; }
+  .rec-grid div { padding: 10px; border-radius: 10px; background: #f6f9fc; }
+  .rec-grid small { display: block; margin-bottom: 3px; color: #8999a8; font-size: 9px; }
+  .rec-grid span { color: #506579; font-size: 11px; }
+  footer { margin-top: 44px; padding: 23px 4px; border-top: 1px solid #cfdeec; color: #788da0; font-size: 11px; }
+  footer strong { color: #526d84; }
+  @media (max-width: 900px) {
+    .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-2, .summary { grid-template-columns: 1fr; }
+    .answers, .cards { grid-template-columns: 1fr; }
+    .audit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .run-stamp { position: static; margin-top: 24px; text-align: left; }
+  }
+  @media (max-width: 600px) {
+    .page { width: min(100% - 20px, 1180px); margin-top: 10px; }
+    .hero { padding: 30px 24px; border-radius: 17px; }
+    .metrics, .audit-grid { grid-template-columns: 1fr; }
+    .section-head { display: block; }
+    .section-note { margin-top: 7px; text-align: left; }
+    .issue { grid-template-columns: 1fr; gap: 5px; }
+    .rec-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: #fff; }
+    .page { width: 100%; margin: 0; }
+    .hero, .panel, .summary-card, .metric, .answer-card, .gap-card, .rec-card, .table-wrap { box-shadow: none; }
+    section, .answer-card, .gap-card, .rec-card { break-inside: avoid; }
+    details { display: none; }
+  }
 </style>
 </head>
 <body>
-
-<h1>AI 海外市场诊断报告 <small>Diagnóstico de visibilidad en IA</small></h1>
-<p>
-  品牌 <b>{{ r.brand_profile.brand_name }}</b>（{{ r.brand_profile.brand_aliases|join(" / ") }}）
-  ｜市场 <b>{{ r.brand_profile.market }}</b>
-  ｜品类 {{ r.brand_profile.category }}
-  ｜生成时间 {{ r.meta.generated_at.strftime("%Y-%m-%d %H:%M UTC") }}
-  ｜运行模式
-  {% if r.meta.mode.value == "mock" %}<span class="badge">MOCK 模拟数据</span>
-  {% else %}<span class="badge real">{{ r.meta.mode.value|upper }}</span>{% endif %}
-</p>
-
-<h2>一、AI 可见度指标 <small>Métricas</small></h2>
 {% set m = r.metrics %}
-<div class="metrics">
-  <div class="card"><div class="num">{{ "%.0f%%"|format(m.visibility_rate*100) }}</div><div class="label">Visibility 可见度</div></div>
-  <div class="card"><div class="num">{{ "%.1f%%"|format(m.sov*100) }}</div><div class="label">SOV 话语权</div></div>
-  <div class="card"><div class="num">{{ m.avg_position if m.avg_position is not none else "—" }}</div><div class="label">Avg Position 平均排名</div></div>
-  <div class="card"><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="label">Citation Rate 引用率</div></div>
-  <div class="card"><div class="num">{{ m.sentiment_summary.get("pos",0) }}/{{ m.sentiment_summary.get("neu",0) }}/{{ m.sentiment_summary.get("neg",0) }}</div><div class="label">情感 正/中/负</div></div>
-  <div class="card"><div class="num">{{ m.questions_checked }}</div><div class="label">检测问题数</div></div>
-</div>
-
-<h3>竞品话语权排行</h3>
-<table>
-  <tr><th>#</th><th>品牌</th><th>提及回答数</th><th>平均排名</th><th>SOV</th></tr>
-  {% for c in m.competitor_ranking %}
-  <tr><td>{{ loop.index }}</td><td>{{ c.name }}</td><td>{{ c.mention_count }}</td>
-      <td>{{ c.avg_position if c.avg_position is not none else "—" }}</td>
-      <td>{{ "%.1f%%"|format(c.sov*100) }}</td></tr>
-  {% endfor %}
-</table>
-
-<h2>二、用户问题清单 <small>Preguntas ({{ r.questions|length }})</small></h2>
+{% set s = r.site_audit %}
 {% set checked_ids = r.answers|map(attribute="question_id")|list %}
 {% set analysis_map = {} %}
 {% for a in r.analyses %}{% if analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
-<table>
-  <tr><th>ID</th><th>问题（西语）</th><th>中文</th><th>分类</th><th>漏斗</th><th>价值</th><th>检测结果</th></tr>
-  {% for q in r.questions %}
-  <tr>
-    <td>{{ q.id }}</td><td>{{ q.text_local }}</td><td>{{ q.text_zh }}</td>
-    <td>{{ {"brand":"品牌词","regional":"地区排名词","category":"品类排名词"}[q.tier.value] }}</td>
-    <td>{{ q.funnel.value }}</td><td>{{ q.value_score }}</td>
-    <td>
-      {% if q.id in checked_ids %}
-        {% set an = analysis_map[q.id] %}
-        {% if an.brand_mentioned %}✅ 第 {{ an.brand_position }} 位{% else %}❌ 未提及{% endif %}
-      {% else %}未检测{% endif %}
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+{% set mock_count = r.answers|selectattr("is_mock")|list|length %}
 
-<h2>三、AI 回答明细 <small>Respuestas analizadas</small></h2>
-{% for a in r.answers %}
-{% set an = analysis_map[a.question_id] %}
-<h3>{{ a.question_id }} {% if a.is_mock %}<span class="badge">MOCK</span>{% else %}<span class="badge real">{{ a.provider }}</span>{% endif %}
-    {% if an.parse_degraded %}<span class="badge">解析降级</span>{% endif %}</h3>
-<p class="evidence">品牌提及: {{ "是，第 %d 位"|format(an.brand_position) if an.brand_mentioned else "否" }}
-   ｜情感: {{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}
-   ｜竞品: {{ an.competitors|map(attribute="name")|join(", ") or "无" }}
-   ｜引用源: {{ an.citations|map(attribute="domain")|join(", ") or "无" }}</p>
-{% if an.evidence_quote %}<p class="evidence">证据: “{{ an.evidence_quote }}”</p>{% endif %}
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">{{ a.raw_text }}</pre></details>
-{% endfor %}
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">GEO MARKET INTELLIGENCE · 市场诊断原型</p>
+    <h1>AI 海外市场诊断报告<span>Diagnóstico de visibilidad de marca en IA</span></h1>
+    <div class="hero-meta">
+      <div><small>Marca / 品牌</small><strong>{{ r.brand_profile.brand_name }} · {{ r.brand_profile.brand_aliases[0] if r.brand_profile.brand_aliases else "" }}</strong></div>
+      <div><small>Mercado / 市场</small><strong>{{ r.brand_profile.market }}</strong></div>
+      <div><small>Idioma / 语言</small><strong>{{ r.brand_profile.language }}</strong></div>
+      <div><small>Categoría / 品类</small><strong>{{ r.brand_profile.category }}</strong></div>
+    </div>
+    <div class="run-stamp">{{ r.meta.generated_at.strftime("%Y-%m-%d · %H:%M UTC") }}<br>RUN {{ r.meta.run_id }}</div>
+  </header>
 
-<h2>四、网站诊断 <small>Auditoría del sitio</small></h2>
-{% set s = r.site_audit %}
-{% if s %}
-<p>{% if s.snapshot_mode %}<span class="badge">快照模式（未实时抓取）</span>{% endif %}</p>
-<table>
-  <tr><th>检查项</th><th>结果</th></tr>
-  <tr><td>可抓取</td><td>{{ "✅" if s.crawlable else "❌" }}</td></tr>
-  <tr><td>robots.txt 允许</td><td>{{ "✅" if s.robots_ok else "❌" }}</td></tr>
-  <tr><td>sitemap</td><td>{{ "✅" if s.sitemap_found else "❌" }}</td></tr>
-  <tr><td>es-MX hreflang</td><td>{{ "✅" if s.has_es_mx_hreflang else "❌" }}</td></tr>
-  <tr><td>结构化数据 (JSON-LD)</td><td>{{ "✅" if s.has_structured_data else "❌" }}</td></tr>
-  <tr><td>西语内容</td><td>{{ "✅" if s.spanish_content_found else "❌" }}</td></tr>
-  <tr><td>已检查页面数</td><td>{{ s.pages_checked }}</td></tr>
-</table>
-{% if s.issues %}
-<h3>发现的问题</h3>
-<table><tr><th>严重度</th><th>代码</th><th>说明</th></tr>
-{% for i in s.issues %}<tr><td>{{ i.severity.value }}</td><td>{{ i.code }}</td><td>{{ i.detail }}</td></tr>{% endfor %}
-</table>{% endif %}
-{% endif %}
+  {% if r.meta.mode.value == "mock" or mock_count %}
+  <div class="data-notice">
+    <span class="badge mock">MOCK DATA</span>
+    <div><strong>本报告包含模拟回放数据。</strong> 当前 {{ mock_count }}/{{ r.answers|length }} 条 AI 回答来自 fixtures；由其派生的可见度、SOV、排名、引用与情感指标均用于验证诊断链路，不代表真实平台市场表现。</div>
+  </div>
+  {% endif %}
 
-<h2>五、内容缺口 <small>Brechas de contenido ({{ r.gaps|length }})</small></h2>
-{% for g in r.gaps %}
-<h3>{{ loop.index }}. [{{ {"page":"页面","topic":"主题","signal":"信号"}[g.gap_type.value] }}] {{ g.title }}</h3>
-{% for e in g.evidence %}<p class="evidence">• {{ e }}</p>{% endfor %}
-{% endfor %}
+  <div class="summary">
+    <article class="summary-card">
+      <h2>执行摘要 <small>Resumen ejecutivo</small></h2>
+      <p>在 {{ m.questions_checked }} 个高价值问题样本中，得力被提及 {{ (m.visibility_rate * m.questions_checked)|round|int }} 次，可见度为 <strong>{{ "%.0f%%"|format(m.visibility_rate*100) }}</strong>，话语权仅 <strong>{{ "%.1f%%"|format(m.sov*100) }}</strong>。当前核心矛盾不是“有没有答案”，而是得力在品类推荐语境中的出现频率与优先顺位仍弱。</p>
+    </article>
+    <article class="summary-card">
+      <h2>优先判断 <small>Lecturas clave</small></h2>
+      <ul class="key-list">
+        <li><b>01</b><span>先补齐墨西哥西语市场入口与 <strong>es-MX hreflang</strong>，建立可理解的地域信号。</span></li>
+        <li><b>02</b><span>围绕高价值品类问法建设可引用内容，提升进入 AI 推荐列表的概率。</span></li>
+        <li><b>03</b><span>用多轮、多平台、100+ 问题采样校准本报告的方向性结论。</span></li>
+      </ul>
+    </article>
+  </div>
 
-<h2>六、行动建议 <small>Plan de acción ({{ r.recommendations|length }})</small></h2>
-<table>
-  <tr><th>优先级</th><th>行动</th><th>理由</th><th>预期影响</th><th>工作量</th></tr>
-  {% for rec in r.recommendations %}
-  <tr><td class="prio-{{ rec.priority.value }}">{{ rec.priority.value }}</td>
-      <td>{{ rec.action }}</td><td>{{ rec.reason }}</td>
-      <td>{{ rec.expected_impact }}</td><td>{{ rec.effort.value }}</td></tr>
-  {% endfor %}
-</table>
+  <section id="metrics">
+    <div class="section-head">
+      <div><p class="section-kicker">01 · Performance</p><h2>AI 可见度指标 <small>Métricas de visibilidad</small></h2></div>
+      <p class="section-note">五项指标采用回答级统计口径；数值越高通常越好，平均排名越低越好。</p>
+    </div>
+    <div class="metrics">
+      <article class="metric primary"><div class="label">Visibility<br>AI 可见度</div><div class="num">{{ "%.0f%%"|format(m.visibility_rate*100) }}</div><div class="sub">提及回答 / 检测回答</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Share of Voice<br>话语权</div><div class="num">{{ "%.1f%%"|format(m.sov*100) }}</div><div class="sub">品牌提及 / 全部品牌提及</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Average Position<br>平均排名</div><div class="num">{{ m.avg_position if m.avg_position is not none else "—" }}</div><div class="sub">被提及时的平均顺位</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Citation Rate<br>引用率</div><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="sub">含可溯源域名的回答占比</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Sentiment<br>情感倾向</div><div class="num">{{ m.sentiment_summary.get("pos",0) }}·{{ m.sentiment_summary.get("neu",0) }}·{{ m.sentiment_summary.get("neg",0) }}</div><div class="sub">正面 · 中性 · 负面</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+    </div>
 
-<footer>
-  运行 ID {{ r.meta.run_id }} ｜模式 {{ r.meta.mode.value }} ｜
-  本报告由 AI 海外市场诊断智能体原型生成；标注 MOCK 的数据为模拟回放，用于演示链路。
-</footer>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title"><h3>品牌话语权对比 · Comparativa SOV</h3>{% if mock_count %}<span class="badge mock">MOCK DERIVED</span>{% endif %}</div>
+        <div id="sov-chart" role="img" aria-label="得力与竞品话语权对比柱状图"></div>
+        <div id="chart-fallback" class="chart-fallback">图表组件未加载，请参考右侧竞品排行表。</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Marca / 品牌</th><th>Menciones / 提及</th><th>Posición / 排名</th><th>SOV</th></tr></thead>
+          <tbody>
+            <tr><td class="rank">—</td><td class="strong">{{ r.brand_profile.brand_name }}（目标品牌）</td><td>{{ (m.visibility_rate * m.questions_checked)|round|int }}</td><td>{{ m.avg_position if m.avg_position is not none else "—" }}</td><td class="strong">{{ "%.1f%%"|format(m.sov*100) }}</td></tr>
+            {% for c in m.competitor_ranking[:9] %}
+            <tr><td class="rank">{{ "%02d"|format(loop.index) }}</td><td>{{ c.name }}</td><td>{{ c.mention_count }}</td><td>{{ c.avg_position if c.avg_position is not none else "—" }}</td><td>{{ "%.1f%%"|format(c.sov*100) }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="questions">
+    <div class="section-head">
+      <div><p class="section-kicker">02 · Demand</p><h2>用户问题地图 <small>Mapa de preguntas · {{ r.questions|length }}</small></h2></div>
+      <p class="section-note">问题按品牌词 / 地区排名词 / 品类词与 TOFU / MOFU / BOFU 双维度分类。</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Pregunta / 西语问题</th><th>中文对照</th><th>Tipo / 分类</th><th>Funnel</th><th>Valor / 价值</th><th>Resultado / 检测结果</th></tr></thead>
+        <tbody>
+          {% for q in r.questions %}
+          <tr>
+            <td class="rank">{{ q.id }}</td><td class="question-text">{{ q.text_local }}</td><td class="question-zh">{{ q.text_zh }}</td>
+            <td><span class="badge">{{ {"brand":"品牌词","regional":"地区排名词","category":"品类排名词"}[q.tier.value] }}</span></td>
+            <td><span class="badge">{{ q.funnel.value }}</span></td><td><span class="score">{{ q.value_score }}</span></td>
+            <td>
+              {% if q.id in checked_ids %}
+                {% set an = analysis_map[q.id] %}
+                {% if an.brand_mentioned %}<span class="result-hit">✓ 提及 · 第 {{ an.brand_position }} 位</span>{% else %}<span class="result-miss">× 未提及</span>{% endif %}
+                {% set answer = (r.answers|selectattr("question_id", "equalto", q.id)|list|first) %}
+                {% if answer.is_mock %}<span class="badge mock">MOCK</span>{% endif %}
+              {% else %}<span class="badge">未检测</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="answers">
+    <div class="section-head">
+      <div><p class="section-kicker">03 · Evidence</p><h2>AI 回答与证据 <small>Respuestas analizadas</small></h2></div>
+      <p class="section-note">每条回答保留品牌顺位、竞品、引用来源与证据句；原文可展开查看。</p>
+    </div>
+    <div class="answers">
+      {% for a in r.answers %}
+      {% set an = analysis_map[a.question_id] %}
+      <article class="answer-card">
+        <div class="answer-head"><h3>{{ a.question_id }} · {% if an.brand_mentioned %}品牌已进入答案{% else %}品牌未进入答案{% endif %}</h3><div>{% if a.is_mock %}<span class="badge mock">MOCK</span>{% else %}<span class="badge real">{{ a.provider|upper }}</span>{% endif %} {% if an.parse_degraded %}<span class="badge mock">解析降级</span>{% endif %}</div></div>
+        <div class="answer-meta">
+          <span class="badge {{ 'pass' if an.brand_mentioned else 'fail' }}">提及 {{ "是 · 第 %d 位"|format(an.brand_position) if an.brand_mentioned else "否" }}</span>
+          <span class="badge">情感 {{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}</span>
+          <span class="badge">引用 {{ an.citations|length }}</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>{{ an.competitors|map(attribute="name")|join("、") or "无" }}</p>
+        <p class="evidence"><strong>引用源：</strong>{{ an.citations|map(attribute="domain")|join("、") or "无" }}</p>
+        {% if an.evidence_quote %}<div class="quote">“{{ an.evidence_quote }}”</div>{% endif %}
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>{{ a.raw_text }}</pre></details>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="site-audit">
+    <div class="section-head">
+      <div><p class="section-kicker">04 · Foundation</p><h2>网站可引用性诊断 <small>Auditoría del sitio</small></h2></div>
+      <p class="section-note">{% if s.snapshot_mode %}<span class="badge mock">SNAPSHOT · 快照模式</span>{% else %}<span class="badge real">LIVE AUDIT · 实时抓取</span>{% endif %} 共检查 {{ s.pages_checked }} 页</p>
+    </div>
+    <div class="audit-grid">
+      {% set checks = [
+        ("可抓取 / Rastreable", s.crawlable),
+        ("robots.txt 允许", s.robots_ok),
+        ("Sitemap 存在", s.sitemap_found),
+        ("es-MX hreflang", s.has_es_mx_hreflang),
+        ("JSON-LD 结构化数据", s.has_structured_data),
+        ("西语内容 / Español", s.spanish_content_found)
+      ] %}
+      {% for label, passed in checks %}
+      <div class="audit-item"><small>{{ label }}</small><strong>{{ "通过" if passed else "需修复" }}</strong> <span class="badge {{ 'pass' if passed else 'fail' }}">{{ "PASS" if passed else "GAP" }}</span></div>
+      {% endfor %}
+      <div class="audit-item"><small>检查页面 / Páginas</small><strong>{{ s.pages_checked }} 页</strong></div>
+      <div class="audit-item"><small>数据模式 / Modo</small><strong>{{ "快照回放" if s.snapshot_mode else "实时抓取" }}</strong></div>
+    </div>
+    {% if s.issues %}
+    <div class="issue-list">
+      {% for i in s.issues %}<div class="issue"><span class="badge {{ 'P0' if i.severity.value == 'high' else 'P1' if i.severity.value == 'medium' else 'P2' }}">{{ i.severity.value|upper }}</span><code>{{ i.code }}</code><span>{{ i.detail }}</span></div>{% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <section id="gaps">
+    <div class="section-head">
+      <div><p class="section-kicker">05 · Opportunity</p><h2>内容与信号缺口 <small>Brechas · {{ r.gaps|length }}</small></h2></div>
+      <p class="section-note">每个缺口均由问题、回答指标或网站检查结果提供证据，不做无依据推断。</p>
+    </div>
+    <div class="cards">
+      {% for g in r.gaps %}
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">{{ "%02d"|format(loop.index) }}</span><span class="badge">{{ {"page":"页面 PAGE","topic":"主题 TOPIC","signal":"信号 SIGNAL"}[g.gap_type.value] }}</span></div>
+        <h3>{{ g.title }}</h3>
+        <ul class="evidence-list">{% for e in g.evidence %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% if g.related_questions %}<p class="evidence"><strong>关联问题：</strong>{{ g.related_questions|join(" · ") }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="recommendations">
+    <div class="section-head">
+      <div><p class="section-kicker">06 · Action</p><h2>优先行动路线图 <small>Plan de acción · {{ r.recommendations|length }}</small></h2></div>
+      <p class="section-note">P0 立即处理，P1 进入近期内容排期，P2 作为规模化能力建设。</p>
+    </div>
+    <div class="cards">
+      {% for rec in r.recommendations %}
+      <article class="rec-card {{ rec.priority.value }}">
+        <div class="card-top"><span class="card-index">{{ "%02d"|format(loop.index) }}</span><span class="badge {{ rec.priority.value }}">{{ rec.priority.value }}</span><span class="badge">EFFORT {{ rec.effort.value }}</span></div>
+        <h3>{{ rec.action }}</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>{{ rec.reason }}</span></div>
+          <div><small>IMPACT / 预期影响</small><span>{{ rec.expected_impact }}</span></div>
+          <div><small>EFFORT / 工作量</small><span>{{ rec.effort.value }} · {{ {"S":"小","M":"中","L":"大"}[rec.effort.value] }}</span></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer>
+    <strong>AI 海外市场诊断智能体 · Prototype</strong><br>
+    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照。
+  </footer>
+</main>
+
+<script id="report-data" type="application/json">{{ r.model_dump(mode="json")|tojson }}</script>
+<script>
+  (function () {
+    const chartNode = document.getElementById("sov-chart");
+    const fallback = document.getElementById("chart-fallback");
+    if (!window.echarts) {
+      chartNode.style.display = "none";
+      fallback.style.display = "block";
+      return;
+    }
+    const names = [{{ r.brand_profile.brand_name|tojson }}{% for c in m.competitor_ranking[:7] %}, {{ c.name|tojson }}{% endfor %}];
+    const values = [{{ (m.sov * 100)|round(1) }}{% for c in m.competitor_ranking[:7] %}, {{ (c.sov * 100)|round(1) }}{% endfor %}];
+    const chart = echarts.init(chartNode, null, {renderer: "svg"});
+    chart.setOption({
+      animationDuration: 700,
+      grid: {left: 92, right: 36, top: 26, bottom: 34},
+      tooltip: {trigger: "axis", axisPointer: {type: "shadow"}, valueFormatter: value => value + "%"},
+      xAxis: {type: "value", axisLabel: {formatter: "{value}%", color: "#72879a"}, splitLine: {lineStyle: {color: "#e8f0f7"}}},
+      yAxis: {type: "category", inverse: true, data: names, axisTick: {show: false}, axisLine: {show: false}, axisLabel: {color: "#40566b", fontWeight: 600}},
+      series: [{type: "bar", data: values.map((value, index) => ({value, itemStyle: {color: index === 0 ? "#1769e0" : "#8db8ee", borderRadius: [0, 5, 5, 0]}})), barWidth: 18, label: {show: true, position: "right", formatter: "{c}%", color: "#536a7e", fontSize: 10}}]
+    });
+    window.addEventListener("resize", () => chart.resize());
+  })();
+</script>
 </body>
 </html>

@@ -1,364 +1,568 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI 海外市场诊断报告 — Deli × 墨西哥 (México)</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <style>
-  body { font-family: -apple-system, "PingFang SC", "Segoe UI", sans-serif; margin: 2rem auto; max-width: 1000px; padding: 0 1rem; color: #1a2b3c; }
-  h1 { border-bottom: 3px solid #1e6fd9; padding-bottom: .5rem; }
-  h2 { color: #1e6fd9; margin-top: 2.2rem; }
-  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
-  th, td { border: 1px solid #d8e1ec; padding: .45rem .6rem; text-align: left; vertical-align: top; }
-  th { background: #eef4fb; }
-  .metrics { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .card { border: 1px solid #d8e1ec; border-radius: 8px; padding: .8rem 1.2rem; min-width: 130px; }
-  .card .num { font-size: 1.6rem; font-weight: 700; color: #1e6fd9; }
-  .card .label { font-size: .8rem; color: #5b6b7c; }
-  .badge { display: inline-block; font-size: .72rem; padding: .1rem .45rem; border-radius: 4px; background: #fff3cd; color: #8a6d00; border: 1px solid #e6d59a; }
-  .badge.real { background: #d9f2e3; color: #14683c; border-color: #a7d9bd; }
-  .prio-P0 { color: #c0392b; font-weight: 700; } .prio-P1 { color: #d97b1e; font-weight: 700; } .prio-P2 { color: #5b6b7c; font-weight: 700; }
-  .evidence { color: #5b6b7c; font-size: .84rem; margin: .15rem 0; }
-  footer { margin-top: 3rem; color: #8a97a5; font-size: .8rem; }
+  :root {
+    --navy: #102a43;
+    --blue: #1769e0;
+    --blue-2: #5b9cf6;
+    --blue-pale: #edf5ff;
+    --ink: #1c2b3a;
+    --muted: #64788d;
+    --line: #dce7f2;
+    --paper: #ffffff;
+    --canvas: #f4f8fc;
+    --green: #147d64;
+    --amber: #a66300;
+    --red: #bd3a40;
+    --shadow: 0 12px 34px rgba(31, 73, 125, .09);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--canvas);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  .page { width: min(1180px, calc(100% - 40px)); margin: 28px auto 64px; }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 310px;
+    padding: 44px 48px;
+    color: #fff;
+    border-radius: 24px;
+    background: linear-gradient(128deg, #0c2847 0%, #1159af 62%, #2c82ed 100%);
+    box-shadow: 0 24px 54px rgba(17, 75, 142, .22);
+  }
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.16);
+  }
+  .hero::before { width: 360px; height: 360px; right: -90px; top: -180px; }
+  .hero::after { width: 230px; height: 230px; right: 110px; bottom: -170px; }
+  .eyebrow { margin: 0 0 18px; font-size: 12px; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; opacity: .78; }
+  h1 { max-width: 720px; margin: 0; font-size: clamp(34px, 5vw, 58px); line-height: 1.08; letter-spacing: -.035em; }
+  h1 span { display: block; margin-top: 12px; font-size: .34em; font-weight: 500; letter-spacing: .04em; opacity: .76; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 34px; font-size: 14px; }
+  .hero-meta div { display: grid; gap: 2px; }
+  .hero-meta small { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
+  .hero-meta strong { font-weight: 650; }
+  .run-stamp { position: absolute; right: 48px; bottom: 42px; text-align: right; font-size: 12px; opacity: .74; }
+  .data-notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 18px 0 28px;
+    padding: 15px 18px;
+    border: 1px solid #f1d292;
+    border-radius: 13px;
+    color: #72500a;
+    background: #fff9e9;
+    font-size: 13px;
+  }
+  .data-notice strong { color: #5c4008; }
+  .summary {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 18px;
+    margin-bottom: 34px;
+  }
+  .panel, .summary-card, .metric, .answer-card, .gap-card, .rec-card {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+  .summary-card { padding: 24px 26px; border-radius: 18px; }
+  .summary-card h2 { margin: 0 0 14px; font-size: 17px; color: var(--navy); }
+  .summary-card p { margin: 0; color: #40556a; }
+  .key-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .key-list li { display: flex; gap: 10px; color: #40556a; }
+  .key-list b { flex: 0 0 28px; color: var(--blue); font-size: 12px; }
+  section { margin-top: 44px; scroll-margin-top: 24px; }
+  .section-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-bottom: 17px; }
+  .section-kicker { margin: 0 0 4px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+  h2 { margin: 0; color: var(--navy); font-size: 25px; letter-spacing: -.02em; }
+  h2 small { margin-left: 8px; color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: .02em; }
+  .section-note { max-width: 360px; margin: 0; color: var(--muted); font-size: 12px; text-align: right; }
+  .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 13px; }
+  .metric { position: relative; overflow: hidden; min-height: 142px; padding: 20px; border-radius: 17px; }
+  .metric::after { content: ""; position: absolute; width: 56px; height: 56px; right: -16px; top: -18px; border-radius: 50%; background: var(--blue-pale); }
+  .metric .label { min-height: 34px; color: var(--muted); font-size: 12px; font-weight: 650; }
+  .metric .num { margin: 10px 0 2px; color: var(--navy); font-size: 31px; font-weight: 760; line-height: 1; letter-spacing: -.04em; }
+  .metric .sub { color: #8797a8; font-size: 10px; }
+  .metric.primary { border-color: #bcd7fb; background: linear-gradient(155deg, #fff 20%, #eef6ff); }
+  .metric.primary .num { color: var(--blue); }
+  .metric .mini-badge { position: absolute; right: 10px; bottom: 10px; }
+  .grid-2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; margin-top: 18px; }
+  .panel { padding: 22px; border-radius: 18px; }
+  .panel-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .panel-title h3 { margin: 0; color: var(--navy); font-size: 15px; }
+  #sov-chart { height: 355px; }
+  .chart-fallback { display: none; padding: 90px 24px; color: var(--muted); text-align: center; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 15px; background: #fff; box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { padding: 12px 13px; border-bottom: 1px solid #e6edf5; text-align: left; vertical-align: top; }
+  th { color: #60758a; background: #f5f9fd; font-size: 10px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: #f8fbff; }
+  .rank { color: #8ba0b3; font-variant-numeric: tabular-nums; }
+  .strong { color: var(--navy); font-weight: 700; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border: 1px solid #cbdbea;
+    border-radius: 999px;
+    color: #557086;
+    background: #f5f9fc;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .badge.mock { color: #855700; border-color: #e9c777; background: #fff6dc; }
+  .badge.real, .badge.pass { color: #11684f; border-color: #a8dccb; background: #e9f8f2; }
+  .badge.fail, .badge.P0 { color: #a72932; border-color: #edbcc0; background: #fff0f1; }
+  .badge.P1 { color: #965900; border-color: #efd09a; background: #fff7e8; }
+  .badge.P2 { color: #466176; border-color: #cbdbea; background: #f1f6fa; }
+  .score { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; color: #fff; background: var(--blue); font-weight: 750; }
+  .question-text { min-width: 250px; color: var(--navy); font-weight: 620; }
+  .question-zh { min-width: 175px; color: var(--muted); }
+  .result-hit { color: var(--green); font-weight: 700; white-space: nowrap; }
+  .result-miss { color: var(--red); font-weight: 650; white-space: nowrap; }
+  .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .answer-card { padding: 20px; border-radius: 16px; }
+  .answer-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .answer-head h3 { margin: 0; color: var(--navy); font-size: 15px; }
+  .answer-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0; }
+  .evidence { margin: 8px 0; color: #5c7185; font-size: 12px; }
+  .quote { padding: 10px 12px; border-left: 3px solid #b5d2f7; color: #405970; background: #f6faff; font-size: 12px; }
+  details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { color: var(--blue); cursor: pointer; font-size: 11px; font-weight: 650; }
+  pre { max-height: 320px; overflow: auto; margin: 10px 0 0; white-space: pre-wrap; color: #475d71; font: 11px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .audit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
+  .audit-item { padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+  .audit-item small { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
+  .audit-item strong { color: var(--navy); font-size: 13px; }
+  .issue-list { display: grid; gap: 8px; margin-top: 14px; }
+  .issue { display: grid; grid-template-columns: 75px 180px 1fr; gap: 14px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 12px; }
+  .issue code { color: #49647c; font-size: 10px; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .gap-card, .rec-card { position: relative; padding: 21px; border-radius: 16px; }
+  .gap-card::before, .rec-card::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; border-radius: 3px; background: var(--blue-2); }
+  .card-top { display: flex; gap: 9px; align-items: center; margin-bottom: 10px; }
+  .card-index { color: #93a5b6; font-size: 10px; font-weight: 750; }
+  .gap-card h3, .rec-card h3 { margin: 0; color: var(--navy); font-size: 15px; }
+  .evidence-list { margin: 11px 0 0; padding: 0; list-style: none; }
+  .evidence-list li { position: relative; margin: 6px 0; padding-left: 14px; color: #5e7285; font-size: 12px; }
+  .evidence-list li::before { content: ""; position: absolute; left: 0; top: .65em; width: 5px; height: 5px; border-radius: 50%; background: #82afe9; }
+  .rec-card.P0::before { background: var(--red); }
+  .rec-card.P1::before { background: #e49a2f; }
+  .rec-card.P2::before { background: #7990a5; }
+  .rec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 13px; }
+  .rec-grid div { padding: 10px; border-radius: 10px; background: #f6f9fc; }
+  .rec-grid small { display: block; margin-bottom: 3px; color: #8999a8; font-size: 9px; }
+  .rec-grid span { color: #506579; font-size: 11px; }
+  footer { margin-top: 44px; padding: 23px 4px; border-top: 1px solid #cfdeec; color: #788da0; font-size: 11px; }
+  footer strong { color: #526d84; }
+  @media (max-width: 900px) {
+    .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-2, .summary { grid-template-columns: 1fr; }
+    .answers, .cards { grid-template-columns: 1fr; }
+    .audit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .run-stamp { position: static; margin-top: 24px; text-align: left; }
+  }
+  @media (max-width: 600px) {
+    .page { width: min(100% - 20px, 1180px); margin-top: 10px; }
+    .hero { padding: 30px 24px; border-radius: 17px; }
+    .metrics, .audit-grid { grid-template-columns: 1fr; }
+    .section-head { display: block; }
+    .section-note { margin-top: 7px; text-align: left; }
+    .issue { grid-template-columns: 1fr; gap: 5px; }
+    .rec-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: #fff; }
+    .page { width: 100%; margin: 0; }
+    .hero, .panel, .summary-card, .metric, .answer-card, .gap-card, .rec-card, .table-wrap { box-shadow: none; }
+    section, .answer-card, .gap-card, .rec-card { break-inside: avoid; }
+    details { display: none; }
+  }
 </style>
 </head>
 <body>
 
-<h1>AI 海外市场诊断报告 <small>Diagnóstico de visibilidad en IA</small></h1>
-<p>
-  品牌 <b>Deli</b>（得力 / Deli Group / DeliWorld）
-  ｜市场 <b>墨西哥 (México)</b>
-  ｜品类 文具/办公/学生用品 (papelería, artículos de oficina y escolares)
-  ｜生成时间 2026-07-16 08:35 UTC
-  ｜运行模式
-  <span class="badge">MOCK 模拟数据</span>
-  
-</p>
-
-<h2>一、AI 可见度指标 <small>Métricas</small></h2>
-
-<div class="metrics">
-  <div class="card"><div class="num">38%</div><div class="label">Visibility 可见度</div></div>
-  <div class="card"><div class="num">8.8%</div><div class="label">SOV 话语权</div></div>
-  <div class="card"><div class="num">3.33</div><div class="label">Avg Position 平均排名</div></div>
-  <div class="card"><div class="num">100%</div><div class="label">Citation Rate 引用率</div></div>
-  <div class="card"><div class="num">1/7/0</div><div class="label">情感 正/中/负</div></div>
-  <div class="card"><div class="num">8</div><div class="label">检测问题数</div></div>
-</div>
-
-<h3>竞品话语权排行</h3>
-<table>
-  <tr><th>#</th><th>品牌</th><th>提及回答数</th><th>平均排名</th><th>SOV</th></tr>
-  
-  <tr><td>1</td><td>BIC</td><td>4</td>
-      <td>2.0</td>
-      <td>11.8%</td></tr>
-  
-  <tr><td>2</td><td>Scribe</td><td>3</td>
-      <td>2.67</td>
-      <td>8.8%</td></tr>
-  
-  <tr><td>3</td><td>Barrilito</td><td>3</td>
-      <td>3.33</td>
-      <td>8.8%</td></tr>
-  
-  <tr><td>4</td><td>Pelikan</td><td>3</td>
-      <td>3.67</td>
-      <td>8.8%</td></tr>
-  
-  <tr><td>5</td><td>Faber-Castell</td><td>3</td>
-      <td>4.67</td>
-      <td>8.8%</td></tr>
-  
-  <tr><td>6</td><td>Norma</td><td>2</td>
-      <td>1.5</td>
-      <td>5.9%</td></tr>
-  
-  <tr><td>7</td><td>Pilot</td><td>2</td>
-      <td>4.0</td>
-      <td>5.9%</td></tr>
-  
-  <tr><td>8</td><td>3M</td><td>1</td>
-      <td>1.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>9</td><td>Paper Mate</td><td>1</td>
-      <td>2.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>10</td><td>Post-it</td><td>1</td>
-      <td>2.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>11</td><td>Crayola</td><td>1</td>
-      <td>3.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>12</td><td>Pritt</td><td>1</td>
-      <td>4.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>13</td><td>Zebra</td><td>1</td>
-      <td>4.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>14</td><td>Esselte</td><td>1</td>
-      <td>4.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>15</td><td>Leitz</td><td>1</td>
-      <td>5.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>16</td><td>Sablón</td><td>1</td>
-      <td>6.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>17</td><td>HP</td><td>1</td>
-      <td>7.0</td>
-      <td>2.9%</td></tr>
-  
-  <tr><td>18</td><td>Epson</td><td>1</td>
-      <td>8.0</td>
-      <td>2.9%</td></tr>
-  
-</table>
-
-<h2>二、用户问题清单 <small>Preguntas (20)</small></h2>
 
 
 
-<table>
-  <tr><th>ID</th><th>问题（西语）</th><th>中文</th><th>分类</th><th>漏斗</th><th>价值</th><th>检测结果</th></tr>
-  
-  <tr>
-    <td>q01</td><td>¿Qué tal es la marca Deli en papelería? ¿Vale la pena?</td><td>得力这个文具品牌怎么样？值得买吗？</td>
-    <td>品牌词</td>
-    <td>MOFU</td><td>5</td>
-    <td>
-      
-        
-        ✅ 第 1 位
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q02</td><td>¿Dónde puedo comprar productos Deli en México?</td><td>在墨西哥哪里能买到得力的产品？</td>
-    <td>品牌词</td>
-    <td>BOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q03</td><td>¿Los productos Deli son de buena calidad o son chinos baratos?</td><td>得力的产品质量好吗，还是廉价中国货？</td>
-    <td>品牌词</td>
-    <td>MOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q04</td><td>¿Deli tiene garantía o servicio al cliente en México?</td><td>得力在墨西哥有保修或客服吗？</td>
-    <td>品牌词</td>
-    <td>BOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q05</td><td>¿Cuáles son las mejores marcas de papelería en México?</td><td>墨西哥最好的文具品牌有哪些？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>5</td>
-    <td>
-      
-        
-        ❌ 未提及
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q06</td><td>¿Qué marca de bolígrafos es mejor en México?</td><td>在墨西哥哪个牌子的圆珠笔最好？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>4</td>
-    <td>
-      
-        
-        ✅ 第 5 位
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q07</td><td>¿Cuál es la mejor marca de útiles escolares para el regreso a clases?</td><td>返校季最好的学生用品品牌是哪个？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>5</td>
-    <td>
-      
-        
-        ❌ 未提及
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q08</td><td>¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?</td><td>给公司采购办公用品推荐什么品牌？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>4</td>
-    <td>
-      
-        
-        ❌ 未提及
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q09</td><td>¿Qué marcas de papelería son baratas y de buena calidad?</td><td>哪些文具品牌便宜又好用？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>4</td>
-    <td>
-      
-        
-        ✅ 第 4 位
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q10</td><td>¿Qué marca de cuadernos es la mejor para la escuela?</td><td>上学用哪个牌子的笔记本最好？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q11</td><td>¿Cuáles son las mejores tijeras y pegamento para manualidades escolares?</td><td>学校手工课用什么剪刀和胶水最好？</td>
-    <td>品类排名词</td>
-    <td>TOFU</td><td>2</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q12</td><td>¿Qué debo comprar para la lista de útiles escolares?</td><td>开学清单应该买些什么？</td>
-    <td>品类排名词</td>
-    <td>TOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q13</td><td>¿Dónde comprar útiles escolares baratos en CDMX?</td><td>墨西哥城哪里能买到便宜的学生用品？</td>
-    <td>地区排名词</td>
-    <td>BOFU</td><td>4</td>
-    <td>
-      
-        
-        ❌ 未提及
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q14</td><td>¿Cuáles son las mejores papelerías en Guadalajara?</td><td>瓜达拉哈拉最好的文具店有哪些？</td>
-    <td>地区排名词</td>
-    <td>BOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q15</td><td>¿Dónde conseguir artículos de oficina al por mayor en México?</td><td>在墨西哥哪里可以批发办公用品？</td>
-    <td>地区排名词</td>
-    <td>BOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q16</td><td>¿Qué papelería en línea es confiable en México?</td><td>墨西哥哪个在线文具商城靠谱？</td>
-    <td>地区排名词</td>
-    <td>BOFU</td><td>4</td>
-    <td>
-      
-        
-        ❌ 未提及
-      
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q17</td><td>¿Cómo elegir una engrapadora para la oficina?</td><td>怎么挑选办公用订书机？</td>
-    <td>品类排名词</td>
-    <td>TOFU</td><td>2</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q18</td><td>¿Qué es mejor para tomar apuntes: bolígrafo o lápiz?</td><td>记笔记用圆珠笔好还是铅笔好？</td>
-    <td>品类排名词</td>
-    <td>TOFU</td><td>1</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q19</td><td>¿Cuánto cuesta la lista de útiles escolares en México este año?</td><td>今年墨西哥开学清单大概要花多少钱？</td>
-    <td>品类排名词</td>
-    <td>TOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-  <tr>
-    <td>q20</td><td>¿Qué marcas de calculadoras científicas recomiendan para estudiantes?</td><td>学生用什么牌子的科学计算器好？</td>
-    <td>品类排名词</td>
-    <td>MOFU</td><td>3</td>
-    <td>
-      未检测
-    </td>
-  </tr>
-  
-</table>
-
-<h2>三、AI 回答明细 <small>Respuestas analizadas</small></h2>
 
 
-<h3>q01 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 是，第 1 位
-   ｜情感: 正面
-   ｜竞品: Pelikan, Faber-Castell, BIC, Pilot
-   ｜引用源: mercadolibre.com.mx, amazon.com.mx, deliworld.com</p>
-<p class="evidence">证据: “Deli es una marca china de papelería y artículos de oficina fundada en 1981, y en los últimos años ha ganado presencia en América Latina, incluido México”</p>
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Deli es una marca china de papelería y artículos de oficina fundada en 1981, y en los últimos años ha ganado presencia en América Latina, incluido México. En general tiene buena reputación por su relación calidad-precio: sus bolígrafos, engrapadoras, tijeras y organizadores de escritorio suelen costar menos que los de marcas tradicionales como Pelikan o Faber-Castell, con una calidad aceptable para uso escolar y de oficina. Sí vale la pena para compras de volumen o presupuesto ajustado, aunque para instrumentos de escritura premium algunos usuarios siguen prefiriendo marcas consolidadas como BIC o Pilot. Puedes encontrar productos Deli en Mercado Libre, Amazon México y en papelerías mayoristas.
+
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">GEO MARKET INTELLIGENCE · 市场诊断原型</p>
+    <h1>AI 海外市场诊断报告<span>Diagnóstico de visibilidad de marca en IA</span></h1>
+    <div class="hero-meta">
+      <div><small>Marca / 品牌</small><strong>Deli · 得力</strong></div>
+      <div><small>Mercado / 市场</small><strong>墨西哥 (México)</strong></div>
+      <div><small>Idioma / 语言</small><strong>es-MX</strong></div>
+      <div><small>Categoría / 品类</small><strong>文具/办公/学生用品 (papelería, artículos de oficina y escolares)</strong></div>
+    </div>
+    <div class="run-stamp">2026-07-16 · 08:35 UTC<br>RUN 60b2cb03</div>
+  </header>
+
+
+  <div class="data-notice">
+    <span class="badge mock">MOCK DATA</span>
+    <div><strong>本报告包含模拟回放数据。</strong> 当前 8/8 条 AI 回答来自 fixtures；由其派生的可见度、SOV、排名、引用与情感指标均用于验证诊断链路，不代表真实平台市场表现。</div>
+  </div>
+
+
+  <div class="summary">
+    <article class="summary-card">
+      <h2>执行摘要 <small>Resumen ejecutivo</small></h2>
+      <p>在 8 个高价值问题样本中，得力被提及 3 次，可见度为 <strong>38%</strong>，话语权仅 <strong>8.8%</strong>。当前核心矛盾不是“有没有答案”，而是得力在品类推荐语境中的出现频率与优先顺位仍弱。</p>
+    </article>
+    <article class="summary-card">
+      <h2>优先判断 <small>Lecturas clave</small></h2>
+      <ul class="key-list">
+        <li><b>01</b><span>先补齐墨西哥西语市场入口与 <strong>es-MX hreflang</strong>，建立可理解的地域信号。</span></li>
+        <li><b>02</b><span>围绕高价值品类问法建设可引用内容，提升进入 AI 推荐列表的概率。</span></li>
+        <li><b>03</b><span>用多轮、多平台、100+ 问题采样校准本报告的方向性结论。</span></li>
+      </ul>
+    </article>
+  </div>
+
+  <section id="metrics">
+    <div class="section-head">
+      <div><p class="section-kicker">01 · Performance</p><h2>AI 可见度指标 <small>Métricas de visibilidad</small></h2></div>
+      <p class="section-note">五项指标采用回答级统计口径；数值越高通常越好，平均排名越低越好。</p>
+    </div>
+    <div class="metrics">
+      <article class="metric primary"><div class="label">Visibility<br>AI 可见度</div><div class="num">38%</div><div class="sub">提及回答 / 检测回答</div><span class="badge mock mini-badge">MOCK DERIVED</span></article>
+      <article class="metric"><div class="label">Share of Voice<br>话语权</div><div class="num">8.8%</div><div class="sub">品牌提及 / 全部品牌提及</div><span class="badge mock mini-badge">MOCK DERIVED</span></article>
+      <article class="metric"><div class="label">Average Position<br>平均排名</div><div class="num">3.33</div><div class="sub">被提及时的平均顺位</div><span class="badge mock mini-badge">MOCK DERIVED</span></article>
+      <article class="metric"><div class="label">Citation Rate<br>引用率</div><div class="num">100%</div><div class="sub">含可溯源域名的回答占比</div><span class="badge mock mini-badge">MOCK DERIVED</span></article>
+      <article class="metric"><div class="label">Sentiment<br>情感倾向</div><div class="num">1·7·0</div><div class="sub">正面 · 中性 · 负面</div><span class="badge mock mini-badge">MOCK DERIVED</span></article>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title"><h3>品牌话语权对比 · Comparativa SOV</h3><span class="badge mock">MOCK DERIVED</span></div>
+        <div id="sov-chart" role="img" aria-label="得力与竞品话语权对比柱状图"></div>
+        <div id="chart-fallback" class="chart-fallback">图表组件未加载，请参考右侧竞品排行表。</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Marca / 品牌</th><th>Menciones / 提及</th><th>Posición / 排名</th><th>SOV</th></tr></thead>
+          <tbody>
+            <tr><td class="rank">—</td><td class="strong">Deli（目标品牌）</td><td>3</td><td>3.33</td><td class="strong">8.8%</td></tr>
+
+            <tr><td class="rank">01</td><td>BIC</td><td>4</td><td>2.0</td><td>11.8%</td></tr>
+
+            <tr><td class="rank">02</td><td>Scribe</td><td>3</td><td>2.67</td><td>8.8%</td></tr>
+
+            <tr><td class="rank">03</td><td>Barrilito</td><td>3</td><td>3.33</td><td>8.8%</td></tr>
+
+            <tr><td class="rank">04</td><td>Pelikan</td><td>3</td><td>3.67</td><td>8.8%</td></tr>
+
+            <tr><td class="rank">05</td><td>Faber-Castell</td><td>3</td><td>4.67</td><td>8.8%</td></tr>
+
+            <tr><td class="rank">06</td><td>Norma</td><td>2</td><td>1.5</td><td>5.9%</td></tr>
+
+            <tr><td class="rank">07</td><td>Pilot</td><td>2</td><td>4.0</td><td>5.9%</td></tr>
+
+            <tr><td class="rank">08</td><td>3M</td><td>1</td><td>1.0</td><td>2.9%</td></tr>
+
+            <tr><td class="rank">09</td><td>Paper Mate</td><td>1</td><td>2.0</td><td>2.9%</td></tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="questions">
+    <div class="section-head">
+      <div><p class="section-kicker">02 · Demand</p><h2>用户问题地图 <small>Mapa de preguntas · 20</small></h2></div>
+      <p class="section-note">问题按品牌词 / 地区排名词 / 品类词与 TOFU / MOFU / BOFU 双维度分类。</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Pregunta / 西语问题</th><th>中文对照</th><th>Tipo / 分类</th><th>Funnel</th><th>Valor / 价值</th><th>Resultado / 检测结果</th></tr></thead>
+        <tbody>
+
+          <tr>
+            <td class="rank">q01</td><td class="question-text">¿Qué tal es la marca Deli en papelería? ¿Vale la pena?</td><td class="question-zh">得力这个文具品牌怎么样？值得买吗？</td>
+            <td><span class="badge">品牌词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">5</span></td>
+            <td>
+
+
+                <span class="result-hit">✓ 提及 · 第 1 位</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q02</td><td class="question-text">¿Dónde puedo comprar productos Deli en México?</td><td class="question-zh">在墨西哥哪里能买到得力的产品？</td>
+            <td><span class="badge">品牌词</span></td>
+            <td><span class="badge">BOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q03</td><td class="question-text">¿Los productos Deli son de buena calidad o son chinos baratos?</td><td class="question-zh">得力的产品质量好吗，还是廉价中国货？</td>
+            <td><span class="badge">品牌词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q04</td><td class="question-text">¿Deli tiene garantía o servicio al cliente en México?</td><td class="question-zh">得力在墨西哥有保修或客服吗？</td>
+            <td><span class="badge">品牌词</span></td>
+            <td><span class="badge">BOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q05</td><td class="question-text">¿Cuáles son las mejores marcas de papelería en México?</td><td class="question-zh">墨西哥最好的文具品牌有哪些？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">5</span></td>
+            <td>
+
+
+                <span class="result-miss">× 未提及</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q06</td><td class="question-text">¿Qué marca de bolígrafos es mejor en México?</td><td class="question-zh">在墨西哥哪个牌子的圆珠笔最好？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">4</span></td>
+            <td>
+
+
+                <span class="result-hit">✓ 提及 · 第 5 位</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q07</td><td class="question-text">¿Cuál es la mejor marca de útiles escolares para el regreso a clases?</td><td class="question-zh">返校季最好的学生用品品牌是哪个？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">5</span></td>
+            <td>
+
+
+                <span class="result-miss">× 未提及</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q08</td><td class="question-text">¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?</td><td class="question-zh">给公司采购办公用品推荐什么品牌？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">4</span></td>
+            <td>
+
+
+                <span class="result-miss">× 未提及</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q09</td><td class="question-text">¿Qué marcas de papelería son baratas y de buena calidad?</td><td class="question-zh">哪些文具品牌便宜又好用？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">4</span></td>
+            <td>
+
+
+                <span class="result-hit">✓ 提及 · 第 4 位</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q10</td><td class="question-text">¿Qué marca de cuadernos es la mejor para la escuela?</td><td class="question-zh">上学用哪个牌子的笔记本最好？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q11</td><td class="question-text">¿Cuáles son las mejores tijeras y pegamento para manualidades escolares?</td><td class="question-zh">学校手工课用什么剪刀和胶水最好？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">TOFU</span></td><td><span class="score">2</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q12</td><td class="question-text">¿Qué debo comprar para la lista de útiles escolares?</td><td class="question-zh">开学清单应该买些什么？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">TOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q13</td><td class="question-text">¿Dónde comprar útiles escolares baratos en CDMX?</td><td class="question-zh">墨西哥城哪里能买到便宜的学生用品？</td>
+            <td><span class="badge">地区排名词</span></td>
+            <td><span class="badge">BOFU</span></td><td><span class="score">4</span></td>
+            <td>
+
+
+                <span class="result-miss">× 未提及</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q14</td><td class="question-text">¿Cuáles son las mejores papelerías en Guadalajara?</td><td class="question-zh">瓜达拉哈拉最好的文具店有哪些？</td>
+            <td><span class="badge">地区排名词</span></td>
+            <td><span class="badge">BOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q15</td><td class="question-text">¿Dónde conseguir artículos de oficina al por mayor en México?</td><td class="question-zh">在墨西哥哪里可以批发办公用品？</td>
+            <td><span class="badge">地区排名词</span></td>
+            <td><span class="badge">BOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q16</td><td class="question-text">¿Qué papelería en línea es confiable en México?</td><td class="question-zh">墨西哥哪个在线文具商城靠谱？</td>
+            <td><span class="badge">地区排名词</span></td>
+            <td><span class="badge">BOFU</span></td><td><span class="score">4</span></td>
+            <td>
+
+
+                <span class="result-miss">× 未提及</span>
+
+                <span class="badge mock">MOCK</span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q17</td><td class="question-text">¿Cómo elegir una engrapadora para la oficina?</td><td class="question-zh">怎么挑选办公用订书机？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">TOFU</span></td><td><span class="score">2</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q18</td><td class="question-text">¿Qué es mejor para tomar apuntes: bolígrafo o lápiz?</td><td class="question-zh">记笔记用圆珠笔好还是铅笔好？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">TOFU</span></td><td><span class="score">1</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q19</td><td class="question-text">¿Cuánto cuesta la lista de útiles escolares en México este año?</td><td class="question-zh">今年墨西哥开学清单大概要花多少钱？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">TOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="rank">q20</td><td class="question-text">¿Qué marcas de calculadoras científicas recomiendan para estudiantes?</td><td class="question-zh">学生用什么牌子的科学计算器好？</td>
+            <td><span class="badge">品类排名词</span></td>
+            <td><span class="badge">MOFU</span></td><td><span class="score">3</span></td>
+            <td>
+              <span class="badge">未检测</span>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="answers">
+    <div class="section-head">
+      <div><p class="section-kicker">03 · Evidence</p><h2>AI 回答与证据 <small>Respuestas analizadas</small></h2></div>
+      <p class="section-note">每条回答保留品牌顺位、竞品、引用来源与证据句；原文可展开查看。</p>
+    </div>
+    <div class="answers">
+
+
+      <article class="answer-card">
+        <div class="answer-head"><h3>q01 · 品牌已进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge pass">提及 是 · 第 1 位</span>
+          <span class="badge">情感 正面</span>
+          <span class="badge">引用 3</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>Pelikan、Faber-Castell、BIC、Pilot</p>
+        <p class="evidence"><strong>引用源：</strong>mercadolibre.com.mx、amazon.com.mx、deliworld.com</p>
+        <div class="quote">“Deli es una marca china de papelería y artículos de oficina fundada en 1981, y en los últimos años ha ganado presencia en América Latina, incluido México”</div>
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Deli es una marca china de papelería y artículos de oficina fundada en 1981, y en los últimos años ha ganado presencia en América Latina, incluido México. En general tiene buena reputación por su relación calidad-precio: sus bolígrafos, engrapadoras, tijeras y organizadores de escritorio suelen costar menos que los de marcas tradicionales como Pelikan o Faber-Castell, con una calidad aceptable para uso escolar y de oficina. Sí vale la pena para compras de volumen o presupuesto ajustado, aunque para instrumentos de escritura premium algunos usuarios siguen prefiriendo marcas consolidadas como BIC o Pilot. Puedes encontrar productos Deli en Mercado Libre, Amazon México y en papelerías mayoristas.
 
 Fuentes: mercadolibre.com.mx, amazon.com.mx, deliworld.com</pre></details>
+      </article>
 
 
-<h3>q05 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 否
-   ｜情感: 中性
-   ｜竞品: BIC, Norma, Scribe, Pelikan, Faber-Castell, Barrilito
-   ｜引用源: lumen.com.mx, mercadolibre.com.mx, eluniversal.com.mx</p>
+      <article class="answer-card">
+        <div class="answer-head"><h3>q05 · 品牌未进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge fail">提及 否</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 3</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>BIC、Norma、Scribe、Pelikan、Faber-Castell、Barrilito</p>
+        <p class="evidence"><strong>引用源：</strong>lumen.com.mx、mercadolibre.com.mx、eluniversal.com.mx</p>
 
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Entre las mejores marcas de papelería disponibles en México destacan:
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Entre las mejores marcas de papelería disponibles en México destacan:
 
 1. **BIC** — líder en bolígrafos y artículos de escritura, muy confiable y económica.
 2. **Norma** — la marca mexicana clásica de cuadernos, presente en todas las listas escolares.
@@ -370,16 +574,20 @@ Fuentes: mercadolibre.com.mx, amazon.com.mx, deliworld.com</pre></details>
 La elección depende del uso: para cuadernos Norma o Scribe, para escritura BIC, y para arte Faber-Castell.
 
 Fuentes: lumen.com.mx, mercadolibre.com.mx, eluniversal.com.mx</pre></details>
+      </article>
 
 
-<h3>q07 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 否
-   ｜情感: 中性
-   ｜竞品: Norma, Scribe, Crayola, Pritt, Pelikan, Faber-Castell
-   ｜引用源: gob.mx, lumen.com.mx, officedepot.com.mx</p>
+      <article class="answer-card">
+        <div class="answer-head"><h3>q07 · 品牌未进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge fail">提及 否</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 3</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>Norma、Scribe、Crayola、Pritt、Pelikan、Faber-Castell</p>
+        <p class="evidence"><strong>引用源：</strong>gob.mx、lumen.com.mx、officedepot.com.mx</p>
 
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Para el regreso a clases en México, las marcas de útiles escolares más recomendadas son:
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Para el regreso a clases en México, las marcas de útiles escolares más recomendadas son:
 
 - **Norma** — cuadernos resistentes, la opción número uno de las listas escolares.
 - **Scribe** — cuadernos y blocks de buena calidad hechos en México.
@@ -391,16 +599,20 @@ Fuentes: lumen.com.mx, mercadolibre.com.mx, eluniversal.com.mx</pre></details>
 Profeco recomienda comparar precios entre papelerías locales y cadenas como Office Depot o Lumen antes de comprar la lista completa.
 
 Fuentes: gob.mx/profeco, lumen.com.mx, officedepot.com.mx</pre></details>
+      </article>
 
 
-<h3>q06 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 是，第 5 位
-   ｜情感: 中性
-   ｜竞品: BIC, Paper Mate, Pilot, Zebra
-   ｜引用源: amazon.com.mx, reddit.com, mercadolibre.com.mx</p>
-<p class="evidence">证据: “Deli** — marca china económica que ha empezado a aparecer en papelerías y mayoristas; razonable para compras escolares de volumen, aunque menos conocida que las anteriores.”</p>
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Las marcas de bolígrafos mejor valoradas en México son:
+      <article class="answer-card">
+        <div class="answer-head"><h3>q06 · 品牌已进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge pass">提及 是 · 第 5 位</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 3</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>BIC、Paper Mate、Pilot、Zebra</p>
+        <p class="evidence"><strong>引用源：</strong>amazon.com.mx、reddit.com、mercadolibre.com.mx</p>
+        <div class="quote">“Deli** — marca china económica que ha empezado a aparecer en papelerías y mayoristas; razonable para compras escolares de volumen, aunque menos conocida que las anteriores.”</div>
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Las marcas de bolígrafos mejor valoradas en México son:
 
 1. **BIC** — el estándar por durabilidad y precio; el Cristal es el más vendido del país.
 2. **Paper Mate** — muy popular en oficinas, tinta suave.
@@ -411,16 +623,20 @@ Fuentes: gob.mx/profeco, lumen.com.mx, officedepot.com.mx</pre></details>
 Para uso diario la mayoría recomienda BIC o Paper Mate por disponibilidad en cualquier papelería.
 
 Fuentes: amazon.com.mx, reddit.com, mercadolibre.com.mx</pre></details>
+      </article>
 
 
-<h3>q08 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 否
-   ｜情感: 中性
-   ｜竞品: 3M, Post-it, Barrilito, Esselte, Leitz, Sablón, HP, Epson
-   ｜引用源: officedepot.com.mx, ofix.com, lumen.com.mx</p>
+      <article class="answer-card">
+        <div class="answer-head"><h3>q08 · 品牌未进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge fail">提及 否</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 3</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>3M、Post-it、Barrilito、Esselte、Leitz、Sablón、HP、Epson</p>
+        <p class="evidence"><strong>引用源：</strong>officedepot.com.mx、ofix.com、lumen.com.mx</p>
 
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Para equipar una oficina en México se suelen recomendar estas marcas y proveedores:
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Para equipar una oficina en México se suelen recomendar estas marcas y proveedores:
 
 - **3M / Post-it** — notas adhesivas, cintas y organización; estándar corporativo.
 - **Barrilito** — marca mexicana con catálogo completo de oficina (engrapadoras, folders, archiveros de cartón) a precios competitivos.
@@ -431,16 +647,20 @@ Fuentes: amazon.com.mx, reddit.com, mercadolibre.com.mx</pre></details>
 En cuanto a proveedores, **Office Depot México**, **Lumen** y **Ofix** manejan catálogos empresariales con facturación y entrega a oficina; para volumen conviene pedir cotización mayorista.
 
 Fuentes: officedepot.com.mx, ofix.com, lumen.com.mx</pre></details>
+      </article>
 
 
-<h3>q09 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 是，第 4 位
-   ｜情感: 中性
-   ｜竞品: Barrilito, BIC, Scribe
-   ｜引用源: mercadolibre.com.mx, chedraui.com.mx</p>
-<p class="evidence">证据: “Deli** — marca china de bajo costo que cada vez se ve más en papelerías y mayoristas mexicanos; su calidad es aceptable en tijeras, engrapadoras y organizadores, aunque la disponibilidad de refacciones y garantía todavía es limitada.”</p>
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Si buscas papelería barata pero de buena calidad en México, estas marcas suelen dar el mejor balance:
+      <article class="answer-card">
+        <div class="answer-head"><h3>q09 · 品牌已进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge pass">提及 是 · 第 4 位</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 2</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>Barrilito、BIC、Scribe</p>
+        <p class="evidence"><strong>引用源：</strong>mercadolibre.com.mx、chedraui.com.mx</p>
+        <div class="quote">“Deli** — marca china de bajo costo que cada vez se ve más en papelerías y mayoristas mexicanos; su calidad es aceptable en tijeras, engrapadoras y organizadores, aunque la disponibilidad de refacciones y garantía todavía es limitada.”</div>
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Si buscas papelería barata pero de buena calidad en México, estas marcas suelen dar el mejor balance:
 
 1. **Barrilito** — mexicana, muy barata y con catálogo enorme de oficina.
 2. **BIC** — sus bolígrafos y correctores básicos son económicos y duran.
@@ -450,16 +670,20 @@ Fuentes: officedepot.com.mx, ofix.com, lumen.com.mx</pre></details>
 Comprar en mayoristas del Centro Histórico o en temporada de ofertas de regreso a clases reduce bastante el gasto total.
 
 Fuentes: mercadolibre.com.mx, chedraui.com.mx</pre></details>
+      </article>
 
 
-<h3>q13 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 否
-   ｜情感: 中性
-   ｜竞品: 无
-   ｜引用源: gob.mx, lumen.com.mx, eluniversal.com.mx</p>
+      <article class="answer-card">
+        <div class="answer-head"><h3>q13 · 品牌未进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge fail">提及 否</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 3</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>无</p>
+        <p class="evidence"><strong>引用源：</strong>gob.mx、lumen.com.mx、eluniversal.com.mx</p>
 
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Para comprar útiles escolares baratos en la Ciudad de México, las mejores opciones son:
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Para comprar útiles escolares baratos en la Ciudad de México, las mejores opciones son:
 
 1. **Centro Histórico (calles Mesones y República de El Salvador)** — la zona mayorista clásica de papelerías; precios hasta 40% más bajos que en cadenas.
 2. **Central de Abasto** — sección de papelería con precios de mayoreo.
@@ -470,16 +694,20 @@ Fuentes: mercadolibre.com.mx, chedraui.com.mx</pre></details>
 En temporada de regreso a clases, Profeco publica comparativos de precios de la lista completa de útiles.
 
 Fuentes: gob.mx/profeco, lumen.com.mx, eluniversal.com.mx</pre></details>
+      </article>
 
 
-<h3>q16 <span class="badge">MOCK</span>
-    </h3>
-<p class="evidence">品牌提及: 否
-   ｜情感: 中性
-   ｜竞品: 无
-   ｜引用源: lumen.com.mx, officedepot.com.mx, ofix.com, amazon.com.mx</p>
+      <article class="answer-card">
+        <div class="answer-head"><h3>q16 · 品牌未进入答案</h3><div><span class="badge mock">MOCK</span> </div></div>
+        <div class="answer-meta">
+          <span class="badge fail">提及 否</span>
+          <span class="badge">情感 中性</span>
+          <span class="badge">引用 4</span>
+        </div>
+        <p class="evidence"><strong>竞品：</strong>无</p>
+        <p class="evidence"><strong>引用源：</strong>lumen.com.mx、officedepot.com.mx、ofix.com、amazon.com.mx</p>
 
-<details><summary>查看回答原文</summary><pre style="white-space:pre-wrap">Las papelerías en línea más confiables en México son:
+        <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>Las papelerías en línea más confiables en México son:
 
 1. **Lumen (lumen.com.mx)** — cadena tradicional con tienda en línea sólida, facturación y entregas a todo el país.
 2. **Office Depot México (officedepot.com.mx)** — amplio catálogo de oficina, recolección en tienda.
@@ -489,90 +717,209 @@ Fuentes: gob.mx/profeco, lumen.com.mx, eluniversal.com.mx</pre></details>
 Todas manejan pagos seguros y devoluciones; para compras escolares grandes, Lumen y Office Depot suelen tener los mejores paquetes de temporada.
 
 Fuentes: lumen.com.mx, officedepot.com.mx, ofix.com, amazon.com.mx</pre></details>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="site-audit">
+    <div class="section-head">
+      <div><p class="section-kicker">04 · Foundation</p><h2>网站可引用性诊断 <small>Auditoría del sitio</small></h2></div>
+      <p class="section-note"><span class="badge real">LIVE AUDIT · 实时抓取</span> 共检查 15 页</p>
+    </div>
+    <div class="audit-grid">
 
 
-<h2>四、网站诊断 <small>Auditoría del sitio</small></h2>
+      <div class="audit-item"><small>可抓取 / Rastreable</small><strong>通过</strong> <span class="badge pass">PASS</span></div>
 
+      <div class="audit-item"><small>robots.txt 允许</small><strong>通过</strong> <span class="badge pass">PASS</span></div>
 
-<p></p>
-<table>
-  <tr><th>检查项</th><th>结果</th></tr>
-  <tr><td>可抓取</td><td>✅</td></tr>
-  <tr><td>robots.txt 允许</td><td>✅</td></tr>
-  <tr><td>sitemap</td><td>✅</td></tr>
-  <tr><td>es-MX hreflang</td><td>❌</td></tr>
-  <tr><td>结构化数据 (JSON-LD)</td><td>✅</td></tr>
-  <tr><td>西语内容</td><td>❌</td></tr>
-  <tr><td>已检查页面数</td><td>15</td></tr>
-</table>
+      <div class="audit-item"><small>Sitemap 存在</small><strong>通过</strong> <span class="badge pass">PASS</span></div>
 
-<h3>发现的问题</h3>
-<table><tr><th>严重度</th><th>代码</th><th>说明</th></tr>
-<tr><td>high</td><td>NO_HREFLANG_ES_MX</td><td>未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）</td></tr><tr><td>high</td><td>NO_SPANISH_CONTENT</td><td>站内未检测到西班牙语内容，目标市场语言完全缺位</td></tr>
-</table>
+      <div class="audit-item"><small>es-MX hreflang</small><strong>需修复</strong> <span class="badge fail">GAP</span></div>
 
+      <div class="audit-item"><small>JSON-LD 结构化数据</small><strong>通过</strong> <span class="badge pass">PASS</span></div>
 
-<h2>五、内容缺口 <small>Brechas de contenido (7)</small></h2>
+      <div class="audit-item"><small>西语内容 / Español</small><strong>需修复</strong> <span class="badge fail">GAP</span></div>
 
-<h3>1. [主题] 全国品类榜单类问题中品牌完全缺席</h3>
-<p class="evidence">• 「¿Cuáles son las mejores marcas de papelería en México?」→ AI 回答提及竞品: BIC, Norma, Scribe, Pelikan, Faber-Castell，未提及品牌</p><p class="evidence">• 「¿Cuál es la mejor marca de útiles escolares para el regreso a clases?」→ AI 回答提及竞品: Norma, Scribe, Crayola, Pritt, Pelikan，未提及品牌</p><p class="evidence">• 「¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?」→ AI 回答提及竞品: 3M, Post-it, Barrilito, Esselte, Leitz，未提及品牌</p>
+      <div class="audit-item"><small>检查页面 / Páginas</small><strong>15 页</strong></div>
+      <div class="audit-item"><small>数据模式 / Modo</small><strong>实时抓取</strong></div>
+    </div>
 
-<h3>2. [主题] 地区/渠道类问题中品牌完全缺席</h3>
-<p class="evidence">• 「¿Dónde comprar útiles escolares baratos en CDMX?」→ AI 回答仅提及零售渠道，未提及品牌</p><p class="evidence">• 「¿Qué papelería en línea es confiable en México?」→ AI 回答仅提及零售渠道，未提及品牌</p>
+    <div class="issue-list">
+      <div class="issue"><span class="badge P0">HIGH</span><code>NO_HREFLANG_ES_MX</code><span>未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）</span></div><div class="issue"><span class="badge P0">HIGH</span><code>NO_SPANISH_CONTENT</code><span>站内未检测到西班牙语内容，目标市场语言完全缺位</span></div>
+    </div>
 
-<h3>3. [页面] 缺少 es-MX「哪里购买/授权经销商」落地页（Dónde comprar）</h3>
-<p class="evidence">• 「¿Dónde comprar útiles escolares baratos en CDMX?」→ AI 回答仅提及零售渠道，未提及品牌</p><p class="evidence">• 「¿Qué papelería en línea es confiable en México?」→ AI 回答仅提及零售渠道，未提及品牌</p><p class="evidence">• 购买意图最强的问题被零售商与竞品承接，品牌无可被 AI 引用的渠道页</p>
+  </section>
 
-<h3>4. [页面] 缺少西语品类对比/榜单型内容（vs Norma, Scribe, Pelikan, Faber-Castell）</h3>
-<p class="evidence">• 「¿Cuáles son las mejores marcas de papelería en México?」→ AI 回答提及竞品: BIC, Norma, Scribe, Pelikan, Faber-Castell，未提及品牌</p><p class="evidence">• 「¿Cuál es la mejor marca de útiles escolares para el regreso a clases?」→ AI 回答提及竞品: Norma, Scribe, Crayola, Pritt, Pelikan，未提及品牌</p><p class="evidence">• 「¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?」→ AI 回答提及竞品: 3M, Post-it, Barrilito, Esselte, Leitz，未提及品牌</p>
+  <section id="gaps">
+    <div class="section-head">
+      <div><p class="section-kicker">05 · Opportunity</p><h2>内容与信号缺口 <small>Brechas · 7</small></h2></div>
+      <p class="section-note">每个缺口均由问题、回答指标或网站检查结果提供证据，不做无依据推断。</p>
+    </div>
+    <div class="cards">
 
-<h3>5. [主题] 品牌被 AI 提及但排名靠后（这些回答中平均第 4.5 位）</h3>
-<p class="evidence">• 「¿Qué marca de bolígrafos es mejor en México?」→ 品牌列于第 5 位；证据: Deli** — marca china económica que ha empezado a aparecer en papelerías y mayori</p><p class="evidence">• 「¿Qué marcas de papelería son baratas y de buena calidad?」→ 品牌列于第 4 位；证据: Deli** — marca china de bajo costo que cada vez se ve más en papelerías y mayori</p>
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">01</span><span class="badge">主题 TOPIC</span></div>
+        <h3>全国品类榜单类问题中品牌完全缺席</h3>
+        <ul class="evidence-list"><li>「¿Cuáles son las mejores marcas de papelería en México?」→ AI 回答提及竞品: BIC, Norma, Scribe, Pelikan, Faber-Castell，未提及品牌</li><li>「¿Cuál es la mejor marca de útiles escolares para el regreso a clases?」→ AI 回答提及竞品: Norma, Scribe, Crayola, Pritt, Pelikan，未提及品牌</li><li>「¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?」→ AI 回答提及竞品: 3M, Post-it, Barrilito, Esselte, Leitz，未提及品牌</li></ul>
+        <p class="evidence"><strong>关联问题：</strong>q05 · q07 · q08</p>
+      </article>
 
-<h3>6. [信号] 站点信号缺失: NO_HREFLANG_ES_MX</h3>
-<p class="evidence">• 未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）</p>
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">02</span><span class="badge">主题 TOPIC</span></div>
+        <h3>地区/渠道类问题中品牌完全缺席</h3>
+        <ul class="evidence-list"><li>「¿Dónde comprar útiles escolares baratos en CDMX?」→ AI 回答仅提及零售渠道，未提及品牌</li><li>「¿Qué papelería en línea es confiable en México?」→ AI 回答仅提及零售渠道，未提及品牌</li></ul>
+        <p class="evidence"><strong>关联问题：</strong>q13 · q16</p>
+      </article>
 
-<h3>7. [信号] 站点信号缺失: NO_SPANISH_CONTENT</h3>
-<p class="evidence">• 站内未检测到西班牙语内容，目标市场语言完全缺位</p>
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">03</span><span class="badge">页面 PAGE</span></div>
+        <h3>缺少 es-MX「哪里购买/授权经销商」落地页（Dónde comprar）</h3>
+        <ul class="evidence-list"><li>「¿Dónde comprar útiles escolares baratos en CDMX?」→ AI 回答仅提及零售渠道，未提及品牌</li><li>「¿Qué papelería en línea es confiable en México?」→ AI 回答仅提及零售渠道，未提及品牌</li><li>购买意图最强的问题被零售商与竞品承接，品牌无可被 AI 引用的渠道页</li></ul>
+        <p class="evidence"><strong>关联问题：</strong>q13 · q16</p>
+      </article>
 
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">04</span><span class="badge">页面 PAGE</span></div>
+        <h3>缺少西语品类对比/榜单型内容（vs Norma, Scribe, Pelikan, Faber-Castell）</h3>
+        <ul class="evidence-list"><li>「¿Cuáles son las mejores marcas de papelería en México?」→ AI 回答提及竞品: BIC, Norma, Scribe, Pelikan, Faber-Castell，未提及品牌</li><li>「¿Cuál es la mejor marca de útiles escolares para el regreso a clases?」→ AI 回答提及竞品: Norma, Scribe, Crayola, Pritt, Pelikan，未提及品牌</li><li>「¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?」→ AI 回答提及竞品: 3M, Post-it, Barrilito, Esselte, Leitz，未提及品牌</li></ul>
+        <p class="evidence"><strong>关联问题：</strong>q05 · q07 · q08</p>
+      </article>
 
-<h2>六、行动建议 <small>Plan de acción (7)</small></h2>
-<table>
-  <tr><th>优先级</th><th>行动</th><th>理由</th><th>预期影响</th><th>工作量</th></tr>
-  
-  <tr><td class="prio-P0">P0</td>
-      <td>修复官网技术信号: NO_HREFLANG_ES_MX、NO_SPANISH_CONTENT</td><td>站点诊断发现影响搜索引擎与 AI 抓取/理解的基础问题，内容投入前必须先修地基</td>
-      <td>提升官网可抓取性与可引用性，是后续所有内容被 AI 收录的前提</td><td>S</td></tr>
-  
-  <tr><td class="prio-P0">P0</td>
-      <td>上线 es-MX「Dónde comprar Deli」渠道页，列出墨西哥可购渠道（Mercado Libre/Amazon MX/线下经销商）并添加结构化数据</td><td>缺口证据: 3 条 BOFU 购买类问题的 AI 回答完全由零售商与竞品承接</td>
-      <td>直接承接购买意图最强的 AI 流量，把&#39;被提到&#39;变成&#39;可转化&#39;</td><td>S</td></tr>
-  
-  <tr><td class="prio-P0">P0</td>
-      <td>建立 es-MX 品类内容集群：针对未命中的榜单/对比类问题逐条产出「真实问题→直接答案」式页面（FAQ、对比页、场景页）</td><td>AI 可见度仅 38%（8 条高价值问题中），品类榜单问题几乎全部旁落竞品</td>
-      <td>进入 AI 品类推荐答案位，可见度目标 3 个月内提升至 50%+</td><td>M</td></tr>
-  
-  <tr><td class="prio-P1">P1</td>
-      <td>产出西语对比评测内容（vs Norma, Scribe, Pelikan, Faber-Castell），投放到官网博客与高权重第三方渠道</td><td>MOFU 对比类问题未命中 3 条，用户比较阶段品牌不在候选集</td>
-      <td>在用户&#39;比较阶段&#39;进入 AI 候选集，挤占竞品答案位</td><td>M</td></tr>
-  
-  <tr><td class="prio-P1">P1</td>
-      <td>权威引用源建设：争取墨西哥本地媒体测评、Profeco 类比价内容收录、行业目录与高权重导购站露出</td><td>话语权 SOV 仅 8.8%（BIC 领先），且 AI 引用源集中于电商与零售站，品牌缺少可信第三方背书</td>
-      <td>提升 Citation Rate 与 SOV，让 AI&#39;敢引用&#39;品牌信息</td><td>L</td></tr>
-  
-  <tr><td class="prio-P1">P1</td>
-      <td>针对已命中问题优化答案位排名：补充产品参数/价格/评价等结构化信息，强化「性价比首选」定位话术</td><td>品牌平均排名第 3.3 位，被提及但处于答案尾部，用户记忆度低</td>
-      <td>平均排名进入前 3，显著提升 AI 推荐转化</td><td>M</td></tr>
-  
-  <tr><td class="prio-P2">P2</td>
-      <td>建立周期性 AI 可见度监测：扩大问题样本至 100+，多平台多轮采样取均值</td><td>单次 8~10 问采样仅为演示规模，AI 回答存在随机性，结论需多轮验证</td>
-      <td>形成可跟踪的 GEO 指标基线，验证上述动作的实际效果</td><td>M</td></tr>
-  
-</table>
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">05</span><span class="badge">主题 TOPIC</span></div>
+        <h3>品牌被 AI 提及但排名靠后（这些回答中平均第 4.5 位）</h3>
+        <ul class="evidence-list"><li>「¿Qué marca de bolígrafos es mejor en México?」→ 品牌列于第 5 位；证据: Deli** — marca china económica que ha empezado a aparecer en papelerías y mayori</li><li>「¿Qué marcas de papelería son baratas y de buena calidad?」→ 品牌列于第 4 位；证据: Deli** — marca china de bajo costo que cada vez se ve más en papelerías y mayori</li></ul>
+        <p class="evidence"><strong>关联问题：</strong>q06 · q09</p>
+      </article>
 
-<footer>
-  运行 ID 60b2cb03 ｜模式 mock ｜
-  本报告由 AI 海外市场诊断智能体原型生成；标注 MOCK 的数据为模拟回放，用于演示链路。
-</footer>
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">06</span><span class="badge">信号 SIGNAL</span></div>
+        <h3>站点信号缺失: NO_HREFLANG_ES_MX</h3>
+        <ul class="evidence-list"><li>未声明 es-MX 语言版本，墨西哥用户与本地化 AI 检索无法定位西语内容（现有 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw）</li></ul>
+
+      </article>
+
+      <article class="gap-card">
+        <div class="card-top"><span class="card-index">07</span><span class="badge">信号 SIGNAL</span></div>
+        <h3>站点信号缺失: NO_SPANISH_CONTENT</h3>
+        <ul class="evidence-list"><li>站内未检测到西班牙语内容，目标市场语言完全缺位</li></ul>
+
+      </article>
+
+    </div>
+  </section>
+
+  <section id="recommendations">
+    <div class="section-head">
+      <div><p class="section-kicker">06 · Action</p><h2>优先行动路线图 <small>Plan de acción · 7</small></h2></div>
+      <p class="section-note">P0 立即处理，P1 进入近期内容排期，P2 作为规模化能力建设。</p>
+    </div>
+    <div class="cards">
+
+      <article class="rec-card P0">
+        <div class="card-top"><span class="card-index">01</span><span class="badge P0">P0</span><span class="badge">EFFORT S</span></div>
+        <h3>修复官网技术信号: NO_HREFLANG_ES_MX、NO_SPANISH_CONTENT</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>站点诊断发现影响搜索引擎与 AI 抓取/理解的基础问题，内容投入前必须先修地基</span></div>
+          <div><small>IMPACT / 预期影响</small><span>提升官网可抓取性与可引用性，是后续所有内容被 AI 收录的前提</span></div>
+          <div><small>EFFORT / 工作量</small><span>S · 小</span></div>
+        </div>
+      </article>
+
+      <article class="rec-card P0">
+        <div class="card-top"><span class="card-index">02</span><span class="badge P0">P0</span><span class="badge">EFFORT S</span></div>
+        <h3>上线 es-MX「Dónde comprar Deli」渠道页，列出墨西哥可购渠道（Mercado Libre/Amazon MX/线下经销商）并添加结构化数据</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>缺口证据: 3 条 BOFU 购买类问题的 AI 回答完全由零售商与竞品承接</span></div>
+          <div><small>IMPACT / 预期影响</small><span>直接承接购买意图最强的 AI 流量，把&#39;被提到&#39;变成&#39;可转化&#39;</span></div>
+          <div><small>EFFORT / 工作量</small><span>S · 小</span></div>
+        </div>
+      </article>
+
+      <article class="rec-card P0">
+        <div class="card-top"><span class="card-index">03</span><span class="badge P0">P0</span><span class="badge">EFFORT M</span></div>
+        <h3>建立 es-MX 品类内容集群：针对未命中的榜单/对比类问题逐条产出「真实问题→直接答案」式页面（FAQ、对比页、场景页）</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>AI 可见度仅 38%（8 条高价值问题中），品类榜单问题几乎全部旁落竞品</span></div>
+          <div><small>IMPACT / 预期影响</small><span>进入 AI 品类推荐答案位，可见度目标 3 个月内提升至 50%+</span></div>
+          <div><small>EFFORT / 工作量</small><span>M · 中</span></div>
+        </div>
+      </article>
+
+      <article class="rec-card P1">
+        <div class="card-top"><span class="card-index">04</span><span class="badge P1">P1</span><span class="badge">EFFORT M</span></div>
+        <h3>产出西语对比评测内容（vs Norma, Scribe, Pelikan, Faber-Castell），投放到官网博客与高权重第三方渠道</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>MOFU 对比类问题未命中 3 条，用户比较阶段品牌不在候选集</span></div>
+          <div><small>IMPACT / 预期影响</small><span>在用户&#39;比较阶段&#39;进入 AI 候选集，挤占竞品答案位</span></div>
+          <div><small>EFFORT / 工作量</small><span>M · 中</span></div>
+        </div>
+      </article>
+
+      <article class="rec-card P1">
+        <div class="card-top"><span class="card-index">05</span><span class="badge P1">P1</span><span class="badge">EFFORT L</span></div>
+        <h3>权威引用源建设：争取墨西哥本地媒体测评、Profeco 类比价内容收录、行业目录与高权重导购站露出</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>话语权 SOV 仅 8.8%（BIC 领先），且 AI 引用源集中于电商与零售站，品牌缺少可信第三方背书</span></div>
+          <div><small>IMPACT / 预期影响</small><span>提升 Citation Rate 与 SOV，让 AI&#39;敢引用&#39;品牌信息</span></div>
+          <div><small>EFFORT / 工作量</small><span>L · 大</span></div>
+        </div>
+      </article>
+
+      <article class="rec-card P1">
+        <div class="card-top"><span class="card-index">06</span><span class="badge P1">P1</span><span class="badge">EFFORT M</span></div>
+        <h3>针对已命中问题优化答案位排名：补充产品参数/价格/评价等结构化信息，强化「性价比首选」定位话术</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>品牌平均排名第 3.3 位，被提及但处于答案尾部，用户记忆度低</span></div>
+          <div><small>IMPACT / 预期影响</small><span>平均排名进入前 3，显著提升 AI 推荐转化</span></div>
+          <div><small>EFFORT / 工作量</small><span>M · 中</span></div>
+        </div>
+      </article>
+
+      <article class="rec-card P2">
+        <div class="card-top"><span class="card-index">07</span><span class="badge P2">P2</span><span class="badge">EFFORT M</span></div>
+        <h3>建立周期性 AI 可见度监测：扩大问题样本至 100+，多平台多轮采样取均值</h3>
+        <div class="rec-grid">
+          <div><small>WHY / 理由</small><span>单次 8~10 问采样仅为演示规模，AI 回答存在随机性，结论需多轮验证</span></div>
+          <div><small>IMPACT / 预期影响</small><span>形成可跟踪的 GEO 指标基线，验证上述动作的实际效果</span></div>
+          <div><small>EFFORT / 工作量</small><span>M · 中</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <footer>
+    <strong>AI 海外市场诊断智能体 · Prototype</strong><br>
+    运行 ID 60b2cb03 · 模式 mock · 生成于 2026-07-16T08:35:47.047831+00:00。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照。
+  </footer>
+</main>
+
+<script id="report-data" type="application/json">{"analyses": [{"brand_mentioned": true, "brand_position": 1, "citations": [{"domain": "mercadolibre.com.mx", "url": null}, {"domain": "amazon.com.mx", "url": null}, {"domain": "deliworld.com", "url": null}], "competitors": [{"name": "Pelikan", "position": 2}, {"name": "Faber-Castell", "position": 3}, {"name": "BIC", "position": 4}, {"name": "Pilot", "position": 5}], "evidence_quote": "Deli es una marca china de papeler\u00eda y art\u00edculos de oficina fundada en 1981, y en los \u00faltimos a\u00f1os ha ganado presencia en Am\u00e9rica Latina, incluido M\u00e9xico", "parse_degraded": false, "question_id": "q01", "sentiment": "pos"}, {"brand_mentioned": false, "brand_position": null, "citations": [{"domain": "lumen.com.mx", "url": null}, {"domain": "mercadolibre.com.mx", "url": null}, {"domain": "eluniversal.com.mx", "url": null}], "competitors": [{"name": "BIC", "position": 1}, {"name": "Norma", "position": 2}, {"name": "Scribe", "position": 3}, {"name": "Pelikan", "position": 4}, {"name": "Faber-Castell", "position": 5}, {"name": "Barrilito", "position": 6}], "evidence_quote": "", "parse_degraded": false, "question_id": "q05", "sentiment": "neu"}, {"brand_mentioned": false, "brand_position": null, "citations": [{"domain": "gob.mx", "url": null}, {"domain": "lumen.com.mx", "url": null}, {"domain": "officedepot.com.mx", "url": null}], "competitors": [{"name": "Norma", "position": 1}, {"name": "Scribe", "position": 2}, {"name": "Crayola", "position": 3}, {"name": "Pritt", "position": 4}, {"name": "Pelikan", "position": 5}, {"name": "Faber-Castell", "position": 6}], "evidence_quote": "", "parse_degraded": false, "question_id": "q07", "sentiment": "neu"}, {"brand_mentioned": true, "brand_position": 5, "citations": [{"domain": "amazon.com.mx", "url": null}, {"domain": "reddit.com", "url": null}, {"domain": "mercadolibre.com.mx", "url": null}], "competitors": [{"name": "BIC", "position": 1}, {"name": "Paper Mate", "position": 2}, {"name": "Pilot", "position": 3}, {"name": "Zebra", "position": 4}], "evidence_quote": "Deli** \u2014 marca china econ\u00f3mica que ha empezado a aparecer en papeler\u00edas y mayoristas; razonable para compras escolares de volumen, aunque menos conocida que las anteriores.", "parse_degraded": false, "question_id": "q06", "sentiment": "neu"}, {"brand_mentioned": false, "brand_position": null, "citations": [{"domain": "officedepot.com.mx", "url": null}, {"domain": "ofix.com", "url": null}, {"domain": "lumen.com.mx", "url": null}], "competitors": [{"name": "3M", "position": 1}, {"name": "Post-it", "position": 2}, {"name": "Barrilito", "position": 3}, {"name": "Esselte", "position": 4}, {"name": "Leitz", "position": 5}, {"name": "Sabl\u00f3n", "position": 6}, {"name": "HP", "position": 7}, {"name": "Epson", "position": 8}], "evidence_quote": "", "parse_degraded": false, "question_id": "q08", "sentiment": "neu"}, {"brand_mentioned": true, "brand_position": 4, "citations": [{"domain": "mercadolibre.com.mx", "url": null}, {"domain": "chedraui.com.mx", "url": null}], "competitors": [{"name": "Barrilito", "position": 1}, {"name": "BIC", "position": 2}, {"name": "Scribe", "position": 3}], "evidence_quote": "Deli** \u2014 marca china de bajo costo que cada vez se ve m\u00e1s en papeler\u00edas y mayoristas mexicanos; su calidad es aceptable en tijeras, engrapadoras y organizadores, aunque la disponibilidad de refacciones y garant\u00eda todav\u00eda es limitada.", "parse_degraded": false, "question_id": "q09", "sentiment": "neu"}, {"brand_mentioned": false, "brand_position": null, "citations": [{"domain": "gob.mx", "url": null}, {"domain": "lumen.com.mx", "url": null}, {"domain": "eluniversal.com.mx", "url": null}], "competitors": [], "evidence_quote": "", "parse_degraded": false, "question_id": "q13", "sentiment": "neu"}, {"brand_mentioned": false, "brand_position": null, "citations": [{"domain": "lumen.com.mx", "url": null}, {"domain": "officedepot.com.mx", "url": null}, {"domain": "ofix.com", "url": null}, {"domain": "amazon.com.mx", "url": null}], "competitors": [], "evidence_quote": "", "parse_degraded": false, "question_id": "q16", "sentiment": "neu"}], "answers": [{"is_mock": true, "provider": "mock", "question_id": "q01", "raw_text": "Deli es una marca china de papeler\u00eda y art\u00edculos de oficina fundada en 1981, y en los \u00faltimos a\u00f1os ha ganado presencia en Am\u00e9rica Latina, incluido M\u00e9xico. En general tiene buena reputaci\u00f3n por su relaci\u00f3n calidad-precio: sus bol\u00edgrafos, engrapadoras, tijeras y organizadores de escritorio suelen costar menos que los de marcas tradicionales como Pelikan o Faber-Castell, con una calidad aceptable para uso escolar y de oficina. S\u00ed vale la pena para compras de volumen o presupuesto ajustado, aunque para instrumentos de escritura premium algunos usuarios siguen prefiriendo marcas consolidadas como BIC o Pilot. Puedes encontrar productos Deli en Mercado Libre, Amazon M\u00e9xico y en papeler\u00edas mayoristas.\n\nFuentes: mercadolibre.com.mx, amazon.com.mx, deliworld.com", "retrieved_at": "2026-07-16T08:35:18.315412Z"}, {"is_mock": true, "provider": "mock", "question_id": "q05", "raw_text": "Entre las mejores marcas de papeler\u00eda disponibles en M\u00e9xico destacan:\n\n1. **BIC** \u2014 l\u00edder en bol\u00edgrafos y art\u00edculos de escritura, muy confiable y econ\u00f3mica.\n2. **Norma** \u2014 la marca mexicana cl\u00e1sica de cuadernos, presente en todas las listas escolares.\n3. **Scribe** \u2014 otra marca nacional muy fuerte en cuadernos y papel.\n4. **Pelikan** \u2014 reconocida en pegamentos, plumones y material escolar.\n5. **Faber-Castell** \u2014 referencia en l\u00e1pices de colores y material de arte.\n6. **Barrilito** \u2014 marca mexicana con amplio cat\u00e1logo de art\u00edculos de oficina a buen precio.\n\nLa elecci\u00f3n depende del uso: para cuadernos Norma o Scribe, para escritura BIC, y para arte Faber-Castell.\n\nFuentes: lumen.com.mx, mercadolibre.com.mx, eluniversal.com.mx", "retrieved_at": "2026-07-16T08:35:18.315786Z"}, {"is_mock": true, "provider": "mock", "question_id": "q07", "raw_text": "Para el regreso a clases en M\u00e9xico, las marcas de \u00fatiles escolares m\u00e1s recomendadas son:\n\n- **Norma** \u2014 cuadernos resistentes, la opci\u00f3n n\u00famero uno de las listas escolares.\n- **Scribe** \u2014 cuadernos y blocks de buena calidad hechos en M\u00e9xico.\n- **Crayola** \u2014 imprescindible en crayones y plumones lavables para primaria.\n- **Pritt** \u2014 el l\u00e1piz adhesivo que piden pr\u00e1cticamente todas las escuelas.\n- **Pelikan** \u2014 plumones, acuarelas y pegamentos con buena relaci\u00f3n calidad-precio.\n- **Faber-Castell** \u2014 l\u00e1pices de colores duraderos, recomendados por maestros.\n\nProfeco recomienda comparar precios entre papeler\u00edas locales y cadenas como Office Depot o Lumen antes de comprar la lista completa.\n\nFuentes: gob.mx/profeco, lumen.com.mx, officedepot.com.mx", "retrieved_at": "2026-07-16T08:35:18.315934Z"}, {"is_mock": true, "provider": "mock", "question_id": "q06", "raw_text": "Las marcas de bol\u00edgrafos mejor valoradas en M\u00e9xico son:\n\n1. **BIC** \u2014 el est\u00e1ndar por durabilidad y precio; el Cristal es el m\u00e1s vendido del pa\u00eds.\n2. **Paper Mate** \u2014 muy popular en oficinas, tinta suave.\n3. **Pilot** \u2014 calidad japonesa, preferida para escritura fina y plumas de gel.\n4. **Zebra** \u2014 buena opci\u00f3n intermedia, c\u00f3moda para uso prolongado.\n5. **Deli** \u2014 marca china econ\u00f3mica que ha empezado a aparecer en papeler\u00edas y mayoristas; razonable para compras escolares de volumen, aunque menos conocida que las anteriores.\n\nPara uso diario la mayor\u00eda recomienda BIC o Paper Mate por disponibilidad en cualquier papeler\u00eda.\n\nFuentes: amazon.com.mx, reddit.com, mercadolibre.com.mx", "retrieved_at": "2026-07-16T08:35:18.316121Z"}, {"is_mock": true, "provider": "mock", "question_id": "q08", "raw_text": "Para equipar una oficina en M\u00e9xico se suelen recomendar estas marcas y proveedores:\n\n- **3M / Post-it** \u2014 notas adhesivas, cintas y organizaci\u00f3n; est\u00e1ndar corporativo.\n- **Barrilito** \u2014 marca mexicana con cat\u00e1logo completo de oficina (engrapadoras, folders, archiveros de cart\u00f3n) a precios competitivos.\n- **Esselte / Leitz** \u2014 archivo y carpetas de alta durabilidad.\n- **Sabl\u00f3n** \u2014 sellos y foliadores para tr\u00e1mites.\n- **HP y Epson** \u2014 consumibles de impresi\u00f3n.\n\nEn cuanto a proveedores, **Office Depot M\u00e9xico**, **Lumen** y **Ofix** manejan cat\u00e1logos empresariales con facturaci\u00f3n y entrega a oficina; para volumen conviene pedir cotizaci\u00f3n mayorista.\n\nFuentes: officedepot.com.mx, ofix.com, lumen.com.mx", "retrieved_at": "2026-07-16T08:35:18.316275Z"}, {"is_mock": true, "provider": "mock", "question_id": "q09", "raw_text": "Si buscas papeler\u00eda barata pero de buena calidad en M\u00e9xico, estas marcas suelen dar el mejor balance:\n\n1. **Barrilito** \u2014 mexicana, muy barata y con cat\u00e1logo enorme de oficina.\n2. **BIC** \u2014 sus bol\u00edgrafos y correctores b\u00e1sicos son econ\u00f3micos y duran.\n3. **Scribe** \u2014 cuadernos nacionales con buen papel a precio accesible.\n4. **Deli** \u2014 marca china de bajo costo que cada vez se ve m\u00e1s en papeler\u00edas y mayoristas mexicanos; su calidad es aceptable en tijeras, engrapadoras y organizadores, aunque la disponibilidad de refacciones y garant\u00eda todav\u00eda es limitada.\n\nComprar en mayoristas del Centro Hist\u00f3rico o en temporada de ofertas de regreso a clases reduce bastante el gasto total.\n\nFuentes: mercadolibre.com.mx, chedraui.com.mx", "retrieved_at": "2026-07-16T08:35:18.316417Z"}, {"is_mock": true, "provider": "mock", "question_id": "q13", "raw_text": "Para comprar \u00fatiles escolares baratos en la Ciudad de M\u00e9xico, las mejores opciones son:\n\n1. **Centro Hist\u00f3rico (calles Mesones y Rep\u00fablica de El Salvador)** \u2014 la zona mayorista cl\u00e1sica de papeler\u00edas; precios hasta 40% m\u00e1s bajos que en cadenas.\n2. **Central de Abasto** \u2014 secci\u00f3n de papeler\u00eda con precios de mayoreo.\n3. **Lumen** \u2014 cadena con buena relaci\u00f3n calidad-precio y ofertas de temporada.\n4. **Office Depot y OfficeMax** \u2014 promociones de regreso a clases y meses sin intereses.\n5. **Waldo\u0027s y tiendas de a peso** \u2014 para art\u00edculos b\u00e1sicos de marca gen\u00e9rica.\n\nEn temporada de regreso a clases, Profeco publica comparativos de precios de la lista completa de \u00fatiles.\n\nFuentes: gob.mx/profeco, lumen.com.mx, eluniversal.com.mx", "retrieved_at": "2026-07-16T08:35:18.316551Z"}, {"is_mock": true, "provider": "mock", "question_id": "q16", "raw_text": "Las papeler\u00edas en l\u00ednea m\u00e1s confiables en M\u00e9xico son:\n\n1. **Lumen (lumen.com.mx)** \u2014 cadena tradicional con tienda en l\u00ednea s\u00f3lida, facturaci\u00f3n y entregas a todo el pa\u00eds.\n2. **Office Depot M\u00e9xico (officedepot.com.mx)** \u2014 amplio cat\u00e1logo de oficina, recolecci\u00f3n en tienda.\n3. **Ofix (ofix.com)** \u2014 especializada en ventas a empresas, buenos precios por volumen.\n4. **Amazon M\u00e9xico y Mercado Libre** \u2014 mayor variedad de marcas; conviene verificar que el vendedor sea oficial.\n\nTodas manejan pagos seguros y devoluciones; para compras escolares grandes, Lumen y Office Depot suelen tener los mejores paquetes de temporada.\n\nFuentes: lumen.com.mx, officedepot.com.mx, ofix.com, amazon.com.mx", "retrieved_at": "2026-07-16T08:35:18.316693Z"}], "brand_profile": {"brand_aliases": ["\u5f97\u529b", "Deli Group", "DeliWorld"], "brand_name": "Deli", "category": "\u6587\u5177/\u529e\u516c/\u5b66\u751f\u7528\u54c1 (papeler\u00eda, art\u00edculos de oficina y escolares)", "language": "es-MX", "market": "\u58a8\u897f\u54e5 (M\u00e9xico)", "seed_competitors": ["BIC", "Norma", "Scribe", "Pelikan", "Faber-Castell", "Barrilito"], "website_url": "https://www.deliworld.com"}, "gaps": [{"evidence": ["\u300c\u00bfCu\u00e1les son las mejores marcas de papeler\u00eda en M\u00e9xico?\u300d\u2192 AI \u56de\u7b54\u63d0\u53ca\u7ade\u54c1: BIC, Norma, Scribe, Pelikan, Faber-Castell\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u300c\u00bfCu\u00e1l es la mejor marca de \u00fatiles escolares para el regreso a clases?\u300d\u2192 AI \u56de\u7b54\u63d0\u53ca\u7ade\u54c1: Norma, Scribe, Crayola, Pritt, Pelikan\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u300c\u00bfQu\u00e9 marcas de art\u00edculos de oficina recomiendan para equipar una empresa?\u300d\u2192 AI \u56de\u7b54\u63d0\u53ca\u7ade\u54c1: 3M, Post-it, Barrilito, Esselte, Leitz\uff0c\u672a\u63d0\u53ca\u54c1\u724c"], "gap_type": "topic", "related_questions": ["q05", "q07", "q08"], "title": "\u5168\u56fd\u54c1\u7c7b\u699c\u5355\u7c7b\u95ee\u9898\u4e2d\u54c1\u724c\u5b8c\u5168\u7f3a\u5e2d"}, {"evidence": ["\u300c\u00bfD\u00f3nde comprar \u00fatiles escolares baratos en CDMX?\u300d\u2192 AI \u56de\u7b54\u4ec5\u63d0\u53ca\u96f6\u552e\u6e20\u9053\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u300c\u00bfQu\u00e9 papeler\u00eda en l\u00ednea es confiable en M\u00e9xico?\u300d\u2192 AI \u56de\u7b54\u4ec5\u63d0\u53ca\u96f6\u552e\u6e20\u9053\uff0c\u672a\u63d0\u53ca\u54c1\u724c"], "gap_type": "topic", "related_questions": ["q13", "q16"], "title": "\u5730\u533a/\u6e20\u9053\u7c7b\u95ee\u9898\u4e2d\u54c1\u724c\u5b8c\u5168\u7f3a\u5e2d"}, {"evidence": ["\u300c\u00bfD\u00f3nde comprar \u00fatiles escolares baratos en CDMX?\u300d\u2192 AI \u56de\u7b54\u4ec5\u63d0\u53ca\u96f6\u552e\u6e20\u9053\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u300c\u00bfQu\u00e9 papeler\u00eda en l\u00ednea es confiable en M\u00e9xico?\u300d\u2192 AI \u56de\u7b54\u4ec5\u63d0\u53ca\u96f6\u552e\u6e20\u9053\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u8d2d\u4e70\u610f\u56fe\u6700\u5f3a\u7684\u95ee\u9898\u88ab\u96f6\u552e\u5546\u4e0e\u7ade\u54c1\u627f\u63a5\uff0c\u54c1\u724c\u65e0\u53ef\u88ab AI \u5f15\u7528\u7684\u6e20\u9053\u9875"], "gap_type": "page", "related_questions": ["q13", "q16"], "title": "\u7f3a\u5c11 es-MX\u300c\u54ea\u91cc\u8d2d\u4e70/\u6388\u6743\u7ecf\u9500\u5546\u300d\u843d\u5730\u9875\uff08D\u00f3nde comprar\uff09"}, {"evidence": ["\u300c\u00bfCu\u00e1les son las mejores marcas de papeler\u00eda en M\u00e9xico?\u300d\u2192 AI \u56de\u7b54\u63d0\u53ca\u7ade\u54c1: BIC, Norma, Scribe, Pelikan, Faber-Castell\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u300c\u00bfCu\u00e1l es la mejor marca de \u00fatiles escolares para el regreso a clases?\u300d\u2192 AI \u56de\u7b54\u63d0\u53ca\u7ade\u54c1: Norma, Scribe, Crayola, Pritt, Pelikan\uff0c\u672a\u63d0\u53ca\u54c1\u724c", "\u300c\u00bfQu\u00e9 marcas de art\u00edculos de oficina recomiendan para equipar una empresa?\u300d\u2192 AI \u56de\u7b54\u63d0\u53ca\u7ade\u54c1: 3M, Post-it, Barrilito, Esselte, Leitz\uff0c\u672a\u63d0\u53ca\u54c1\u724c"], "gap_type": "page", "related_questions": ["q05", "q07", "q08"], "title": "\u7f3a\u5c11\u897f\u8bed\u54c1\u7c7b\u5bf9\u6bd4/\u699c\u5355\u578b\u5185\u5bb9\uff08vs Norma, Scribe, Pelikan, Faber-Castell\uff09"}, {"evidence": ["\u300c\u00bfQu\u00e9 marca de bol\u00edgrafos es mejor en M\u00e9xico?\u300d\u2192 \u54c1\u724c\u5217\u4e8e\u7b2c 5 \u4f4d\uff1b\u8bc1\u636e: Deli** \u2014 marca china econ\u00f3mica que ha empezado a aparecer en papeler\u00edas y mayori", "\u300c\u00bfQu\u00e9 marcas de papeler\u00eda son baratas y de buena calidad?\u300d\u2192 \u54c1\u724c\u5217\u4e8e\u7b2c 4 \u4f4d\uff1b\u8bc1\u636e: Deli** \u2014 marca china de bajo costo que cada vez se ve m\u00e1s en papeler\u00edas y mayori"], "gap_type": "topic", "related_questions": ["q06", "q09"], "title": "\u54c1\u724c\u88ab AI \u63d0\u53ca\u4f46\u6392\u540d\u9760\u540e\uff08\u8fd9\u4e9b\u56de\u7b54\u4e2d\u5e73\u5747\u7b2c 4.5 \u4f4d\uff09"}, {"evidence": ["\u672a\u58f0\u660e es-MX \u8bed\u8a00\u7248\u672c\uff0c\u58a8\u897f\u54e5\u7528\u6237\u4e0e\u672c\u5730\u5316 AI \u68c0\u7d22\u65e0\u6cd5\u5b9a\u4f4d\u897f\u8bed\u5185\u5bb9\uff08\u73b0\u6709 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw\uff09"], "gap_type": "signal", "related_questions": [], "title": "\u7ad9\u70b9\u4fe1\u53f7\u7f3a\u5931: NO_HREFLANG_ES_MX"}, {"evidence": ["\u7ad9\u5185\u672a\u68c0\u6d4b\u5230\u897f\u73ed\u7259\u8bed\u5185\u5bb9\uff0c\u76ee\u6807\u5e02\u573a\u8bed\u8a00\u5b8c\u5168\u7f3a\u4f4d"], "gap_type": "signal", "related_questions": [], "title": "\u7ad9\u70b9\u4fe1\u53f7\u7f3a\u5931: NO_SPANISH_CONTENT"}], "meta": {"generated_at": "2026-07-16T08:35:47.047831Z", "mode": "mock", "notes": [], "run_id": "60b2cb03"}, "metrics": {"avg_position": 3.33, "citation_rate": 1.0, "competitor_ranking": [{"avg_position": 2.0, "mention_count": 4, "name": "BIC", "sov": 0.1176}, {"avg_position": 2.67, "mention_count": 3, "name": "Scribe", "sov": 0.0882}, {"avg_position": 3.33, "mention_count": 3, "name": "Barrilito", "sov": 0.0882}, {"avg_position": 3.67, "mention_count": 3, "name": "Pelikan", "sov": 0.0882}, {"avg_position": 4.67, "mention_count": 3, "name": "Faber-Castell", "sov": 0.0882}, {"avg_position": 1.5, "mention_count": 2, "name": "Norma", "sov": 0.0588}, {"avg_position": 4.0, "mention_count": 2, "name": "Pilot", "sov": 0.0588}, {"avg_position": 1.0, "mention_count": 1, "name": "3M", "sov": 0.0294}, {"avg_position": 2.0, "mention_count": 1, "name": "Paper Mate", "sov": 0.0294}, {"avg_position": 2.0, "mention_count": 1, "name": "Post-it", "sov": 0.0294}, {"avg_position": 3.0, "mention_count": 1, "name": "Crayola", "sov": 0.0294}, {"avg_position": 4.0, "mention_count": 1, "name": "Pritt", "sov": 0.0294}, {"avg_position": 4.0, "mention_count": 1, "name": "Zebra", "sov": 0.0294}, {"avg_position": 4.0, "mention_count": 1, "name": "Esselte", "sov": 0.0294}, {"avg_position": 5.0, "mention_count": 1, "name": "Leitz", "sov": 0.0294}, {"avg_position": 6.0, "mention_count": 1, "name": "Sabl\u00f3n", "sov": 0.0294}, {"avg_position": 7.0, "mention_count": 1, "name": "HP", "sov": 0.0294}, {"avg_position": 8.0, "mention_count": 1, "name": "Epson", "sov": 0.0294}], "questions_checked": 8, "sentiment_summary": {"neg": 0, "neu": 7, "pos": 1}, "sov": 0.0882, "visibility_rate": 0.375}, "questions": [{"funnel": "MOFU", "id": "q01", "text_local": "\u00bfQu\u00e9 tal es la marca Deli en papeler\u00eda? \u00bfVale la pena?", "text_zh": "\u5f97\u529b\u8fd9\u4e2a\u6587\u5177\u54c1\u724c\u600e\u4e48\u6837\uff1f\u503c\u5f97\u4e70\u5417\uff1f", "tier": "brand", "value_reason": "\u54c1\u724c\u8bcd\u76f4\u63a5\u53cd\u6620\u73b0\u6709\u8ba4\u77e5\u4e0e\u53e3\u7891\uff0c\u662f AI \u53ef\u89c1\u5ea6\u7684\u57fa\u7ebf\u95ee\u9898", "value_score": 5}, {"funnel": "BOFU", "id": "q02", "text_local": "\u00bfD\u00f3nde puedo comprar productos Deli en M\u00e9xico?", "text_zh": "\u5728\u58a8\u897f\u54e5\u54ea\u91cc\u80fd\u4e70\u5230\u5f97\u529b\u7684\u4ea7\u54c1\uff1f", "tier": "brand", "value_reason": "\u8d2d\u4e70\u610f\u56fe\u660e\u786e\uff0c\u4f46\u4ec5\u8986\u76d6\u5df2\u8ba4\u77e5\u7528\u6237\uff0c\u589e\u91cf\u6709\u9650", "value_score": 3}, {"funnel": "MOFU", "id": "q03", "text_local": "\u00bfLos productos Deli son de buena calidad o son chinos baratos?", "text_zh": "\u5f97\u529b\u7684\u4ea7\u54c1\u8d28\u91cf\u597d\u5417\uff0c\u8fd8\u662f\u5ec9\u4ef7\u4e2d\u56fd\u8d27\uff1f", "tier": "brand", "value_reason": "\u6d89\u53ca\u4fe1\u4efb\u4e0e\u539f\u4ea7\u5730\u504f\u89c1\uff0c\u5f71\u54cd\u8f6c\u5316\u4f46\u641c\u7d22\u91cf\u4e2d\u7b49", "value_score": 3}, {"funnel": "BOFU", "id": "q04", "text_local": "\u00bfDeli tiene garant\u00eda o servicio al cliente en M\u00e9xico?", "text_zh": "\u5f97\u529b\u5728\u58a8\u897f\u54e5\u6709\u4fdd\u4fee\u6216\u5ba2\u670d\u5417\uff1f", "tier": "brand", "value_reason": "\u552e\u540e\u4fe1\u4efb\u662f\u65b0\u8fdb\u5165\u5e02\u573a\u54c1\u724c\u7684\u5e38\u89c1\u8f6c\u5316\u969c\u788d", "value_score": 3}, {"funnel": "MOFU", "id": "q05", "text_local": "\u00bfCu\u00e1les son las mejores marcas de papeler\u00eda en M\u00e9xico?", "text_zh": "\u58a8\u897f\u54e5\u6700\u597d\u7684\u6587\u5177\u54c1\u724c\u6709\u54ea\u4e9b\uff1f", "tier": "category", "value_reason": "\u9898\u76ee\u6307\u5b9a\u793a\u4f8b\u95ee\u9898\uff1b\u54c1\u7c7b\u699c\u5355\u8bcd\u662f AI \u63a8\u8350\u4f4d\u7684\u6838\u5fc3\u6218\u573a", "value_score": 5}, {"funnel": "MOFU", "id": "q06", "text_local": "\u00bfQu\u00e9 marca de bol\u00edgrafos es mejor en M\u00e9xico?", "text_zh": "\u5728\u58a8\u897f\u54e5\u54ea\u4e2a\u724c\u5b50\u7684\u5706\u73e0\u7b14\u6700\u597d\uff1f", "tier": "category", "value_reason": "\u9ad8\u9891\u5355\u54c1\u54c1\u7c7b\u8bcd\uff0c\u76f4\u63a5\u5bf9\u6807 BIC \u7b49\u5f3a\u52bf\u7ade\u54c1", "value_score": 4}, {"funnel": "MOFU", "id": "q07", "text_local": "\u00bfCu\u00e1l es la mejor marca de \u00fatiles escolares para el regreso a clases?", "text_zh": "\u8fd4\u6821\u5b63\u6700\u597d\u7684\u5b66\u751f\u7528\u54c1\u54c1\u724c\u662f\u54ea\u4e2a\uff1f", "tier": "category", "value_reason": "\u8fd4\u6821\u5b63\u662f\u58a8\u897f\u54e5\u6587\u5177\u6d88\u8d39\u5cf0\u503c\u573a\u666f\uff0c\u5546\u4e1a\u4ef7\u503c\u6700\u9ad8", "value_score": 5}, {"funnel": "MOFU", "id": "q08", "text_local": "\u00bfQu\u00e9 marcas de art\u00edculos de oficina recomiendan para equipar una empresa?", "text_zh": "\u7ed9\u516c\u53f8\u91c7\u8d2d\u529e\u516c\u7528\u54c1\u63a8\u8350\u4ec0\u4e48\u54c1\u724c\uff1f", "tier": "category", "value_reason": "B2B \u91c7\u8d2d\u51b3\u7b56\u95ee\u9898\uff0c\u5ba2\u5355\u4ef7\u9ad8\uff0c\u5f97\u529b\u6838\u5fc3\u54c1\u7c7b", "value_score": 4}, {"funnel": "MOFU", "id": "q09", "text_local": "\u00bfQu\u00e9 marcas de papeler\u00eda son baratas y de buena calidad?", "text_zh": "\u54ea\u4e9b\u6587\u5177\u54c1\u724c\u4fbf\u5b9c\u53c8\u597d\u7528\uff1f", "tier": "category", "value_reason": "\u6027\u4ef7\u6bd4\u5b9a\u4f4d\u4e0e\u5f97\u529b\u54c1\u724c\u7b56\u7565\u9ad8\u5ea6\u5951\u5408\uff0c\u662f\u6700\u5e94\u62ff\u4e0b\u7684\u95ee\u6cd5", "value_score": 4}, {"funnel": "MOFU", "id": "q10", "text_local": "\u00bfQu\u00e9 marca de cuadernos es la mejor para la escuela?", "text_zh": "\u4e0a\u5b66\u7528\u54ea\u4e2a\u724c\u5b50\u7684\u7b14\u8bb0\u672c\u6700\u597d\uff1f", "tier": "category", "value_reason": "\u5355\u54c1\u54c1\u7c7b\u8bcd\uff0c\u58a8\u897f\u54e5\u672c\u571f\u54c1\u724c Norma/Scribe \u4f18\u52bf\u660e\u663e", "value_score": 3}, {"funnel": "TOFU", "id": "q11", "text_local": "\u00bfCu\u00e1les son las mejores tijeras y pegamento para manualidades escolares?", "text_zh": "\u5b66\u6821\u624b\u5de5\u8bfe\u7528\u4ec0\u4e48\u526a\u5200\u548c\u80f6\u6c34\u6700\u597d\uff1f", "tier": "category", "value_reason": "\u957f\u5c3e\u573a\u666f\u8bcd\uff0c\u5355\u4ef7\u4f4e\uff0c\u9002\u5408\u5185\u5bb9\u8986\u76d6\u800c\u975e\u91cd\u70b9\u6295\u5165", "value_score": 2}, {"funnel": "TOFU", "id": "q12", "text_local": "\u00bfQu\u00e9 debo comprar para la lista de \u00fatiles escolares?", "text_zh": "\u5f00\u5b66\u6e05\u5355\u5e94\u8be5\u4e70\u4e9b\u4ec0\u4e48\uff1f", "tier": "category", "value_reason": "\u8ba4\u77e5\u9636\u6bb5\u9ad8\u6d41\u91cf\u95ee\u9898\uff0c\u9002\u5408\u7528\u6e05\u5355\u7c7b\u5185\u5bb9\u5efa\u7acb\u54c1\u724c\u66dd\u5149", "value_score": 3}, {"funnel": "BOFU", "id": "q13", "text_local": "\u00bfD\u00f3nde comprar \u00fatiles escolares baratos en CDMX?", "text_zh": "\u58a8\u897f\u54e5\u57ce\u54ea\u91cc\u80fd\u4e70\u5230\u4fbf\u5b9c\u7684\u5b66\u751f\u7528\u54c1\uff1f", "tier": "regional", "value_reason": "\u9996\u90fd\u5e02\u573a + \u660e\u786e\u8d2d\u4e70\u610f\u56fe\uff0c\u6e20\u9053\u7c7b\u5730\u533a\u8bcd\u4ee3\u8868", "value_score": 4}, {"funnel": "BOFU", "id": "q14", "text_local": "\u00bfCu\u00e1les son las mejores papeler\u00edas en Guadalajara?", "text_zh": "\u74dc\u8fbe\u62c9\u54c8\u62c9\u6700\u597d\u7684\u6587\u5177\u5e97\u6709\u54ea\u4e9b\uff1f", "tier": "regional", "value_reason": "\u7b2c\u4e8c\u5927\u57ce\u5e02\u5730\u533a\u6392\u540d\u8bcd\uff0c\u9a8c\u8bc1\u533a\u57df\u6e20\u9053\u53ef\u89c1\u5ea6", "value_score": 3}, {"funnel": "BOFU", "id": "q15", "text_local": "\u00bfD\u00f3nde conseguir art\u00edculos de oficina al por mayor en M\u00e9xico?", "text_zh": "\u5728\u58a8\u897f\u54e5\u54ea\u91cc\u53ef\u4ee5\u6279\u53d1\u529e\u516c\u7528\u54c1\uff1f", "tier": "regional", "value_reason": "\u6279\u53d1\u6e20\u9053\u95ee\u9898\uff0c\u6307\u5411 B2B \u5206\u9500\u673a\u4f1a", "value_score": 3}, {"funnel": "BOFU", "id": "q16", "text_local": "\u00bfQu\u00e9 papeler\u00eda en l\u00ednea es confiable en M\u00e9xico?", "text_zh": "\u58a8\u897f\u54e5\u54ea\u4e2a\u5728\u7ebf\u6587\u5177\u5546\u57ce\u9760\u8c31\uff1f", "tier": "regional", "value_reason": "\u7535\u5546\u6e20\u9053\u4fe1\u4efb\u95ee\u9898\uff0c\u76f4\u63a5\u5f71\u54cd\u7ebf\u4e0a\u8f6c\u5316\u8def\u5f84", "value_score": 4}, {"funnel": "TOFU", "id": "q17", "text_local": "\u00bfC\u00f3mo elegir una engrapadora para la oficina?", "text_zh": "\u600e\u4e48\u6311\u9009\u529e\u516c\u7528\u8ba2\u4e66\u673a\uff1f", "tier": "category", "value_reason": "\u9009\u8d2d\u6307\u5357\u7c7b\u957f\u5c3e\u8bcd\uff0c\u9002\u5408\u5b98\u7f51\u5185\u5bb9\u5efa\u8bbe", "value_score": 2}, {"funnel": "TOFU", "id": "q18", "text_local": "\u00bfQu\u00e9 es mejor para tomar apuntes: bol\u00edgrafo o l\u00e1piz?", "text_zh": "\u8bb0\u7b14\u8bb0\u7528\u5706\u73e0\u7b14\u597d\u8fd8\u662f\u94c5\u7b14\u597d\uff1f", "tier": "category", "value_reason": "\u7eaf\u8ba4\u77e5\u95ee\u9898\uff0c\u4e0e\u54c1\u724c\u9009\u62e9\u8ddd\u79bb\u8fdc", "value_score": 1}, {"funnel": "TOFU", "id": "q19", "text_local": "\u00bfCu\u00e1nto cuesta la lista de \u00fatiles escolares en M\u00e9xico este a\u00f1o?", "text_zh": "\u4eca\u5e74\u58a8\u897f\u54e5\u5f00\u5b66\u6e05\u5355\u5927\u6982\u8981\u82b1\u591a\u5c11\u94b1\uff1f", "tier": "category", "value_reason": "\u4ef7\u683c\u654f\u611f\u8bdd\u9898\uff0c\u6027\u4ef7\u6bd4\u54c1\u724c\u53ef\u501f\u52bf\u5185\u5bb9\u8425\u9500", "value_score": 3}, {"funnel": "MOFU", "id": "q20", "text_local": "\u00bfQu\u00e9 marcas de calculadoras cient\u00edficas recomiendan para estudiantes?", "text_zh": "\u5b66\u751f\u7528\u4ec0\u4e48\u724c\u5b50\u7684\u79d1\u5b66\u8ba1\u7b97\u5668\u597d\uff1f", "tier": "category", "value_reason": "\u5f97\u529b\u6709\u8ba1\u7b97\u5668\u4ea7\u54c1\u7ebf\uff0c\u4f46 Casio \u5fc3\u667a\u5784\u65ad\uff0c\u653b\u575a\u96be\u5ea6\u9ad8", "value_score": 3}], "recommendations": [{"action": "\u4fee\u590d\u5b98\u7f51\u6280\u672f\u4fe1\u53f7: NO_HREFLANG_ES_MX\u3001NO_SPANISH_CONTENT", "effort": "S", "expected_impact": "\u63d0\u5347\u5b98\u7f51\u53ef\u6293\u53d6\u6027\u4e0e\u53ef\u5f15\u7528\u6027\uff0c\u662f\u540e\u7eed\u6240\u6709\u5185\u5bb9\u88ab AI \u6536\u5f55\u7684\u524d\u63d0", "priority": "P0", "reason": "\u7ad9\u70b9\u8bca\u65ad\u53d1\u73b0\u5f71\u54cd\u641c\u7d22\u5f15\u64ce\u4e0e AI \u6293\u53d6/\u7406\u89e3\u7684\u57fa\u7840\u95ee\u9898\uff0c\u5185\u5bb9\u6295\u5165\u524d\u5fc5\u987b\u5148\u4fee\u5730\u57fa"}, {"action": "\u4e0a\u7ebf es-MX\u300cD\u00f3nde comprar Deli\u300d\u6e20\u9053\u9875\uff0c\u5217\u51fa\u58a8\u897f\u54e5\u53ef\u8d2d\u6e20\u9053\uff08Mercado Libre/Amazon MX/\u7ebf\u4e0b\u7ecf\u9500\u5546\uff09\u5e76\u6dfb\u52a0\u7ed3\u6784\u5316\u6570\u636e", "effort": "S", "expected_impact": "\u76f4\u63a5\u627f\u63a5\u8d2d\u4e70\u610f\u56fe\u6700\u5f3a\u7684 AI \u6d41\u91cf\uff0c\u628a\u0027\u88ab\u63d0\u5230\u0027\u53d8\u6210\u0027\u53ef\u8f6c\u5316\u0027", "priority": "P0", "reason": "\u7f3a\u53e3\u8bc1\u636e: 3 \u6761 BOFU \u8d2d\u4e70\u7c7b\u95ee\u9898\u7684 AI \u56de\u7b54\u5b8c\u5168\u7531\u96f6\u552e\u5546\u4e0e\u7ade\u54c1\u627f\u63a5"}, {"action": "\u5efa\u7acb es-MX \u54c1\u7c7b\u5185\u5bb9\u96c6\u7fa4\uff1a\u9488\u5bf9\u672a\u547d\u4e2d\u7684\u699c\u5355/\u5bf9\u6bd4\u7c7b\u95ee\u9898\u9010\u6761\u4ea7\u51fa\u300c\u771f\u5b9e\u95ee\u9898\u2192\u76f4\u63a5\u7b54\u6848\u300d\u5f0f\u9875\u9762\uff08FAQ\u3001\u5bf9\u6bd4\u9875\u3001\u573a\u666f\u9875\uff09", "effort": "M", "expected_impact": "\u8fdb\u5165 AI \u54c1\u7c7b\u63a8\u8350\u7b54\u6848\u4f4d\uff0c\u53ef\u89c1\u5ea6\u76ee\u6807 3 \u4e2a\u6708\u5185\u63d0\u5347\u81f3 50%+", "priority": "P0", "reason": "AI \u53ef\u89c1\u5ea6\u4ec5 38%\uff088 \u6761\u9ad8\u4ef7\u503c\u95ee\u9898\u4e2d\uff09\uff0c\u54c1\u7c7b\u699c\u5355\u95ee\u9898\u51e0\u4e4e\u5168\u90e8\u65c1\u843d\u7ade\u54c1"}, {"action": "\u4ea7\u51fa\u897f\u8bed\u5bf9\u6bd4\u8bc4\u6d4b\u5185\u5bb9\uff08vs Norma, Scribe, Pelikan, Faber-Castell\uff09\uff0c\u6295\u653e\u5230\u5b98\u7f51\u535a\u5ba2\u4e0e\u9ad8\u6743\u91cd\u7b2c\u4e09\u65b9\u6e20\u9053", "effort": "M", "expected_impact": "\u5728\u7528\u6237\u0027\u6bd4\u8f83\u9636\u6bb5\u0027\u8fdb\u5165 AI \u5019\u9009\u96c6\uff0c\u6324\u5360\u7ade\u54c1\u7b54\u6848\u4f4d", "priority": "P1", "reason": "MOFU \u5bf9\u6bd4\u7c7b\u95ee\u9898\u672a\u547d\u4e2d 3 \u6761\uff0c\u7528\u6237\u6bd4\u8f83\u9636\u6bb5\u54c1\u724c\u4e0d\u5728\u5019\u9009\u96c6"}, {"action": "\u6743\u5a01\u5f15\u7528\u6e90\u5efa\u8bbe\uff1a\u4e89\u53d6\u58a8\u897f\u54e5\u672c\u5730\u5a92\u4f53\u6d4b\u8bc4\u3001Profeco \u7c7b\u6bd4\u4ef7\u5185\u5bb9\u6536\u5f55\u3001\u884c\u4e1a\u76ee\u5f55\u4e0e\u9ad8\u6743\u91cd\u5bfc\u8d2d\u7ad9\u9732\u51fa", "effort": "L", "expected_impact": "\u63d0\u5347 Citation Rate \u4e0e SOV\uff0c\u8ba9 AI\u0027\u6562\u5f15\u7528\u0027\u54c1\u724c\u4fe1\u606f", "priority": "P1", "reason": "\u8bdd\u8bed\u6743 SOV \u4ec5 8.8%\uff08BIC \u9886\u5148\uff09\uff0c\u4e14 AI \u5f15\u7528\u6e90\u96c6\u4e2d\u4e8e\u7535\u5546\u4e0e\u96f6\u552e\u7ad9\uff0c\u54c1\u724c\u7f3a\u5c11\u53ef\u4fe1\u7b2c\u4e09\u65b9\u80cc\u4e66"}, {"action": "\u9488\u5bf9\u5df2\u547d\u4e2d\u95ee\u9898\u4f18\u5316\u7b54\u6848\u4f4d\u6392\u540d\uff1a\u8865\u5145\u4ea7\u54c1\u53c2\u6570/\u4ef7\u683c/\u8bc4\u4ef7\u7b49\u7ed3\u6784\u5316\u4fe1\u606f\uff0c\u5f3a\u5316\u300c\u6027\u4ef7\u6bd4\u9996\u9009\u300d\u5b9a\u4f4d\u8bdd\u672f", "effort": "M", "expected_impact": "\u5e73\u5747\u6392\u540d\u8fdb\u5165\u524d 3\uff0c\u663e\u8457\u63d0\u5347 AI \u63a8\u8350\u8f6c\u5316", "priority": "P1", "reason": "\u54c1\u724c\u5e73\u5747\u6392\u540d\u7b2c 3.3 \u4f4d\uff0c\u88ab\u63d0\u53ca\u4f46\u5904\u4e8e\u7b54\u6848\u5c3e\u90e8\uff0c\u7528\u6237\u8bb0\u5fc6\u5ea6\u4f4e"}, {"action": "\u5efa\u7acb\u5468\u671f\u6027 AI \u53ef\u89c1\u5ea6\u76d1\u6d4b\uff1a\u6269\u5927\u95ee\u9898\u6837\u672c\u81f3 100+\uff0c\u591a\u5e73\u53f0\u591a\u8f6e\u91c7\u6837\u53d6\u5747\u503c", "effort": "M", "expected_impact": "\u5f62\u6210\u53ef\u8ddf\u8e2a\u7684 GEO \u6307\u6807\u57fa\u7ebf\uff0c\u9a8c\u8bc1\u4e0a\u8ff0\u52a8\u4f5c\u7684\u5b9e\u9645\u6548\u679c", "priority": "P2", "reason": "\u5355\u6b21 8~10 \u95ee\u91c7\u6837\u4ec5\u4e3a\u6f14\u793a\u89c4\u6a21\uff0cAI \u56de\u7b54\u5b58\u5728\u968f\u673a\u6027\uff0c\u7ed3\u8bba\u9700\u591a\u8f6e\u9a8c\u8bc1"}], "site_audit": {"crawlable": true, "has_es_mx_hreflang": false, "has_structured_data": true, "issues": [{"code": "NO_HREFLANG_ES_MX", "detail": "\u672a\u58f0\u660e es-MX \u8bed\u8a00\u7248\u672c\uff0c\u58a8\u897f\u54e5\u7528\u6237\u4e0e\u672c\u5730\u5316 AI \u68c0\u7d22\u65e0\u6cd5\u5b9a\u4f4d\u897f\u8bed\u5185\u5bb9\uff08\u73b0\u6709 hreflang: en, en-eu, ko, ru, vi, zh-hans-cn, zh-hant-tw\uff09", "severity": "high"}, {"code": "NO_SPANISH_CONTENT", "detail": "\u7ad9\u5185\u672a\u68c0\u6d4b\u5230\u897f\u73ed\u7259\u8bed\u5185\u5bb9\uff0c\u76ee\u6807\u5e02\u573a\u8bed\u8a00\u5b8c\u5168\u7f3a\u4f4d", "severity": "high"}], "pages_checked": 15, "robots_ok": true, "sitemap_found": true, "snapshot_mode": false, "spanish_content_found": false}}</script>
+<script>
+  (function () {
+    const chartNode = document.getElementById("sov-chart");
+    const fallback = document.getElementById("chart-fallback");
+    if (!window.echarts) {
+      chartNode.style.display = "none";
+      fallback.style.display = "block";
+      return;
+    }
+    const names = ["Deli", "BIC", "Scribe", "Barrilito", "Pelikan", "Faber-Castell", "Norma", "Pilot"];
+    const values = [8.8, 11.8, 8.8, 8.8, 8.8, 8.8, 5.9, 5.9];
+    const chart = echarts.init(chartNode, null, {renderer: "svg"});
+    chart.setOption({
+      animationDuration: 700,
+      grid: {left: 92, right: 36, top: 26, bottom: 34},
+      tooltip: {trigger: "axis", axisPointer: {type: "shadow"}, valueFormatter: value => value + "%"},
+      xAxis: {type: "value", axisLabel: {formatter: "{value}%", color: "#72879a"}, splitLine: {lineStyle: {color: "#e8f0f7"}}},
+      yAxis: {type: "category", inverse: true, data: names, axisTick: {show: false}, axisLine: {show: false}, axisLabel: {color: "#40566b", fontWeight: 600}},
+      series: [{type: "bar", data: values.map((value, index) => ({value, itemStyle: {color: index === 0 ? "#1769e0" : "#8db8ee", borderRadius: [0, 5, 5, 0]}})), barWidth: 18, label: {show: true, position: "right", formatter: "{c}%", color: "#536a7e", fontSize: 10}}]
+    });
+    window.addEventListener("resize", () => chart.resize());
+  })();
+</script>
 </body>
 </html>

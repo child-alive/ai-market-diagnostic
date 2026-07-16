@@ -122,7 +122,13 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 
 **Stage 2 完成 ✅**
 
+### Stage 3 — 报告打磨 + 文档冲刺
+- [x] Stage3-T1 report.html 视觉升级：五项指标卡、ECharts SOV 对比柱状图、
+      中西双语问题明细、回答证据卡、网站诊断矩阵、缺口/建议卡片与响应式/打印样式；
+      Mock 标注覆盖全局说明、五个派生指标、问题检测结果与逐条回答
+- [x] Stage3-T1 视觉 QA：桌面端 1280px 与移动端 390px 浏览器实测，无横向溢出、无控制台错误，
+      ECharts SVG 正常渲染；示例 HTML 已用原有真实官网实抓 JSON 重渲染（15 页、非快照模式）
+
 ### 下一步
-1. Stage3-T1 报告视觉升级与 Mock 角标全面核对；
-2. Stage3-T2/T3 方案说明与 README 定稿；
-3. Stage3-T4 补充约 10 个 pytest 用例并跑全量验收。
+1. Stage3-T2/T3 方案说明与 README 定稿；
+2. Stage3-T4 补充约 10 个 pytest 用例并跑全量验收。
