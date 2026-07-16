@@ -29,6 +29,15 @@
       "value_reason": "涉及信任与原产地偏见，影响转化但搜索量中等"
     },
     {
+      "id": "q04",
+      "text_local": "¿Deli tiene garantía o servicio al cliente en México?",
+      "text_zh": "得力在墨西哥有保修或客服吗？",
+      "tier": "brand",
+      "funnel": "BOFU",
+      "value_score": 3,
+      "value_reason": "售后信任是新进入市场品牌的常见转化障碍"
+    },
+    {
       "id": "q05",
       "text_local": "¿Cuáles son las mejores marcas de papelería en México?",
       "text_zh": "墨西哥最好的文具品牌有哪些？",

@@ -20,8 +20,12 @@
 - [x] Stage0-T3 MockProvider + fixtures（20 条问题种子 + 8 条分层模拟回答：
       q05/q07/q08/q13/q16 无得力，q06/q09 得力靠后，q01 得力前列；
       未备 fixture 的问题回放通用兜底回答，保证演示不中断）
-- [ ] Stage0-T4 main.py --mock 空跑全管道输出占位 JSON
-- 验收：`pip install -r requirements.txt && python -m src.main --mock` 无报错出 JSON
+- [x] Stage0-T4 main.py --mock 空跑全管道输出占位 JSON
+- [x] 验收通过：venv 内 `pip install -r requirements.txt && python -m src.main --mock`
+      → 20 问题 / 8 回答（Top-8 恰好命中全部 fixtures）/ data/report.json 正常产出
+      analysis/site_audit/gaps/recommend 为占位实现，Stage 1-2 填充
+
+**Stage 0 完成 ✅**
 
 ### 决策记录
 - 项目根目录定为 `聚路国际/ai-market-diagnostic/`（PLAN §5 结构），

@@ -1,0 +1,54 @@
+"""配置加载与运行模式判定。
+
+模式规则（PLAN.md §8）：
+- 显式 --mock → mock
+- 有 DEEPSEEK_API_KEY → hybrid（LLM 真实调用，AI 平台回答可为 mock）
+- 无 key → mock（全链路 fixtures，保证评审者零配置可跑）
+"""
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+from .models import BrandProfile, RunMode
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = PROJECT_ROOT / "data"
+FIXTURES_DIR = PROJECT_ROOT / "fixtures"
+
+load_dotenv(PROJECT_ROOT / ".env")
+
+
+@dataclass
+class Settings:
+    deepseek_api_key: str = field(
+        default_factory=lambda: os.getenv("DEEPSEEK_API_KEY", "").strip()
+    )
+    deepseek_base_url: str = field(
+        default_factory=lambda: os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+    )
+    deepseek_model: str = field(
+        default_factory=lambda: os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
+    )
+    force_mock: bool = False
+
+    @property
+    def mode(self) -> RunMode:
+        if self.force_mock or not self.deepseek_api_key:
+            return RunMode.MOCK
+        return RunMode.HYBRID
+
+
+# 演示用例（题目给定）：得力 × 墨西哥
+DELI_PROFILE = BrandProfile(
+    brand_name="Deli",
+    brand_aliases=["得力", "Deli Group", "DeliWorld"],
+    category="文具/办公/学生用品 (papelería, artículos de oficina y escolares)",
+    market="墨西哥 (México)",
+    language="es-MX",
+    website_url="https://www.deliworld.com",
+    seed_competitors=["BIC", "Norma", "Scribe", "Pelikan", "Faber-Castell", "Barrilito"],
+)
