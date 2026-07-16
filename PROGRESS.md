@@ -499,3 +499,39 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 ### 下一步
 1. 提交第四部 A 的独立 commit；
 2. 进入第四部 B：提及 vs 推荐、来源质量分层、采样方法论与术语对齐。
+
+### 冲刺-P1 第四部 B：指标语义、来源结构与重复采样
+- [x] `AnswerAnalysis` 只增默认字段 `brand_recommended` / `recommendation_assessed`；
+      新分析明确区分“进入答案”与“被建议/进入推荐列表”。启发式采用保守证据句与
+      推荐列表规则；普通事实描述不算推荐，否定建议优先排除；LLM JSON prompt 同步新增定义。
+- [x] `VisibilitySegmentMetrics` 新增可空 `recommendation_rate`。新运行按 checked answers
+      计算；旧 JSON 默认 `None` 不冒充 0，`--run-id` 可从已存回答原文确定性补算，
+      不重新调用 API。报告头版、多平台表、问题地图与回答卡均同时展示 Mention / Recommendation。
+- [x] `Citation.source_type` 增加规则分层：目标品牌官网、权威媒体/政府、电商、目录、
+      论坛、其他；报告新增无品牌词 Source Mix，并明确“类型不是质量评分、不是证据支持”。
+      SOV 文案同步说明它按回答级提及计算，不与 Share of Answer 混用。
+- [x] 对 `run_id=f141d182` 历史原文重渲染：Unbranded Mention / Recommendation / SOV
+      均为 0%；64 个来源的整体结构为官网 1、权威媒体/政府 9、电商 11、目录 25、
+      论坛 3、其他 15；其中 38 个无品牌词来源中官网 0、权威 5、电商 7、目录 21、
+      论坛 0、其他 5。结论限定为透明域名规则与该 run，不冒充逐句人工核验。
+- [x] 新增独立 `python -m src.sampling_demo`：只允许 fixtures 中的无品牌词问题，
+      默认 q05/q07/q08 各重复 3 次，保存每轮完整回答、Web Search URL、提及/推荐/
+      顺位、来源类型与失败记录；不改主报告、不调用 OpenAI/Gemini、不写入密钥。
+- [x] 2026-07-17 真实重复采样：DeepSeek `deepseek-v4-flash` 共 9/9 成功且 grounded，
+      返回来源合计 61 URL、0 失败。三轮 Prompt Set 的 Mention Rate 与 Recommendation Rate
+      均在 0%~33.3% 波动；q08 仅第 2 轮命中并推荐 Deli，顺位第 15，另两轮未提及。
+      产物为 `data/示例产物/repeat_sampling.json`，明确标注 small demo / 非置信区间。
+- [x] 新增推荐判定、否定/竞品误归防护、六类来源、推荐聚合与重复采样波动测试；
+      全量 `45 passed`，Mock 基线继续为 20 / 8 / 7 / 7。
+
+### 决策记录（第四部 B）
+- Recommendation Rate 采用保守定义：宁可漏掉跨句代词式建议，也不把同段内对竞品的
+  推荐错误归给目标品牌；这适合作为人工复核队列的稳定基线。生产环境可用标注集校准。
+- Source Mix 按引用“条目”计数，不去重成域名数，因为同一来源在多题重复被检索本身就是
+  叙事集中度信号；但报告同时避免把目录/媒体类别写成来源可信度结论。
+- 追加指令写“若额度允许”再做重复采样。DeepSeek 已有验收额度且用户要求继续冲刺，
+  因此实际执行 9 次请求；所有请求成功。该演示独立于主 `f141d182`，不回写或混算主指标。
+
+### 下一步
+1. 验证历史/新报告、示例产物、Mock 基线和 45 个测试后提交第四部 B；
+2. 进入第五部 Query Fanout，只对无品牌词派生 3~5 个子问法并计算 Coverage。

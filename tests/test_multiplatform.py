@@ -142,7 +142,8 @@ def test_report_renders_platform_comparison_and_machine_evidence_warning(
     assert "多平台横向对比" in html
     assert "OPENAI" in html and "GEMINI" in html
     assert "机器预审 · 需人工复核" in html
-    assert "无品牌词可见度" in html
+    assert "Mention Rate" in html and "Recommendation Rate" in html
+    assert "其他来源" in html
     assert "AI 爬虫" in html and "llms.txt" in html
     assert 'href="https://example.com/evidence"' in html
     assert "来自 DeepSeek Web Search" not in html

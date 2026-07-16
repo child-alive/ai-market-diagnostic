@@ -417,6 +417,8 @@
       "provider": "",
       "model": "",
       "brand_mentioned": false,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": null,
       "competitors": [
         {
@@ -475,39 +477,48 @@
       "citations": [
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news/5623897.html"
+          "url": "https://www.zcqtz.com/news/5623897.html",
+          "source_type": "other"
         },
         {
           "domain": "www.researchandmarkets.com",
-          "url": "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico"
+          "url": "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+          "source_type": "directory"
         },
         {
           "domain": "lopezdoriga.com",
-          "url": "https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5"
+          "url": "https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5",
+          "source_type": "authority_media"
         },
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news6285436"
+          "url": "https://www.zcqtz.com/news6285436",
+          "source_type": "other"
         },
         {
           "domain": "www.gob.mx",
-          "url": "https://www.gob.mx/cms/uploads/attachment/file/98392/ItalianaCDM.pdf#1#1"
+          "url": "https://www.gob.mx/cms/uploads/attachment/file/98392/ItalianaCDM.pdf#1#1",
+          "source_type": "authority_media"
         },
         {
           "domain": "biopappel.com",
-          "url": "https://biopappel.com/en/scribe-en/"
+          "url": "https://biopappel.com/en/scribe-en/",
+          "source_type": "other"
         },
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news3033749"
+          "url": "https://www.zcqtz.com/news3033749",
+          "source_type": "other"
         },
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news/3033749.html"
+          "url": "https://www.zcqtz.com/news/3033749.html",
+          "source_type": "other"
         },
         {
           "domain": "www.indexbox.io",
-          "url": "https://www.indexbox.io/store/mexico-highlighter-set-marketplace-brand-report/"
+          "url": "https://www.indexbox.io/store/mexico-highlighter-set-marketplace-brand-report/",
+          "source_type": "directory"
         }
       ],
       "sentiment": "neu",
@@ -519,60 +530,75 @@
       "provider": "",
       "model": "",
       "brand_mentioned": false,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": null,
       "competitors": [],
       "citations": [
         {
           "domain": "www.inegi.org.mx",
-          "url": "https://www.inegi.org.mx/contenidos/app/scian/tablaiii.pdf#44#20"
+          "url": "https://www.inegi.org.mx/contenidos/app/scian/tablaiii.pdf#44#20",
+          "source_type": "authority_media"
         },
         {
           "domain": "www.ipaddress.com",
-          "url": "https://www.ipaddress.com/website/todooficina.com/"
+          "url": "https://www.ipaddress.com/website/todooficina.com/",
+          "source_type": "directory"
         },
         {
           "domain": "www.crunchbase.com",
-          "url": "https://www.crunchbase.com/organization/dc-wholesale"
+          "url": "https://www.crunchbase.com/organization/dc-wholesale",
+          "source_type": "directory"
         },
         {
           "domain": "directorio.cdhdf.org.mx",
-          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#22"
+          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#22",
+          "source_type": "directory"
         },
         {
           "domain": "transparencia.udg.mx",
-          "url": "http://transparencia.udg.mx/sites/default/files/Padron%20de%20Provedores%20CUCosta.pdf#7#1"
+          "url": "http://transparencia.udg.mx/sites/default/files/Padron%20de%20Provedores%20CUCosta.pdf#7#1",
+          "source_type": "authority_media"
         },
         {
           "domain": "directorio.cdhdf.org.mx",
-          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#19"
+          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#19",
+          "source_type": "directory"
         },
         {
           "domain": "directorioempresarialmexico.com",
-          "url": "https://directorioempresarialmexico.com/empresa/0006271398/FABRICA-DE-COLCHONES-Y-SALAS/?buscar=dimosa&p=0"
+          "url": "https://directorioempresarialmexico.com/empresa/0006271398/FABRICA-DE-COLCHONES-Y-SALAS/?buscar=dimosa&p=0",
+          "source_type": "directory"
         },
         {
           "domain": "directorio.cdhdf.org.mx",
-          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#11"
+          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#11",
+          "source_type": "directory"
         },
         {
           "domain": "directorio.cdhdf.org.mx",
-          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#10"
+          "url": "https://directorio.cdhdf.org.mx/transparencia/2011/05/proveedores4totrim-2010.pdf#25#10",
+          "source_type": "directory"
         },
         {
           "domain": "www.52wmb.com",
-          "url": "https://www.52wmb.com/cb-mexico/office_furniture"
+          "url": "https://www.52wmb.com/cb-mexico/office_furniture",
+          "source_type": "directory"
         },
         {
           "domain": "www.dunsguide.com",
-          "url": "https://www.dunsguide.com/company/59b16479608505cc94f694d94b14456d/versa-muebles-para-oficina-sa-de-cv"
+          "url": "https://www.dunsguide.com/company/59b16479608505cc94f694d94b14456d/versa-muebles-para-oficina-sa-de-cv",
+          "source_type": "directory"
         },
         {
           "domain": "esemanal.mx",
-          "url": "https://esemanal.mx/ejemplares/1191/1191.pdf#13#13"
+          "url": "https://esemanal.mx/ejemplares/1191/1191.pdf#13#13",
+          "source_type": "authority_media"
         },
         {
           "domain": "www.verif.com",
-          "url": "https://www.verif.com/en/company/DC-Mayorista-S-A--de-C-V--68d9dcff1299230338926bf1/"
+          "url": "https://www.verif.com/en/company/DC-Mayorista-S-A--de-C-V--68d9dcff1299230338926bf1/",
+          "source_type": "directory"
         }
       ],
       "sentiment": "neu",
@@ -584,52 +610,65 @@
       "provider": "",
       "model": "",
       "brand_mentioned": false,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": null,
       "competitors": [],
       "citations": [
         {
           "domain": "www.amazon.com.mx",
-          "url": "https://www.amazon.com.mx/Profesionales-Erg%C3%B3nomicos-Papeleria-Principiantes-Artistas/dp/B0G7HG2KW7?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0G7HG2KW7&ref_=dossier_default_ref_B0G7HG2KW7"
+          "url": "https://www.amazon.com.mx/Profesionales-Erg%C3%B3nomicos-Papeleria-Principiantes-Artistas/dp/B0G7HG2KW7?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0G7HG2KW7&ref_=dossier_default_ref_B0G7HG2KW7",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.amazon.com.mx",
-          "url": "https://www.amazon.com.mx/Megaplus-Cuaderno-100h-prof-megaplus/dp/B00VXXQM8W/ref=sr_1_12?_encoding=UTF8&content-id=amzn1.sym.8797e3c6-82e7-4224-aa94-05f81f27368f&dib=eyJ2IjoiMSJ9.NqYv6k2K62XXXmRE6Uc3n2FoOGdiEEoNNpypXaEfwq1g41oQmJj1l63PDqN04oRJR8q6vxYJn2DZtiNxWR-sSLTa-EUwVZ8Vj53HnVg1CEF_NNbjsDD92ZYJCjEIhX6nqWE2m4WoeEoYXUH8p6nr3Im-8ah4DPadFZRrycwwNPJiD-t3XOrh0-qZskRRnqD842Vgx6841v0aqLgSFl-IeoKaJSp1g6mA5dIoIt4xMvCcJB1_YfJh15gI61eLdQ-z4mJTPvYD276Ozid2q19wMoN7L95bB8HLNTFrRuWEFXI.WwjSdYV_N5zfR9dXcpyRkFB-2FrMjG8zK3n9PWwN4c4&dib_tag=se&keywords=cuaderno&pd_rd_r=f47ab4bf-cb35-4c9a-849c-9f63993ca895&pd_rd_w=tDhsV&pd_rd_wg=kDoym&qid=1784183810&sr=8-12"
+          "url": "https://www.amazon.com.mx/Megaplus-Cuaderno-100h-prof-megaplus/dp/B00VXXQM8W/ref=sr_1_12?_encoding=UTF8&content-id=amzn1.sym.8797e3c6-82e7-4224-aa94-05f81f27368f&dib=eyJ2IjoiMSJ9.NqYv6k2K62XXXmRE6Uc3n2FoOGdiEEoNNpypXaEfwq1g41oQmJj1l63PDqN04oRJR8q6vxYJn2DZtiNxWR-sSLTa-EUwVZ8Vj53HnVg1CEF_NNbjsDD92ZYJCjEIhX6nqWE2m4WoeEoYXUH8p6nr3Im-8ah4DPadFZRrycwwNPJiD-t3XOrh0-qZskRRnqD842Vgx6841v0aqLgSFl-IeoKaJSp1g6mA5dIoIt4xMvCcJB1_YfJh15gI61eLdQ-z4mJTPvYD276Ozid2q19wMoN7L95bB8HLNTFrRuWEFXI.WwjSdYV_N5zfR9dXcpyRkFB-2FrMjG8zK3n9PWwN4c4&dib_tag=se&keywords=cuaderno&pd_rd_r=f47ab4bf-cb35-4c9a-849c-9f63993ca895&pd_rd_w=tDhsV&pd_rd_wg=kDoym&qid=1784183810&sr=8-12",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.storecensus.com",
-          "url": "https://www.storecensus.com/stores/papira.com.mx"
+          "url": "https://www.storecensus.com/stores/papira.com.mx",
+          "source_type": "directory"
         },
         {
           "domain": "www.amazon.com.mx",
-          "url": "https://www.amazon.com.mx/Prismacolor-l%C3%A1pices-colores-surtidos-paquete/dp/B0BN69G3C2/ref=pd_bxgy_d_sccl_1/140-3398445-7866818?pd_rd_w=a5y98&content-id=amzn1.sym.8cc2ee89-c2da-43c8-bc30-4e2a87d6e7dc&pf_rd_p=8cc2ee89-c2da-43c8-bc30-4e2a87d6e7dc&pf_rd_r=VAMRJEG3NT0GWEP2ET8R&pd_rd_wg=kYhXo&pd_rd_r=90105f23-4e2b-43a7-b36d-b3303668f825&pd_rd_i=B0BN69G3C2&th=1"
+          "url": "https://www.amazon.com.mx/Prismacolor-l%C3%A1pices-colores-surtidos-paquete/dp/B0BN69G3C2/ref=pd_bxgy_d_sccl_1/140-3398445-7866818?pd_rd_w=a5y98&content-id=amzn1.sym.8cc2ee89-c2da-43c8-bc30-4e2a87d6e7dc&pf_rd_p=8cc2ee89-c2da-43c8-bc30-4e2a87d6e7dc&pf_rd_r=VAMRJEG3NT0GWEP2ET8R&pd_rd_wg=kYhXo&pd_rd_r=90105f23-4e2b-43a7-b36d-b3303668f825&pd_rd_i=B0BN69G3C2&th=1",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.ipaddress.com",
-          "url": "https://www.ipaddress.com/website/pedidos.com/"
+          "url": "https://www.ipaddress.com/website/pedidos.com/",
+          "source_type": "directory"
         },
         {
           "domain": "hypestat.com",
-          "url": "https://hypestat.com/info/propapel.mx"
+          "url": "https://hypestat.com/info/propapel.mx",
+          "source_type": "directory"
         },
         {
           "domain": "www.storecensus.com",
-          "url": "https://www.storecensus.com/stores/paperix.mx"
+          "url": "https://www.storecensus.com/stores/paperix.mx",
+          "source_type": "directory"
         },
         {
           "domain": "www.ipaddress.com",
-          "url": "https://www.ipaddress.com/website/www.ofix.mx"
+          "url": "https://www.ipaddress.com/website/www.ofix.mx",
+          "source_type": "directory"
         },
         {
           "domain": "www.amazon.com.mx",
-          "url": "https://www.amazon.com.mx/Piezas%EF%BC%8CEstuche-impermeable-cremallera-Puede-maquillaje-24PCS-Multicolor/dp/B0C6XZDCBZ?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0C6XZDCBZ&ref_=dossier_default_ref_B0C6XZDCBZ"
+          "url": "https://www.amazon.com.mx/Piezas%EF%BC%8CEstuche-impermeable-cremallera-Puede-maquillaje-24PCS-Multicolor/dp/B0C6XZDCBZ?pd_rd_w=HvpLV&content-id=amzn1.sym.daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_p=daf0a7ef-773c-4716-b03a-7d8162f3d0f6&pf_rd_r=C0TDB5PTWCM9Y11EJM8T&pd_rd_wg=D6b0w&pd_rd_r=ba52bffb-8a49-44b6-ac95-03cb86151646&pd_rd_i=B0C6XZDCBZ&ref_=dossier_default_ref_B0C6XZDCBZ",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.amazon.com.mx",
-          "url": "https://www.amazon.com.mx/dp/B0CCPCGNMY/?_encoding=UTF8&pd_rd_i=B0CCPCGNMY&pd_rd_i=B0CCPCGNMY&ref_=sbx_be_s_sparkle_ssd_pce&pd_rd_w=LTbkf&content-id=amzn1.sym.9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_w=LTbkf&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb"
+          "url": "https://www.amazon.com.mx/dp/B0CCPCGNMY/?_encoding=UTF8&pd_rd_i=B0CCPCGNMY&pd_rd_i=B0CCPCGNMY&ref_=sbx_be_s_sparkle_ssd_pce&pd_rd_w=LTbkf&content-id=amzn1.sym.9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb&pf_rd_p=9d10ddf6-15b7-48e0-a0d0-93cb351cd44d&pf_rd_r=GY42433N7RQT3HHN5GVB&pd_rd_wg=Az6Ri&pd_rd_w=LTbkf&pd_rd_r=f346125c-5998-460a-b66c-b9b1a7704fcb",
+          "source_type": "ecommerce"
         },
         {
           "domain": "shopify.ixspy.com",
-          "url": "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank"
+          "url": "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank",
+          "source_type": "ecommerce"
         }
       ],
       "sentiment": "neu",
@@ -641,12 +680,15 @@
       "provider": "",
       "model": "",
       "brand_mentioned": true,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": 1,
       "competitors": [],
       "citations": [
         {
           "domain": "papelsa.com.mx",
-          "url": "https://papelsa.com.mx/wp-content/uploads/2025/10/ListaContado_13oct2025_CIVA.pdf#11#1"
+          "url": "https://papelsa.com.mx/wp-content/uploads/2025/10/ListaContado_13oct2025_CIVA.pdf#11#1",
+          "source_type": "other"
         }
       ],
       "sentiment": "pos",
@@ -658,6 +700,8 @@
       "provider": "",
       "model": "",
       "brand_mentioned": true,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": 2,
       "competitors": [
         {
@@ -684,39 +728,48 @@
       "citations": [
         {
           "domain": "www.qyresearch.com",
-          "url": "https://www.qyresearch.com/reports/5493412/stationery"
+          "url": "https://www.qyresearch.com/reports/5493412/stationery",
+          "source_type": "directory"
         },
         {
           "domain": "www.qyresearch.com",
-          "url": "https://www.qyresearch.com/reports/3470624/stationery"
+          "url": "https://www.qyresearch.com/reports/3470624/stationery",
+          "source_type": "directory"
         },
         {
           "domain": "redleafprintshop.com",
-          "url": "https://redleafprintshop.com/best-black-pens-in-bulk/#main"
+          "url": "https://redleafprintshop.com/best-black-pens-in-bulk/#main",
+          "source_type": "other"
         },
         {
           "domain": "www.qyresearch.com",
-          "url": "https://www.qyresearch.com/reports/5555450/stationery"
+          "url": "https://www.qyresearch.com/reports/5555450/stationery",
+          "source_type": "directory"
         },
         {
           "domain": "www.researchandmarkets.com",
-          "url": "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico"
+          "url": "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+          "source_type": "directory"
         },
         {
           "domain": "bbs.fobshanghai.com",
-          "url": "https://bbs.fobshanghai.com/blog.php?tid=8709243"
+          "url": "https://bbs.fobshanghai.com/blog.php?tid=8709243",
+          "source_type": "forum"
         },
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news/2988046.html"
+          "url": "https://www.zcqtz.com/news/2988046.html",
+          "source_type": "other"
         },
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news3033749"
+          "url": "https://www.zcqtz.com/news3033749",
+          "source_type": "other"
         },
         {
           "domain": "www.zcqtz.com",
-          "url": "https://www.zcqtz.com/news/3033749.html"
+          "url": "https://www.zcqtz.com/news/3033749.html",
+          "source_type": "other"
         }
       ],
       "sentiment": "neg",
@@ -728,28 +781,35 @@
       "provider": "",
       "model": "",
       "brand_mentioned": false,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": null,
       "competitors": [],
       "citations": [
         {
           "domain": "www.top-rated.online",
-          "url": "https://www.top-rated.online/cities/Nicol%C3%A1s+Romero/place/p/15643651/CHOCOPAPE"
+          "url": "https://www.top-rated.online/cities/Nicol%C3%A1s+Romero/place/p/15643651/CHOCOPAPE",
+          "source_type": "directory"
         },
         {
           "domain": "www.ipaddress.com",
-          "url": "https://www.ipaddress.com/website/pedidos.com/"
+          "url": "https://www.ipaddress.com/website/pedidos.com/",
+          "source_type": "directory"
         },
         {
           "domain": "www.top-rated.online",
-          "url": "https://www.top-rated.online/cities/Cortazar/place/p/16144562/Bozz+Internet+%26+Papeleria"
+          "url": "https://www.top-rated.online/cities/Cortazar/place/p/16144562/Bozz+Internet+%26+Papeleria",
+          "source_type": "directory"
         },
         {
           "domain": "www.ipaddress.com",
-          "url": "https://www.ipaddress.com/website/mail.scrapfer.com.mx/"
+          "url": "https://www.ipaddress.com/website/mail.scrapfer.com.mx/",
+          "source_type": "directory"
         },
         {
           "domain": "shopify.ixspy.com",
-          "url": "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank"
+          "url": "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank",
+          "source_type": "ecommerce"
         }
       ],
       "sentiment": "neu",
@@ -761,28 +821,35 @@
       "provider": "",
       "model": "",
       "brand_mentioned": true,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": 1,
       "competitors": [],
       "citations": [
         {
           "domain": "item.szlcsc.com",
-          "url": "https://item.szlcsc.com/mro/3405592.html?mro=1&fromZone=l_c__%2522catalog%2522&spm=sc.cid.xh3.zy.t___sc.bid.ca48.48-89&lcsc_vid=FlNaVQZeE1kNUFJRTwJdUAZQEQJbX11TT1ZbVldUQVYxVlNSQlJbUVJSTlZYVjtW&redirect_source=item"
+          "url": "https://item.szlcsc.com/mro/3405592.html?mro=1&fromZone=l_c__%2522catalog%2522&spm=sc.cid.xh3.zy.t___sc.bid.ca48.48-89&lcsc_vid=FlNaVQZeE1kNUFJRTwJdUAZQEQJbX11TT1ZbVldUQVYxVlNSQlJbUVJSTlZYVjtW&redirect_source=item",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.officepro.com.tw",
-          "url": "http://www.officepro.com.tw/prdt/49059115.aspx"
+          "url": "http://www.officepro.com.tw/prdt/49059115.aspx",
+          "source_type": "other"
         },
         {
           "domain": "wiki.m.smzdm.com",
-          "url": "https://wiki.m.smzdm.com/p/1we44x1/"
+          "url": "https://wiki.m.smzdm.com/p/1we44x1/",
+          "source_type": "ecommerce"
         },
         {
           "domain": "my.deliworld.com",
-          "url": "https://my.deliworld.com/affordable-office-supplies-and-stationery-essentials.html"
+          "url": "https://my.deliworld.com/affordable-office-supplies-and-stationery-essentials.html",
+          "source_type": "official"
         },
         {
           "domain": "imt.mx",
-          "url": "https://imt.mx/images/files/trn/licitaciones/2022/LA-009A00001-E86-2022.pdf#12#8"
+          "url": "https://imt.mx/images/files/trn/licitaciones/2022/LA-009A00001-E86-2022.pdf#12#8",
+          "source_type": "authority_media"
         }
       ],
       "sentiment": "pos",
@@ -794,6 +861,8 @@
       "provider": "",
       "model": "",
       "brand_mentioned": true,
+      "brand_recommended": false,
+      "recommendation_assessed": true,
       "brand_position": 2,
       "competitors": [
         {
@@ -804,47 +873,58 @@
       "citations": [
         {
           "domain": "www.xiaohongshu.com",
-          "url": "https://www.xiaohongshu.com/discovery/item/69b7c255000000001e00e2e5"
+          "url": "https://www.xiaohongshu.com/discovery/item/69b7c255000000001e00e2e5",
+          "source_type": "forum"
         },
         {
           "domain": "m.suning.com",
-          "url": "https://m.suning.com/prdCom/0000000000-11040277801_0000000000-12450922581_0-0_0-0.html"
+          "url": "https://m.suning.com/prdCom/0000000000-11040277801_0000000000-12450922581_0-0_0-0.html",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.suning.com",
-          "url": "https://www.suning.com/prdCom/0000000000-11040249865_0000000000-12447821809_0-0_0-0.html"
+          "url": "https://www.suning.com/prdCom/0000000000-11040249865_0000000000-12447821809_0-0_0-0.html",
+          "source_type": "ecommerce"
         },
         {
           "domain": "www.xiaohongshu.com",
-          "url": "https://www.xiaohongshu.com/discovery/item/67161d9d0000000016023920"
+          "url": "https://www.xiaohongshu.com/discovery/item/67161d9d0000000016023920",
+          "source_type": "forum"
         },
         {
           "domain": "www.163.com",
-          "url": "https://www.163.com/dy/article/JFJC2VUU0556A727.html"
+          "url": "https://www.163.com/dy/article/JFJC2VUU0556A727.html",
+          "source_type": "authority_media"
         },
         {
           "domain": "www.zeelive.com.tw",
-          "url": "https://www.zeelive.com.tw/a/%e4%b8%96%e7%95%8c%e4%b8%8a%e6%9c%80%e5%a5%bd%e7%9a%84%e6%a9%a1%e7%9a%ae.html"
+          "url": "https://www.zeelive.com.tw/a/%e4%b8%96%e7%95%8c%e4%b8%8a%e6%9c%80%e5%a5%bd%e7%9a%84%e6%a9%a1%e7%9a%ae.html",
+          "source_type": "authority_media"
         },
         {
           "domain": "www.theartgearguide.com",
-          "url": "http://www.theartgearguide.com/home/tag/Cheap+Set+of+Coloured+Pencils"
+          "url": "http://www.theartgearguide.com/home/tag/Cheap+Set+of+Coloured+Pencils",
+          "source_type": "other"
         },
         {
           "domain": "www.cnpp100.com",
-          "url": "https://www.cnpp100.com/pinpai/list_3977.html"
+          "url": "https://www.cnpp100.com/pinpai/list_3977.html",
+          "source_type": "other"
         },
         {
           "domain": "www.theartgearguide.com",
-          "url": "http://www.theartgearguide.com/home/review-of-the-deli-colored-pencils-are-they-faber-castell-polychromos-alternative"
+          "url": "http://www.theartgearguide.com/home/review-of-the-deli-colored-pencils-are-they-faber-castell-polychromos-alternative",
+          "source_type": "other"
         },
         {
           "domain": "gummysearch.com",
-          "url": "https://gummysearch.com/r/ColoredPencils/"
+          "url": "https://gummysearch.com/r/ColoredPencils/",
+          "source_type": "other"
         },
         {
           "domain": "www.gob.mx",
-          "url": "https://www.gob.mx/cms/uploads/attachment/file/119120/Estudio_Utiles.pdf#3#2"
+          "url": "https://www.gob.mx/cms/uploads/attachment/file/119120/Estudio_Utiles.pdf#3#2",
+          "source_type": "authority_media"
         }
       ],
       "sentiment": "pos",
@@ -854,6 +934,7 @@
   ],
   "metrics": {
     "visibility_rate": 0.5,
+    "recommendation_rate": 0.0,
     "sov": 0.1739,
     "avg_position": 1.5,
     "citation_rate": 1.0,
@@ -948,9 +1029,18 @@
         "sov": 0.0435
       }
     ],
+    "source_type_summary": {
+      "official": 1,
+      "authority_media": 9,
+      "ecommerce": 11,
+      "directory": 25,
+      "forum": 3,
+      "other": 15
+    },
     "questions_checked": 8,
     "branded": {
       "visibility_rate": 1.0,
+      "recommendation_rate": 0.0,
       "sov": 0.4,
       "avg_position": 1.5,
       "citation_rate": 1.0,
@@ -991,10 +1081,19 @@
           "sov": 0.1
         }
       ],
+      "source_type_summary": {
+        "official": 1,
+        "authority_media": 4,
+        "ecommerce": 4,
+        "directory": 4,
+        "forum": 3,
+        "other": 10
+      },
       "questions_checked": 4
     },
     "unbranded": {
       "visibility_rate": 0.0,
+      "recommendation_rate": 0.0,
       "sov": 0.0,
       "avg_position": null,
       "citation_rate": 1.0,
@@ -1083,6 +1182,14 @@
           "sov": 0.0769
         }
       ],
+      "source_type_summary": {
+        "official": 0,
+        "authority_media": 5,
+        "ecommerce": 7,
+        "directory": 21,
+        "forum": 0,
+        "other": 5
+      },
       "questions_checked": 4
     }
   },
@@ -1107,7 +1214,16 @@
         "detail": "本次抓取的 15 页范围内未检测到西班牙语内容，建议扩大抓取后复核并补齐目标市场内容"
       }
     ],
-    "snapshot_mode": false
+    "snapshot_mode": false,
+    "advanced_checks_completed": false,
+    "ai_crawlers": [],
+    "llms_txt_found": false,
+    "llms_full_txt_found": false,
+    "raw_html_text_chars": 0,
+    "brand_in_raw_html": false,
+    "likely_js_dependent": false,
+    "direct_answer_content_found": false,
+    "faq_content_found": false
   },
   "gaps": [
     {

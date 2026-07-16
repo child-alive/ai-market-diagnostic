@@ -1,0 +1,415 @@
+{
+  "meta": {
+    "generated_at": "2026-07-16T17:48:47.147009+00:00",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "question_ids": [
+      "q05",
+      "q07",
+      "q08"
+    ],
+    "repeats_requested": 3,
+    "method": "same_prompt_repeated_independent_web_search_calls",
+    "limitation": "small methodology demo; not a confidence interval"
+  },
+  "summary": {
+    "per_question": [
+      {
+        "question_id": "q05",
+        "successful_samples": 3,
+        "mention_rate": 0.0,
+        "recommendation_rate": 0.0,
+        "position_range": null,
+        "grounded_samples": 3
+      },
+      {
+        "question_id": "q07",
+        "successful_samples": 3,
+        "mention_rate": 0.0,
+        "recommendation_rate": 0.0,
+        "position_range": null,
+        "grounded_samples": 3
+      },
+      {
+        "question_id": "q08",
+        "successful_samples": 3,
+        "mention_rate": 0.3333,
+        "recommendation_rate": 0.3333,
+        "position_range": [
+          15,
+          15
+        ],
+        "grounded_samples": 3
+      }
+    ],
+    "per_round": [
+      {
+        "round": 1,
+        "successful_questions": 3,
+        "mention_rate": 0.0,
+        "recommendation_rate": 0.0
+      },
+      {
+        "round": 2,
+        "successful_questions": 3,
+        "mention_rate": 0.3333,
+        "recommendation_rate": 0.3333
+      },
+      {
+        "round": 3,
+        "successful_questions": 3,
+        "mention_rate": 0.0,
+        "recommendation_rate": 0.0
+      }
+    ],
+    "mention_rate_range": [
+      0.0,
+      0.3333
+    ],
+    "recommendation_rate_range": [
+      0.0,
+      0.3333
+    ]
+  },
+  "records": [
+    {
+      "round": 1,
+      "question_id": "q05",
+      "question": "¿Cuáles son las mejores marcas de papelería en México?",
+      "answer": {
+        "question_id": "q05",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "¡Claro! Aquí te comparto un panorama de las mejores marcas de papelería en México, divididas por categorías para que te sea más útil:\n\n---\n\n## 🏪 Cadenas de papelerías (tiendas)\n\n- **Grupo Lala** — Es la cadena de papelería y útiles de oficina **más grande de México**, con sucursales en todo el país. Ofrece desde cuadernos, plumas y mochilas hasta muebles de oficina. Muy popular por sus promociones y programa de membresías.\n- **Papelería Wong** — Aunque es de origen peruano, tiene presencia importante en México. Buena variedad y precios competitivos.\n- **Oficina Lima** — Especializada en soluciones integrales para oficina: mobiliario, equipos, consumibles y servicio a empresas.\n\n---\n\n## ✍️ Marcas de productos (plumas, lápices, colores)\n\n| Marca | ¿Por qué destacan? |\n|---|---|\n| **Bic** | La reina de los bolígrafos en México. Tienen planta en Coahuila. Económicos y confiables. |\n| **Faber-Castell** | Excelentes lápices, colores y plumones. Muy usados en escuelas y por artistas. |\n| **Pilot** | Plumas de gel y puntas finas de gran calidad (como las Pilot G2). |\n| **Staedtler** | Lápices y gomas de borrar de altísima calidad. Muy populares en dibujo técnico. |\n| **Paper Mate** (Newell Brands) | Plumas y correctores líquidos muy comunes en oficinas mexicanas. |\n| **Sharpie** (Newell Brands) | Los marcadores permanentes más conocidos del país. |\n| **Montblanc** | Gama de lujo, para quienes buscan plumas fuente elegantes. |\n\n---\n\n## 📓 Marcas de cuadernos y papel\n\n- **Scribe** — Marca mexicana clásica. Sus cuadernos de raya y cuadrícula son omnipresentes en escuelas y oficinas. Buena relación calidad-precio.\n- **Norma** — Muy popular en útiles escolares, especialmente cuadernos y agendas. Fácil de encontrar en cualquier papelería.\n\n---\n\n## 🇲🇽 Marcas locales mexicanas\n\n- **Magis** — Marca nacional reconocida en el mercado de útiles escolares y de oficina.\n- **Cimex** — Otra marca mexicana con buena presencia en el mercado de escritura y papelería.\n- **Invexa** y **Lumisa** — Marcas locales que compiten fuertemente en precio, sobre todo en productos básicos.\n\n---\n\n## 💡 ¿Buscas algo económico?\n\n**Walmart** tiene su marca propia **Pen+Gear**, que ofrece precios muy bajos en bolígrafos, cuadernos y sets escolares. Es una opción accesible para el regreso a clases.\n\n---\n\n¿Buscas algo en específico? ¿Mochilas, mochilas, colores para arte o algo para la oficina? ¡Dime y te ayudo a afinar la recomendación! 🎒📚\n\nFuentes recuperadas por búsqueda web:\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- Printing in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/5920948/printing-in-mexico\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico\n- Report — https://www.scotts-international.com/writing-instruments-in-mexico,t2030126/4\n- 墨西哥文具市场规模、份额和增长趋势-行业政策-丝路印象-丝路印象 — https://www.zcqtz.com/news/3033749.html\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749\n- Worldwide Market Reports — https://www.worldwidemarketreports.com/market-insights/mexico-writing-market-1026180/amp\n- Writing Instruments in Mexico — https://www.worldwidemarketreports.com/market-insights/mexico-writing-market-1026180/toc\n- 墨西哥文具市场规模、份额、趋势深度解析-丝路印象 — https://www.zcqtz.com/news3128917",
+        "retrieved_at": "2026-07-16T17:46:13.730208Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://www.researchandmarkets.com/reports/5920948/printing-in-mexico",
+          "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+          "https://www.scotts-international.com/writing-instruments-in-mexico,t2030126/4",
+          "https://www.zcqtz.com/news/3033749.html",
+          "https://www.zcqtz.com/news3033749",
+          "https://www.worldwidemarketreports.com/market-insights/mexico-writing-market-1026180/amp",
+          "https://www.worldwidemarketreports.com/market-insights/mexico-writing-market-1026180/toc",
+          "https://www.zcqtz.com/news3128917"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "other",
+        "directory",
+        "directory",
+        "other",
+        "other",
+        "other",
+        "other",
+        "other",
+        "other"
+      ]
+    },
+    {
+      "round": 1,
+      "question_id": "q07",
+      "question": "¿Cuál es la mejor marca de útiles escolares para el regreso a clases?",
+      "answer": {
+        "question_id": "q07",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "# Mejores marcas de útiles escolares para el regreso a clases en México\n\nNo existe una sola \"mejor marca\" porque depende del tipo de producto y tu presupuesto, pero con base en estudios de calidad y la oferta disponible en México, aquí te van las recomendaciones:\n\n---\n\n## 📓 Cuadernos: **Scribe** y **Norma** (las mejores evaluadas)\n\nSegún el **Estudio de Calidad de Útiles Escolares 2025-2026** (levantado en CDMX, Guadalajara, Monterrey y más ciudades), estas marcas mexicanas destacaron:\n\n| Marca | Evaluación general | Precio aprox. |\n|---|---|---|\n| **Scribe** (modelo Excellence / In Black) | **Excelente** en resistencia al borrado, pastas y repelencia al agua | $101–$247 |\n| **Norma** (Unicampus pasta dura) | **Muy Buena** – pastas resistentes, buen gramaje (68 g/m²) | $287 |\n| **SIGEL** (Universitario) | **Buena** y súper económica | $32 |\n| **European** | **Excelente** en resistencia general (según el mismo estudio) | Varía |\n\n**¿Cuál es la mejor?**  \n**Scribe** fue el modelo que **mejor calificó** en las pruebas generales del estudio, especialmente en resistencia al borrado y durabilidad de pastas. **Norma** también salió muy bien, especialmente su línea Unicampus pasta dura.\n\n---\n\n## ✏️ Lápices, colores y plumones: **BIC**, **Faber-Castell** y **Maped**\n\n- **BIC** – Tiene planta en México (Coahuila) y es la marca más confiable para bolígrafos, lápices y colores. Relación calidad-precio inmejorable.\n- **Faber-Castell** – Excelente para lápices de colores, acuarelables y grafito. Ideal si buscas más calidad artística.\n- **Maped** – Muy popular en Office Depot, buenos precios en juegos de geometría, tijeras y plumones.\n\n---\n\n## 🏪 ¿Dónde comprar?\n\n- **Office Depot** – Gran variedad de marcas (BIC, Maped, Scribe, Norma) y frecuentes promociones de regreso a clases.\n- **Grupo Lala / Papelerías Lala** – Cadena mexicana con buena presencia y precios competitivos.\n- **Papelería Wong** – También con sucursales en México, buena variedad.\n- **Walmart / Soriana / Chedraui** – Sus propias marcas (como **Pen+Gear** de Walmart) son opciones económicas de calidad aceptable.\n\n---\n\n## 💡 Consejo final\n\nSi buscas **la mejor calidad general**: combina **cuadernos Scribe o Norma** + **bolígrafos BIC** + **lápices de colores Faber-Castell**. Si traes **presupuesto ajustado**: **SIGEL** en cuadernos y **Pen+Gear** en básicos te sacan del apuro sin fallar.\n\n¿Necesitas recomendación para un producto en específico (mochila, calculadora, etc.)? ¡Ahí te ayudo también!\n\nFuentes recuperadas por búsqueda web:\n- https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5 — https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5\n- Back-to-School Shopping at Office Depot in Oaxaca, Mexico — https://www.lemon8-app.com/@invidente4/7548618049784463902?region=us\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- https://revista.condusef.gob.mx/wp-content/uploads/2018/08/PDF-s_2018_221_regreso.pdf#1#1 — https://revista.condusef.gob.mx/wp-content/uploads/2018/08/PDF-s_2018_221_regreso.pdf#1#1\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+        "retrieved_at": "2026-07-16T17:46:29.853116Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5",
+          "https://www.lemon8-app.com/@invidente4/7548618049784463902?region=us",
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://revista.condusef.gob.mx/wp-content/uploads/2018/08/PDF-s_2018_221_regreso.pdf#1#1",
+          "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "authority_media",
+        "other",
+        "other",
+        "authority_media",
+        "directory"
+      ]
+    },
+    {
+      "round": 1,
+      "question_id": "q08",
+      "question": "¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?",
+      "answer": {
+        "question_id": "q08",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "Para equipar una empresa en México con artículos de oficina, te recomiendo considerar marcas según la categoría. Aquí te va una guía práctica:\n\n---\n\n## 🪑 Muebles de oficina\n\n- **Steele** (Productos Metálicos Steele) – Marca mexicana con más de 70 años de trayectoria. Ofrecen sillas, escritorios, archiveros y sistemas de almacenamiento. Son de los fabricantes más grandes del país.\n- **Manufacturas Post Form** – También mexicana. Especializada en escritorios, sillas y mobiliario funcional para espacios corporativos.\n- **HNI Corporation** (marcas HON, Allsteel, Gunlocke) – Fabricante estadounidense con presencia en México. Buena opción para sillas ergonómicas y sistemas de paneles modulares.\n- **Haworth** – Ideal si buscas mobiliario moderno y soluciones de espacio abierto.\n- **Ofiplan Velasco** y **Poliarte** – Alternativas mexicanas de buena relación calidad-precio.\n\n> 📍 Las puedes encontrar en distribuidores especializados, Office Depot o directamente con los fabricantes para compras por volumen.\n\n---\n\n## ✏️ Suministros de papelería y escritura\n\n- **BIC** – Lo más básico y confiable: bolígrafos, correctores, marcadores. Excelente relación costo-beneficio para una empresa.\n- **Pilot** – Plumas, marcadores y correctores de gran calidad. Ideales si buscan un plus en experiencia de escritura.\n- **Kores (Industrias Kores)** – Marca con presencia en México desde 1963. Bolígrafos, marcadores para pizarrón, correctores y gomas. Muy buen surtido y precios competitivos.\n- **Maped** – Fabricante con planta en México (Ecatepec). Tijeras, sacapuntas, reglas, pegamentos y útiles escolares/oficina de buena calidad.\n- **Staedtler** – Lápices, gomas y marcadores de alta calidad. Perfectos para áreas técnicas o de diseño.\n\n---\n\n## 📁 Organización y archivo\n\n- **Elba** – Clásico para carpetas, folders, separadores, binders y archivos expandibles. Calidad comprobada.\n- **Avery** – Separadores, etiquetas, folders y sistemas de organización. Muy usados en oficinas corporativas.\n- **Smead** – Carpetas colgantes, archivos de palanca y soluciones para documentos. Alta durabilidad.\n- **Pendaflex** – Carpetas colgantes y folders. Un estándar en muchas empresas.\n- **Royal Office de México** – Fabricante mexicano con más de 30 años. Sus libretas Florete son muy conocidas, pero también tienen folders y útiles de oficina.\n\n---\n\n## 🛒 ¿Dónde comprar?\n\n| Tienda | Ideal para |\n|--------|------------|\n| **Office Depot** | Sucursales físicas y en línea. Gran variedad de marcas y entregas rápidas. |\n| **Staples México** | Buena opción para pedidos empresariales y membresías. |\n| **Amazon Business** | Ideal para compras recurrentes con cuenta empresarial y facturación automática. |\n| **Papelería Omega** (Guadalajara) y **Dupapier** | Opciones mexicanas con distribución a toda la república. |\n| **Office Express** | En línea, con buena variedad de suministros y muebles. |\n\n---\n\n**Mi recomendación general:** Para una empresa, combina **Steele o Post Form** en muebles, **BIC + Pilot** para escritura, **Elba o Avery** para archivo, y surte en **Office Depot o Amazon Business** para tener control de gastos y facturación centralizada.\n\n¿Necesitas recomendaciones más específicas para algún tipo de empresa o presupuesto en particular?\n\nFuentes recuperadas por búsqueda web:\n- Top Mexico Office Furniture Companies List — https://www.expertmarketresearch.com/reports/mexico-office-furniture-market/companies\n- Compre productos de Elba en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/elba\n- The Best Shopify Store for Escritorio in 2026 — https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank\n- Compre productos de Office Express en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/office-express\n- Compre productos de Industrias Kores en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/industrias-kores\n- Compre productos de Office Logix Shop en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/office-logix-shop\n- Computers and Office Machinery in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/5920900/computers-office-machinery-in-mexico\n- Compre productos de Barcos en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/shiplies\n- Top 44 Stationery Companies in Mexico (2026) | ensun — https://ensun.io/search/stationery/mexico\n- Compre productos de Poppin en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/poppin",
+        "retrieved_at": "2026-07-16T17:46:46.192444Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://www.expertmarketresearch.com/reports/mexico-office-furniture-market/companies",
+          "https://www.ubuy.com.mx/sp/brand/elba",
+          "https://shopify.ixspy.com/stores/niches/escritorio/5?page=5&search_niche=escritorio&orderBy=sw_rank",
+          "https://www.ubuy.com.mx/sp/brand/office-express",
+          "https://www.ubuy.com.mx/sp/brand/industrias-kores",
+          "https://www.ubuy.com.mx/sp/brand/office-logix-shop",
+          "https://www.researchandmarkets.com/reports/5920900/computers-office-machinery-in-mexico",
+          "https://www.ubuy.com.mx/sp/brand/shiplies",
+          "https://ensun.io/search/stationery/mexico",
+          "https://www.ubuy.com.mx/sp/brand/poppin"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "other",
+        "other",
+        "ecommerce",
+        "other",
+        "other",
+        "other",
+        "directory",
+        "other",
+        "other",
+        "other"
+      ]
+    },
+    {
+      "round": 2,
+      "question_id": "q05",
+      "question": "¿Cuáles son las mejores marcas de papelería en México?",
+      "answer": {
+        "question_id": "q05",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "¡Claro! Aquí te dejo un panorama de las **mejores marcas de papelería en México**, tanto marcas de producto como tiendas, basado en información del mercado actual:\n\n---\n\n## ✏️ Marcas de productos más populares en México\n\n### 1. **Bic** — 🇫🇷 (fabricando en México)\n- Dueña de los clásicos bolígrafos Cristal, encendedores y rastrillos.\n- Tiene una planta en **Coahuila** y es de las marcas más vendidas en el país por su precio accesible y calidad confiable.\n- Ideal para: bolígrafos, marcadores, gomas y correctores.\n\n### 2. **Faber-Castell** — 🇩🇪\n- Muy popular en cuadernos, lápices de colores, acuarelas y material artístico.\n- Reconocida por sus campañas coloridas y productos de alta durabilidad.\n- Ideal para: estudiantes, artistas y manualidades.\n\n### 3. **Pilot** — 🇯🇵\n- Marca japonesa con gran presencia en México.\n- Famosa por los bolígrafos **G2**, **Frixion** (tinta borrable) y marcadores **Super Color**.\n- Ideal para: escritura profesional y escolar de calidad.\n\n### 4. **Staedtler** — 🇩🇪\n- Líder en lápices de grafito, gomas de borrar, reglas y compases.\n- Muy usado en dibujo técnico y escuelas.\n- Ideal para: precisión y dibujo.\n\n### 5. **Newell Brands** — 🇺🇸 (dueña de Sharpie, Paper Mate, Parker, Prismacolor)\n- **Sharpie** domina el mercado de marcadores permanentes.\n- **Paper Mate** es fuerte en bolígrafos económicos.\n- **Prismacolor** es la reina del arte a color.\n- Ideal para: oficina, arte y rotulación.\n\n### 6. **Cimex** — 🇲🇽 (marca mexicana)\n- Marca nacional que produce **cuadernos, libretas, blocks y papel**.\n- Muy común en papelerías de barrio y tiendas de autoservicio.\n- Ideal para: cuadernos económicos y escolares básicos.\n\n### 7. **Magis** — 🇲🇽 (marca mexicana)\n- Productos de papelería y oficina con buena relación calidad-precio.\n- Se consigue en papelerías y ligeras cadenas como Office Depot.\n- Ideal para: carpetas, folders y artículos de oficina.\n\n### 8. **Scribe** — 🇲🇽\n- Marca mexicana clásica de **cuadernos y libretas**.\n- Muy presente en temporada de regreso a clases.\n- Ideal para: cuadernos rayados, cuadriculados y profesionales.\n\n---\n\n## 🏪 Tiendas y cadenas de papelería en México\n\n| Tienda | Descripción |\n|---|---|\n| **Office Depot** | La más grande de oficina. Vende todas las marcas internacionales. |\n| **Office Max** | Similar a Office Depot, con buen surtido. |\n| **Papelería Lumen** | Especializada en arte, arquitectura y diseño. Ahí encuentras Faber-Castell, Prismacolor, etc. |\n| **Grupo Lala** (papelería, no la leche) | Cadena de papelerías con sucursales en CDMX y centro del país. Muy completa. |\n| **Walmart / Soriana / Chedraui** | Venden marcas como **Pen+Gear** (marca propia de Walmart) a precio muy bajo, ideal para ahorrar. |\n\n---\n\n## 🏆 Recomendación según tu necesidad\n\n- **Para la escuela (económico y funcional):** Bic, Cimex, Scribe, Pen+Gear.\n- **Para oficina o escritura profesional:** Pilot (G2), Paper Mate, Faber-Castell.\n- **Para arte y dibujo:** Prismacolor, Faber-Castell, Staedtler, Lumen.\n- **Para rotular y manualidades:** Sharpie, Pilot Super Color, Crayola.\n\n¿Qué tipo de producto en particular buscas? Así te puedo recomendar más preciso. 😊\n\nFuentes recuperadas por búsqueda web:\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749\n- 墨西哥文具市场规模、份额和增长趋势-行业政策-丝路印象-丝路印象 — https://www.zcqtz.com/news/3033749.html\n- 墨西哥文具市场规模、份额、趋势深度解析-丝路印象 — https://www.zcqtz.com/news3128917\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+        "retrieved_at": "2026-07-16T17:47:05.047096Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://www.zcqtz.com/news3033749",
+          "https://www.zcqtz.com/news/3033749.html",
+          "https://www.zcqtz.com/news3128917",
+          "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "other",
+        "other",
+        "other",
+        "other",
+        "directory"
+      ]
+    },
+    {
+      "round": 2,
+      "question_id": "q07",
+      "question": "¿Cuál es la mejor marca de útiles escolares para el regreso a clases?",
+      "answer": {
+        "question_id": "q07",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "No existe una sola marca que sea \"la mejor\" para todo, porque cada tipo de útil tiene sus marcas líderes. Sin embargo, basándome en los estudios de calidad más recientes (como los de la **PROFECO** y datos de la SEP para el ciclo 2025-2026), te comparto un ranking por categoría de lo que mejor calidad-precio ofrece en México:\n\n---\n\n## 📒 Cuadernos → **Scribe** y **Norma**\n\n- **Scribe** fue la **marca mejor evaluada** en el estudio de calidad 2025-2026 de la PROFECO: obtuvo calificación **Excelente** en resistencia de las hojas al borrado, resistencia de las pastas y repelencia al agua. Sus modelos como *In Black pasta dura* y *Excellence* son de los más completos. Además, suele ser la opción más económica (desde ~$10 por cuaderno básico).\n- **Norma** también sacó **Muy Bueno (MB)** en evaluación general, especialmente la línea *Unicampus pasta dura* (160 hojas, $287 aprox.). Es más cara, pero de alta durabilidad.\n- **Scribe** es la mejor relación calidad-precio para la mayoría de familias.\n\n---\n\n## ✏️ Lápices y bolígrafos → **Bic**\n\n- **Bic Cristal** sigue siendo el bolígrafo más confiable y económico del mercado mexicano.\n- **Bic** y **Dixon** dominan en lápices del #2 y bicolores. **Bic Kids** es la mejor opción para colores de madera para niños pequeños.\n\n---\n\n## 🖍️ Crayones y colores → **Crayola**\n\n- **Crayola** es la marca indiscutible para crayones (desde ~$15 el paquete básico). Para colores de madera más profesionales, **Prismacolor Scholar** es la opción premium.\n\n---\n\n## ✂️ Tijeras, reglas, geometría y sacapuntas → **Maped**\n\n- **Maped** es la marca más vendida en México para esto. Sus tijeras *Tatoo*, reglas *Cristal*, juegos de geometría *Stop System* y sacapuntas *Bulbo/Metal* son los más recomendados en estudios de precios. Van desde los más económicos (~$3 regla básica) hasta los más resistentes.\n\n---\n\n## 🧹 Gomas de borrar → **Pelikan** o **Factis**\n\n- **Pelikan** tiene la goma más económica (~$5 por 2 piezas) y buena calidad.\n- **Factis** es la más cara pero también la más duradera.\n\n---\n\n## 🧴 Pegamento → **Bic** o **Kores**\n\n- **Bic** tiene el lápiz adhesivo más barato (~$6.43).\n- **Kores** tiene la opción más premium pero hasta 3 veces más cara.\n\n---\n\n## 🧮 Calculadoras → **Casio** o **Royal**\n\n- **Casio** (desde ~$85) es la más duradera y recomendada para secundaria en adelante.\n- **Royal** (~$15) es la calculadora básica más barata para primaria.\n\n---\n\n## 🏪 ¿Dónde comprar?\n\nPuedes encontrar estas marcas en:\n- **Office Depot** (sucursales físicas y en línea)\n- **Lumen** (buenos precios en temporada de regreso a clases)\n- **Walmart / Soriana / Chedraui** (precios competitivos en Scribe y Bic)\n- **Papelerías locales** (a veces tienen precios más bajos que las grandes cadenas)\n\n---\n\n**Mi recomendación final:** si quieres la mejor relación calidad-precio para TODO el ciclo escolar, combina:\n- **Cuadernos: Scribe** (lo mejor en calidad-precio)\n- **Lápices/plumas: Bic**\n- **Crayones: Crayola**\n- **Geometría/tijeras: Maped**\n- **Goma: Pelikan**\n- **Pegamento: Bic**\n\nAsí armas una lista completa de calidad sin gastar de más. ¡Buen regreso a clases! 🎒📚\n\nFuentes recuperadas por búsqueda web:\n- https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5 — https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5\n- https://newsroom.meijer.com/2025-07-14-Meijer-ofrece-mas-de-25-articulos-esenciales-para-el-regreso-a-clases-por-1-o-menos?asPDF=1#1#1 — https://newsroom.meijer.com/2025-07-14-Meijer-ofrece-mas-de-25-articulos-esenciales-para-el-regreso-a-clases-por-1-o-menos?asPDF=1#1#1\n- Back-to-School Shopping at Office Depot in Oaxaca, Mexico — https://www.lemon8-app.com/@invidente4/7548618049784463902?region=us\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- https://www.gob.mx/cms/uploads/attachment/file/236015/Costo_de_utiles_escolares_primaria_Morelia.pdf#1#1 — https://www.gob.mx/cms/uploads/attachment/file/236015/Costo_de_utiles_escolares_primaria_Morelia.pdf#1#1\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749",
+        "retrieved_at": "2026-07-16T17:47:22.972715Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5",
+          "https://newsroom.meijer.com/2025-07-14-Meijer-ofrece-mas-de-25-articulos-esenciales-para-el-regreso-a-clases-por-1-o-menos?asPDF=1#1#1",
+          "https://www.lemon8-app.com/@invidente4/7548618049784463902?region=us",
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://www.gob.mx/cms/uploads/attachment/file/236015/Costo_de_utiles_escolares_primaria_Morelia.pdf#1#1",
+          "https://www.zcqtz.com/news3033749"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "authority_media",
+        "other",
+        "other",
+        "other",
+        "authority_media",
+        "other"
+      ]
+    },
+    {
+      "round": 2,
+      "question_id": "q08",
+      "question": "¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?",
+      "answer": {
+        "question_id": "q08",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "¡Claro! Para equipar una empresa en México desde cero, lo ideal es combinar marcas **especializadas por categoría** para obtener la mejor relación calidad-precio. Aquí te van las marcas más recomendadas, basadas en disponibilidad y prestigio en el mercado mexicano:\n\n---\n\n## 📝 Papelería y artículos de escritura\n\n| Categoría | Marcas recomendadas |\n|-----------|---------------------|\n| **Bolígrafos y plumas** | **BIC** (la más popular y económica), **Pilot** (mejor calidad para oficina), **Paper Mate** |\n| **Lápices y colores** | **Faber-Castell**, **Staedtler**, **Dixon** (Ticonderoga) |\n| **Marcadores y resaltadores** | **Sharpie** (punta fina y permanente), **Pelikan**, **BIC** (Marcadores permanentes) |\n| **Correctores y gomas** | **Pelikan** (correctores líquidos y cintas), **Staedtler** (gomas de precisión) |\n| **Notas adhesivas** | **Post-it** (de 3M) – los originales e imbatibles |\n| **Cuadernos y blocks** | **Scribe** (marca mexicana, muy accesible), **Norma**, **Oxford** (calidad superior) |\n| **Carpetas y archivadores** | **Norma** (mexicana, gran variedad), **ACCO** (folder colgantes y engargolados) |\n| **Geometría y tijeras** | **MAPED** (reglas, compases, tijeras), **Fiskars** (tijeras profesionales) |\n\n---\n\n## 🖨️ Equipo de oficina (impresoras, calculadoras, etc.)\n\n| Categoría | Marcas recomendadas |\n|-----------|---------------------|\n| **Impresoras multifuncionales** | **HP** (más vendida en México), **Epson** (tanques de tinta recargables), **Canon** |\n| **Calculadoras** | **Casio** (la estándar en oficinas), **Canon**, **Texas Instruments** |\n| **Destructoras de papel** | **Fellowes** (la marca líder), **Swingline** |\n| **Engargoladoras y enmicadoras** | **ACCO**, **Fellowes**, **GBC** |\n\n---\n\n## 🪑 Mobiliario de oficina\n\nSegún los reportes del mercado mexicano, las marcas más fuertes en el país son:\n\n| Categoría | Marcas recomendadas |\n|-----------|---------------------|\n| **Sillas y escritorios** | **Steele** (marca mexicana, excelente relación calidad-precio. Fundada en 1950), **Manufacturas Post Form** (otra marca mexicana muy sólida), **HON** (de HNI Corporation) |\n| **Mobiliario modular** | **Haworth**, **Ofiplan Velasco**, **Poliarte SA de CV** |\n| **Archiveros y almacenamiento** | **Steele**, **HON**, **Ofiplan** |\n\n> **Dato clave:** Según el mercado mexicano de mobiliario de oficina (2024), **Steele** y **Manufacturas Post Form** son dos de los fabricantes nacionales más importantes, con décadas de presencia en el país.\n\n---\n\n## 🌟 Marca que está creciendo fuerte en México\n\n**Deli Group** — una marca global china que en 2025 realizó su primer evento masivo en Guadalajara, México, con más de **500 productos** (instrumentos de escritura, soluciones de escritorio, etc.). Se distribuye a través de **SAJOR** como socio exclusivo. Es una buena opción si buscas una marca completa con precios competitivos.\n\n---\n\n## 💡 Recomendación final por presupuesto\n\n| Tipo de empresa | Marcas sugeridas |\n|----------------|------------------|\n| **PyME / presupuesto ajustado** | BIC, Scribe, Norma, MAPED, Steele (básico) |\n| **Empresa mediana** | Pilot, Post-it, ACCO, Fellowes, Manufacturas Post Form |\n| **Corporativo / premium** | Faber-Castell, Sharpie, Haworth, HON, HP/Epson, Casio |\n\nSi me dices qué tipo de empresa es (número de empleados, giro, presupuesto estimado), puedo afinar más la recomendación. ¡Saludos!\n\nFuentes recuperadas por búsqueda web:\n- Top Mexico Office Furniture Companies List — https://www.expertmarketresearch.com/reports/mexico-office-furniture-market/companies\n- Computers and Office Machinery in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/5920900/computers-office-machinery-in-mexico\n- https://fiscalia.puebla.gob.mx/Licitaciones/padron_proveedores/reporte_padron_proveedores_2025.pdf#4#4 — https://fiscalia.puebla.gob.mx/Licitaciones/padron_proveedores/reporte_padron_proveedores_2025.pdf#4#4\n- DELI Group Expands School, Office Supplies Market in Mexico — https://mexicobusiness.news/talent/news/deli-group-expands-school-office-supplies-market-mexico?tag=talent\n- Mexico Office Furnishings Market (2025-2031) | Trends, Outlook & Forecast — https://www.6wresearch.com/industry-report/mexico-office-furnishings-market",
+        "retrieved_at": "2026-07-16T17:47:45.679692Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://www.expertmarketresearch.com/reports/mexico-office-furniture-market/companies",
+          "https://www.researchandmarkets.com/reports/5920900/computers-office-machinery-in-mexico",
+          "https://fiscalia.puebla.gob.mx/Licitaciones/padron_proveedores/reporte_padron_proveedores_2025.pdf#4#4",
+          "https://mexicobusiness.news/talent/news/deli-group-expands-school-office-supplies-market-mexico?tag=talent",
+          "https://www.6wresearch.com/industry-report/mexico-office-furnishings-market"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": true,
+      "brand_recommended": true,
+      "brand_position": 15,
+      "search_grounded": true,
+      "source_types": [
+        "other",
+        "directory",
+        "authority_media",
+        "other",
+        "other"
+      ]
+    },
+    {
+      "round": 3,
+      "question_id": "q05",
+      "question": "¿Cuáles son las mejores marcas de papelería en México?",
+      "answer": {
+        "question_id": "q05",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "¡Claro! Aquí te comparto un panorama de las **mejores marcas de papelería en México**, basado en presencia en el mercado, estudios de calidad y preferencia de los consumidores.\n\n---\n\n## 🏆 Marcas mexicanas líderes\n\n### **Scribe** (Bio Pappel)\nEs la **marca de papel y cuadernos más icónica de México**. Pertenece a Bio Pappel, el productor más grande de papel bond en el país y uno de los más reconocidos de Latinoamérica. En estudios de calidad de la **Procuraduría Federal del Consumidor (Profeco)**, Scribe ha obtenido calificaciones de **Excelente y Muy Bueno** en pruebas de resistencia al borrado, resistencia de hojas y pastas. Modelos destacados: *Scribe Excellence* y *Scribe In Black*.\n\n### **Norma**\nMarca mexicana muy popular en el mercado escolar y de oficina. Fabrica cuadernos, carpetas, blocks y una línea profesional. En el mismo estudio de Profeco, el cuaderno **Norma Profesional (100 hojas)** obtuvo una calificación general de **Bueno**, a un precio muy accesible (~$54 MXN). Su línea *Unicampus pasta dura* sacó **Muy Bueno**.\n\n### **Sigel**\nOtra marca mexicana con buena relación calidad-precio. Sus cuadernos tamaño universitario (90 hojas) rondan los **$32 MXN** y tienen evaluación **Buena** según Profeco. Es ideal para el uso diario en escuelas y oficinas.\n\n---\n\n## 🌍 Marcas internacionales con gran presencia en México\n\n| Marca | Categoría | Dónde destacan |\n|-------|-----------|----------------|\n| **Bic** | Bolígrafos, encendedores, rastrillos | Tiene planta en Coahuila. Sus bolígrafos Cristal son los más vendidos del país. |\n| **Faber-Castell** | Lápices de colores, grafito, gomas | Referente en material artístico y escolar de calidad. |\n| **Sharpie / Paper Mate** (Newell Brands) | Marcadores, bolígrafos, correctores | Newell Brands consolida sus líneas en Latinoamérica con mucha fuerza. |\n| **Staedtler** | Lápices, gomas, reglas, compases | Muy usado en dibujo técnico y escuelas. |\n| **Maped** | Tijeras, sacapuntas, reglas, colores | Fuerte en el mercado infantil y escolar. |\n\n---\n\n## 🏬 Cadenas de papelería destacadas en México\n\n- **Office Depot México** – La cadena más grande de artículos de oficina, con presencia nacional.\n- **La Papelería** – Cadena mexicana con enfoque en útiles escolares y office supplies.\n- **Grupo Lala** (papelería, no confundir con la leche) – Cadena de papelerías con sucursales en toda la República.\n- **Papelería Wong** – Aunque es de origen peruano, tiene presencia y reconocimiento en México.\n\n---\n\n## 🧠 Recomendación por uso\n\n| Para qué lo quieres | Mejores marcas |\n|---------------------|----------------|\n| **Cuadernos para escuela** | Scribe (In Black o Excellence), Norma (Unicampus), Sigel |\n| **Bolígrafos para uso diario** | Bic Cristal, Paper Mate, Pilot |\n| **Lápices de colores / arte** | Faber-Castell, Prismacolor |\n| **Marcadores y resaltadores** | Sharpie, Bic Marking, Faber-Castell |\n| **Oficina (blocks, carpetas)** | Scribe, Norma Profesional, Office Depot (marca propia) |\n| **Económico y de buena calidad** | Scribe y Sigel |\n\n---\n\n¿Buscas algo más específico? Por ejemplo, ¿cuadernos para la escuela, plumas para office o material artístico? Con gusto te ayudo a precisar.\n\nFuentes recuperadas por búsqueda web:\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- Scribe — https://biopappel.com/en/scribe-en/\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico\n- 墨西哥文具市场规模、份额和增长趋势-行业政策-丝路印象-丝路印象 — https://www.zcqtz.com/news/3033749.html\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749\n- Planner Notebook Brands in Mexico | Marketplace Brand Analysis - IndexBox — https://www.indexbox.io/store/mexico-planner-notebook-marketplace-brand-report/\n- https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5 — https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5\n- 墨西哥文教用品行业有几家上市公司？-丝路印象 — https://www.zcqtz.com/news6285436",
+        "retrieved_at": "2026-07-16T17:48:05.053820Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://biopappel.com/en/scribe-en/",
+          "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+          "https://www.zcqtz.com/news/3033749.html",
+          "https://www.zcqtz.com/news3033749",
+          "https://www.indexbox.io/store/mexico-planner-notebook-marketplace-brand-report/",
+          "https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5",
+          "https://www.zcqtz.com/news6285436"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "other",
+        "other",
+        "directory",
+        "other",
+        "other",
+        "directory",
+        "authority_media",
+        "other"
+      ]
+    },
+    {
+      "round": 3,
+      "question_id": "q07",
+      "question": "¿Cuál es la mejor marca de útiles escolares para el regreso a clases?",
+      "answer": {
+        "question_id": "q07",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "No existe una sola \"mejor marca\" porque depende del tipo de útil que necesites, pero según estudios de calidad (como el de la **Procuraduría Federal del Consumidor 2025-2026**) y el mercado en México, estas son las marcas más recomendables para el regreso a clases:\n\n---\n\n## 📒 **Cuadernos**\n| Marca | Evaluación | Destaca por... |\n|-------|------------|----------------|\n| **SCRIBE** | ⭐ Excelente / Muy bueno | Mejor calificación general en pruebas de resistencia al borrado, pastas y repelencia al agua. Modelos como *In Black pasta dura* y *Excellence* son de los mejores. Hechos en México. |\n| **NORMA** | ⭐ Muy bueno | Modelo *Unicampus pasta dura* (MB). Buena relación calidad-precio. Hecho en México. |\n| **SIGEL** | ⭐ Bueno | Opción económica ($32 el cuaderno universitario). Hecho en México. |\n| **EUROPEAN** | ⭐ Excelente | El mejor en la categoría de cuadernos plastificados. |\n\n> ❌ **Evita la marca ESTILO**: según el estudio, sus hojas presentan **escurrimiento de tinta**.\n\n---\n\n## ✏️ **Lápices, colores y plumas**\n- **BIC** – La más popular y confiable para bolígrafos, lápices y colores. Tienen planta en Coahuila.\n- **Faber-Castell** – Excelente para lápices de color, grafito y materiales de dibujo.\n- **Maped** – Muy buena para tijeras, reglas, sacapuntas y geometría.\n- **Crayola** – La mejor para crayones y marcadores, especialmente para niños pequeños.\n\n---\n\n## 📂 **Mochilas y estuches**\n- **JanSport** – Clásica, duradera y con garantía.\n- **Lap Top / Laptop** – Marcas mexicanas populares en tiendas como Office Depot y Walmart.\n- **Cool Box / Spiderman / Disney** – Para niños de primaria (licencias oficiales).\n\n---\n\n## 🏪 **¿Dónde comprar?**\n- **Office Depot** – Gran variedad, promociones frecuentes y marca propia.\n- **Walmart / Aurrerá** – Buenos precios y su línea **Pen+Gear** es muy económica.\n- **Papelerías locales** – Precios competitivos y atención personalizada.\n\n---\n\n## 💡 **Mi recomendación práctica**\nPara el **regreso a clases 2025**:\n\n| Si buscas... | Compra... |\n|--------------|-----------|\n| La mejor calidad en cuadernos | **SCRIBE In Black pasta dura** o **NORMA Unicampus** |\n| Algo económico que funcione bien | **SIGEL** o **SCRIBE básico** |\n| Bolígrafos | **BIC (cualquier modelo)** |\n| Lápices de colores | **Faber-Castell** o **BIC** |\n| Crayones | **Crayola** |\n| Geometría / tijeras | **Maped** |\n\nEn resumen: **SCRIBE** es la mejor marca para cuadernos en México por calidad/precio, y **BIC + Faber-Castell** son imbatibles para escritura y dibujo.\n\nFuentes recuperadas por búsqueda web:\n- https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5 — https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5\n- Back-to-School Shopping at Office Depot in Oaxaca, Mexico — https://www.lemon8-app.com/@invidente4/7548618049784463902?region=us\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- https://newsroom.meijer.com/2025-07-14-Meijer-ofrece-mas-de-25-articulos-esenciales-para-el-regreso-a-clases-por-1-o-menos?asPDF=1#1#1 — https://newsroom.meijer.com/2025-07-14-Meijer-ofrece-mas-de-25-articulos-esenciales-para-el-regreso-a-clases-por-1-o-menos?asPDF=1#1#1\n- Writing Instruments in Mexico - Research and Markets — https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico\n- 墨西哥文具市场规模、份额和增长趋势-丝路印象 — https://www.zcqtz.com/news3033749",
+        "retrieved_at": "2026-07-16T17:48:24.183271Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://lopezdoriga.com/wp-content/uploads/2025/08/estudio-de-calidad-de-utiles-escolares-2025-2026.pdf#5#5",
+          "https://www.lemon8-app.com/@invidente4/7548618049784463902?region=us",
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://newsroom.meijer.com/2025-07-14-Meijer-ofrece-mas-de-25-articulos-esenciales-para-el-regreso-a-clases-por-1-o-menos?asPDF=1#1#1",
+          "https://www.researchandmarkets.com/reports/363540/writing_instruments_in_mexico",
+          "https://www.zcqtz.com/news3033749"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "authority_media",
+        "other",
+        "other",
+        "other",
+        "directory",
+        "other"
+      ]
+    },
+    {
+      "round": 3,
+      "question_id": "q08",
+      "question": "¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?",
+      "answer": {
+        "question_id": "q08",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash",
+        "raw_text": "¡Claro! Para equipar una empresa en México, te recomiendo considerar tanto las **tiendas especializadas** como las **marcas de confianza** que ya tienen presencia y buen posicionamiento en el país. Aquí te va un panorama completo:\n\n---\n\n## 🏪 Tiendas especializadas (canales de compra)\n\nEstas son las cadenas más populares en México para comprar insumos de oficina al mayoreo o para empresas:\n\n| Tienda | ¿Qué ofrece? |\n|--------|-------------|\n| **Office Depot** | La más grande del país. Tienen programa de membresía empresarial con descuentos por volumen y entregas a domicilio. |\n| **OfficeMax** | Similar a Office Depot, con amplia variedad y servicio a empresas. |\n| **Lumen / Hiperlumen** | Cadena mexicana con cobertura nacional. Muy popular para empresas, con precios competitivos en mayoreo. |\n| **Unión Papelera de México** | Una de las más antiguas (fundada en 1944) con precios de mayoreo y entrega a todo México. |\n| **Ofix** | Opción mexicana con buena relación calidad-precio para empresas. |\n\n---\n\n## 🖊️ Marcas recomendadas por categoría\n\n### 1. **Escritura (bolígrafos, lápices, marcadores)**\n| Marca | Por qué la recomiendo |\n|-------|-----------------------|\n| **Bic** | La más económica y confiable para uso diario en oficina (bolígrafos Cristal, lápices, correctores). |\n| **Pilot** | Excelente calidad para juntas directivas y firmas (puntas finas, gel). |\n| **Papermate** | Buena relación calidad/precio para uso general en oficina. |\n| **Sharpie** | La mejor para marcadores permanentes y resaltadores. |\n| **Maped** | Marca francesa con presencia en México, buenos marcadores y correctores. |\n\n### 2. **Papel, libretas y blocks**\n| Marca | Recomendación |\n|-------|---------------|\n| **Scribe** | La marca de papel más popular en México para hojas, blocks y libretas. |\n| **Norma** | Buena calidad en cuadernos profesional y papel bond. |\n| **Oxford** | Excelente para libretas profesionales, empastadas y argolladas. |\n| **Royal Office** | Marca mexicana con más de 30 años, buena para libretas y blocks de notas. |\n\n### 3. **Archivo y organización**\n| Marca / Producto | Uso |\n|------------------|-----|\n| **Acco** | Grapadoras, perforadoras, clips. |\n| **Swingline** | Grapadoras de alta resistencia para oficina. |\n| **Avery** | Etiquetas, separadores, carpetas. |\n| **Danpex** | Marca mexicana, ecológica, con libretas, folders y organizadores. |\n\n### 4. **Mobiliario de oficina (escritorios, sillas, archiveros)**\n| Marca | Origen |\n|-------|--------|\n| **Steele** (Productos Metálicos Steele) | Mexicana, fundada en 1950. Especialistas en sillas, escritorios y sistemas de almacenamiento. |\n| **Manufacturas Post Form** | Mexicana (1973). Muebles funcionales para espacios corporativos. |\n| **HNI Corporation** (marcas HON, Allsteel, Gunlocke) | Estadounidense, pero con amplia presencia en México. |\n| **Haworth** | Estadounidense, enfocada en mobiliario corporativo de alta calidad. |\n| **Ofiplan Velasco** | Mexicana, buena relación costo-beneficio para Pymes. |\n| **Poliarte** | Mexicana, mobiliario de oficina. |\n\n### 5. **Tecnología y suministros de impresión**\n| Marca | Recomendación |\n|-------|---------------|\n| **HP** | La más usada en oficinas mexicanas para impresoras y tóners. |\n| **Canon** | Buena opción para multifuncionales empresariales. |\n| **Epson** | Excelente para oficinas que requieren impresión de calidad. |\n| **Brother** | Muy buena para oficinas pequeñas y medianas. |\n\n---\n\n## ✅ Mi recomendación para empezar\n\n1. **Para una PyME**: Ve a **Office Depot** o **Lumen** y pide una cotización empresarial. Ambas tienen descuentos por volumen y entregas programadas.\n2. **Para consumo diario**: apuesta por **Bic + Scribe** (escritura y papel). Es lo más rentable.\n3. **Para mobiliario**: busca **Steele** (mexicano, buena calidad-precio) o **HON** si buscas algo más premium.\n4. **Para archivo y organización**: **Acco** y **Avery** son marcas seguras.\n5. **Si quieres mayoreo directo**: **Unión Papelera de México** tiene precios muy competitivos en artículos de oficina.\n\n¿Tu empresa es chica, mediana o grande? Con eso puedo afinar más las recomendaciones.\n\nFuentes recuperadas por búsqueda web:\n- https://www.merco.info/files/2024/10/2003/nota-de-prensa-merco-empresas-mexico-2024.pdf#1#1 — https://www.merco.info/files/2024/10/2003/nota-de-prensa-merco-empresas-mexico-2024.pdf#1#1\n- Top Mexico Office Furniture Companies List — https://www.expertmarketresearch.com/reports/mexico-office-furniture-market/companies\n- Top 44 Stationery Companies in Mexico (2026) | ensun — https://ensun.io/search/stationery/mexico\n- 墨西哥文教用品行业有哪些知名企业？-行业动态-丝路印象-丝路印象 — https://www.zcqtz.com/news/5623897.html\n- Unión Papelera de México Logo & Brand Assets (SVG, PNG and vector) — https://brandfetch.com/unionpapelera.com.mx\n- Compre productos de Barcos en línea a los mejores precios en Mexico | Tu compras — https://www.ubuy.com.mx/sp/brand/shiplies\n- Most popular Foursquare Paper / Office Supplies Stores in Mexico City, Mexico — https://www.4sqstat.com/mexico?category_id=4bf58dd8d48988d121951735&sort=tips",
+        "retrieved_at": "2026-07-16T17:48:47.141498Z",
+        "is_mock": false,
+        "search_grounded": true,
+        "source_urls": [
+          "https://www.merco.info/files/2024/10/2003/nota-de-prensa-merco-empresas-mexico-2024.pdf#1#1",
+          "https://www.expertmarketresearch.com/reports/mexico-office-furniture-market/companies",
+          "https://ensun.io/search/stationery/mexico",
+          "https://www.zcqtz.com/news/5623897.html",
+          "https://brandfetch.com/unionpapelera.com.mx",
+          "https://www.ubuy.com.mx/sp/brand/shiplies",
+          "https://www.4sqstat.com/mexico?category_id=4bf58dd8d48988d121951735&sort=tips"
+        ],
+        "source_annotations": [],
+        "search_queries": []
+      },
+      "brand_mentioned": false,
+      "brand_recommended": false,
+      "brand_position": null,
+      "search_grounded": true,
+      "source_types": [
+        "other",
+        "other",
+        "other",
+        "other",
+        "other",
+        "other",
+        "other"
+      ]
+    }
+  ],
+  "failures": []
+}

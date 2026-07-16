@@ -80,6 +80,15 @@ class EvidenceStatus(str, Enum):
     CONTRADICTED = "contradicted"  # 预留给后续语义/人工核验
 
 
+class SourceType(str, Enum):
+    OFFICIAL = "official"
+    AUTHORITY_MEDIA = "authority_media"
+    ECOMMERCE = "ecommerce"
+    DIRECTORY = "directory"
+    FORUM = "forum"
+    OTHER = "other"
+
+
 class CrawlerPurpose(str, Enum):
     TRAINING = "training"
     RETRIEVAL = "retrieval"
@@ -151,6 +160,7 @@ class CompetitorMention(BaseModel):
 class Citation(BaseModel):
     domain: str
     url: Optional[str] = None
+    source_type: SourceType = SourceType.OTHER
 
 
 class AnswerAnalysis(BaseModel):
@@ -158,6 +168,8 @@ class AnswerAnalysis(BaseModel):
     provider: str = ""                  # 与 question_id 组成跨平台唯一标识
     model: str = ""
     brand_mentioned: bool
+    brand_recommended: bool = False       # 被作为建议/候选选项，而非仅被列举
+    recommendation_assessed: bool = False # 旧 JSON 为 False，避免默认值冒充实测
     brand_position: Optional[int] = None
     competitors: list[CompetitorMention] = Field(default_factory=list)
     citations: list[Citation] = Field(default_factory=list)
@@ -177,11 +189,13 @@ class VisibilitySegmentMetrics(BaseModel):
     """单一查询口径的指标切片；全字段默认保证旧报告可加载。"""
 
     visibility_rate: float = 0.0         # Visibility: 品牌出现的回答占比 0~1
+    recommendation_rate: Optional[float] = None  # 被推荐回答占比；旧报告未评估时为空
     sov: float = 0.0                     # Share of Voice: 品牌提及/全部品牌提及 0~1
     avg_position: Optional[float] = None  # Average Position: 品牌平均顺位
     citation_rate: float = 0.0           # Citation Rate: 含搜索 URL/声明域名的回答占比 0~1
     sentiment_summary: dict[str, int] = Field(default_factory=dict)  # {pos: n, neu: n, neg: n}
     competitor_ranking: list[CompetitorRank] = Field(default_factory=list)
+    source_type_summary: dict[str, int] = Field(default_factory=dict)
     questions_checked: int = 0
 
 

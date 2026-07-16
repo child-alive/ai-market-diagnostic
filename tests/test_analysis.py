@@ -12,6 +12,7 @@ from src.models import (
     Citation,
     CompetitorMention,
     Sentiment,
+    SourceType,
     UserQuestion,
     VisibilityMetrics,
 )
@@ -27,6 +28,7 @@ from src.pipeline.segmentation import (
     question_mentions_brand,
 )
 from src.providers.deepseek import _build_user_prompt
+from src.sampling_demo import build_summary
 
 
 def make_answer(text: str, question_id: str = "test") -> AIAnswer:
@@ -159,6 +161,50 @@ def test_heuristic_uses_word_boundaries_for_short_brand_name() -> None:
     assert result.sentiment == Sentiment.NEUTRAL
 
 
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Deli es una marca recomendada para oficinas pequeñas.", True),
+        ("Deli fue fundada en 1981 y vende artículos de oficina.", False),
+        ("Deli fue fundada en 1981. BIC es la opción recomendada.", False),
+        ("No se recomienda Deli para este uso profesional.", False),
+        ("Las mejores marcas recomendadas son:\n1. BIC\n2. Deli — buena relación calidad-precio", True),
+    ],
+)
+def test_heuristic_distinguishes_mentions_from_recommendations(
+    text: str, expected: bool
+) -> None:
+    result = heuristic_analyze(make_answer(text), DELI_PROFILE)
+
+    assert result.brand_mentioned is True
+    assert result.brand_recommended is expected
+    assert result.recommendation_assessed is True
+
+
+def test_citations_are_grouped_by_source_quality() -> None:
+    answer = make_answer("Deli aparece en resultados con fuentes.")
+    answer.search_grounded = True
+    answer.source_urls = [
+        "https://www.deliworld.com/about",
+        "https://www.amazon.com.mx/deli",
+        "https://www.reddit.com/r/papeleria",
+        "https://www.gob.mx/profeco",
+        "https://www.yelp.com/biz/papeleria",
+        "https://example.com/review",
+    ]
+
+    result = heuristic_analyze(answer, DELI_PROFILE)
+
+    assert [citation.source_type for citation in result.citations] == [
+        SourceType.OFFICIAL,
+        SourceType.ECOMMERCE,
+        SourceType.FORUM,
+        SourceType.AUTHORITY_MEDIA,
+        SourceType.DIRECTORY,
+        SourceType.OTHER,
+    ]
+
+
 def test_normalize_competitors_canonicalizes_deduplicates_and_filters_retailers() -> None:
     competitors = [
         CompetitorMention(name="Bic", position=1),
@@ -223,6 +269,37 @@ def test_aggregate_metrics_matches_documented_formulas() -> None:
     assert metrics.citation_rate == pytest.approx(0.6667)
     assert metrics.sentiment_summary == {"pos": 1, "neu": 1, "neg": 1}
     assert metrics.questions_checked == 3
+
+
+def test_aggregate_metrics_calculates_recommendation_rate_and_source_mix() -> None:
+    analyses = [
+        AnswerAnalysis(
+            question_id="q1",
+            brand_mentioned=True,
+            brand_recommended=True,
+            recommendation_assessed=True,
+            citations=[Citation(domain="deliworld.com", source_type="official")],
+        ),
+        AnswerAnalysis(
+            question_id="q2",
+            brand_mentioned=True,
+            brand_recommended=False,
+            recommendation_assessed=True,
+            citations=[Citation(domain="amazon.com.mx", source_type="ecommerce")],
+        ),
+        AnswerAnalysis(
+            question_id="q3",
+            brand_mentioned=False,
+            recommendation_assessed=True,
+        ),
+    ]
+
+    metrics = aggregate_metrics(analyses)
+
+    assert metrics.visibility_rate == pytest.approx(0.6667)
+    assert metrics.recommendation_rate == pytest.approx(0.3333)
+    assert metrics.source_type_summary["official"] == 1
+    assert metrics.source_type_summary["ecommerce"] == 1
 
 
 def test_aggregate_metrics_sorts_competitors_and_averages_positions() -> None:
@@ -330,6 +407,22 @@ def test_old_visibility_json_loads_with_empty_segment_defaults() -> None:
     assert metrics.visibility_rate == 0.5
     assert metrics.branded.questions_checked == 0
     assert metrics.unbranded.visibility_rate == 0.0
+    assert metrics.recommendation_rate is None
+
+
+def test_repeat_sampling_summary_exposes_round_variation() -> None:
+    records = [
+        {"round": 1, "question_id": "q1", "brand_mentioned": True, "brand_recommended": True, "brand_position": 2, "search_grounded": True},
+        {"round": 1, "question_id": "q2", "brand_mentioned": False, "brand_recommended": False, "brand_position": None, "search_grounded": True},
+        {"round": 2, "question_id": "q1", "brand_mentioned": False, "brand_recommended": False, "brand_position": None, "search_grounded": True},
+        {"round": 2, "question_id": "q2", "brand_mentioned": False, "brand_recommended": False, "brand_position": None, "search_grounded": True},
+    ]
+
+    summary = build_summary(records, repeats=2)
+
+    assert summary["mention_rate_range"] == [0.0, 0.5]
+    assert summary["recommendation_rate_range"] == [0.0, 0.5]
+    assert summary["per_question"][0]["position_range"] == [2, 2]
 
 
 def test_question_generation_prompt_forbids_brand_leakage_into_unbranded_queries() -> None:
