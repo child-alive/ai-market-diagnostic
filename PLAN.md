@@ -252,3 +252,10 @@ DiagnosticReport: brand_profile, questions[], metrics, site_audit, gaps[],
 - 总时间盒：3~4 天。Stage 0+1 必须最先完成（它们独立构成合格答卷）；
 - 额度分配：Stage 1 占大头；Stage 3 的报告美化多为模板/前端工作，token 消耗低，适合额度紧张时手工介入；
 - 每个 session 开始先跑 `python -m src.main --mock` 确认基线未破坏，再继续开发。
+
+## 13. 冲刺阶段（2026-07-17 起，提交前最后阶段）
+
+用户下达追加指令，全文见仓库根目录 **`追加指令_冲刺阶段.md`**，与本 PLAN 冲突之处以追加指令为准。
+核心内容：P0 品牌词/无品牌词分层核查与指标重构 → P0 安全与可复现彩排 → P0 SUBMISSION.md
+评审导览 → P1 GEO 领域概念补齐（AI 爬虫分项/llms.txt/JS渲染/提及vs推荐/来源分层）→
+P1 Query Fanout → P2 双受众演示网页 + ECS 部署。执行顺序与验收标准见该文档第七部分。
