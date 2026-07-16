@@ -96,6 +96,8 @@ class AIAnswer(BaseModel):
     raw_text: str
     retrieved_at: datetime
     is_mock: bool
+    search_grounded: bool = False        # 是否由联网搜索结果支撑
+    source_urls: list[str] = Field(default_factory=list)  # Web Search 返回的实际 URL
 
 
 # ---------------------------------------------------------------- ③ 回答结构化分析
@@ -134,7 +136,7 @@ class VisibilityMetrics(BaseModel):
     visibility_rate: float               # Visibility: 品牌出现的回答占比 0~1
     sov: float                           # Share of Voice: 品牌提及/全部品牌提及 0~1
     avg_position: Optional[float] = None  # Average Position: 品牌平均顺位
-    citation_rate: float                 # Citation Rate: 含可溯源引用的回答占比 0~1
+    citation_rate: float                 # Citation Rate: 含搜索 URL/声明域名的回答占比 0~1
     sentiment_summary: dict[str, int] = Field(default_factory=dict)  # {pos: n, neu: n, neg: n}
     competitor_ranking: list[CompetitorRank] = Field(default_factory=list)
     questions_checked: int = 0
@@ -183,6 +185,8 @@ class ReportMeta(BaseModel):
     generated_at: datetime
     mode: RunMode
     run_id: str = ""
+    model: str = ""
+    web_search_enabled: bool = False
     notes: list[str] = Field(default_factory=list)
 
 

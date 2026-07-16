@@ -71,6 +71,8 @@
     font-size: 13px;
   }
   .data-notice strong { color: #5c4008; }
+  .data-notice.grounded { color: #165f50; border-color: #a8dccb; background: #ecfaf5; }
+  .data-notice.grounded strong { color: #105344; }
   .summary {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
@@ -151,6 +153,9 @@
   details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
   summary { color: var(--blue); cursor: pointer; font-size: 11px; font-weight: 650; }
   pre { max-height: 320px; overflow: auto; margin: 10px 0 0; white-space: pre-wrap; color: #475d71; font: 11px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .source-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
+  .source-list a { display: inline-block; max-width: 230px; overflow: hidden; padding: 4px 8px; border: 1px solid #b9ddcf; border-radius: 8px; color: #126a54; background: #eefaf6; font-size: 10px; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
+  .source-list a:hover { border-color: #67b69b; background: #e2f6ef; }
   .audit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
   .audit-item { padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
   .audit-item small { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
@@ -208,6 +213,7 @@
 {% set analysis_map = {} %}
 {% for a in r.analyses %}{% if analysis_map.update({a.question_id: a}) %}{% endif %}{% endfor %}
 {% set mock_count = r.answers|selectattr("is_mock")|list|length %}
+{% set grounded_count = r.answers|selectattr("search_grounded")|list|length %}
 
 <main class="page">
   <header class="hero">
@@ -219,13 +225,20 @@
       <div><small>Idioma / 语言</small><strong>{{ r.brand_profile.language }}</strong></div>
       <div><small>Categoría / 品类</small><strong>{{ r.brand_profile.category }}</strong></div>
     </div>
-    <div class="run-stamp">{{ r.meta.generated_at.strftime("%Y-%m-%d · %H:%M UTC") }}<br>RUN {{ r.meta.run_id }}</div>
+    <div class="run-stamp">{{ r.meta.generated_at.strftime("%Y-%m-%d · %H:%M UTC") }}<br>RUN {{ r.meta.run_id }}{% if r.meta.model %}<br>{{ r.meta.model }}{% if r.meta.web_search_enabled %} · WEB SEARCH{% endif %}{% endif %}</div>
   </header>
 
   {% if r.meta.mode.value == "mock" or mock_count %}
   <div class="data-notice">
     <span class="badge mock">MOCK DATA</span>
     <div><strong>本报告包含模拟回放数据。</strong> 当前 {{ mock_count }}/{{ r.answers|length }} 条 AI 回答来自 fixtures；由其派生的可见度、SOV、排名、引用与情感指标均用于验证诊断链路，不代表真实平台市场表现。</div>
+  </div>
+  {% endif %}
+
+  {% if grounded_count %}
+  <div class="data-notice grounded">
+    <span class="badge real">WEB SEARCH</span>
+    <div><strong>{{ grounded_count }}/{{ r.answers|length }} 条 AI 回答启用了 DeepSeek 联网搜索。</strong> Citation URL 直接来自 API 的 <code>web_search_tool_result</code>，可在回答卡片中点击查看；原型尚未逐句人工核对每个来源与结论的支持关系。</div>
   </div>
   {% endif %}
 
@@ -253,7 +266,7 @@
       <article class="metric primary"><div class="label">Visibility<br>AI 可见度</div><div class="num">{{ "%.0f%%"|format(m.visibility_rate*100) }}</div><div class="sub">提及回答 / 检测回答</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Share of Voice<br>话语权</div><div class="num">{{ "%.1f%%"|format(m.sov*100) }}</div><div class="sub">品牌提及 / 全部品牌提及</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Average Position<br>平均排名</div><div class="num">{{ m.avg_position if m.avg_position is not none else "—" }}</div><div class="sub">被提及时的平均顺位</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Citation Rate<br>声明引用率</div><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="sub">回答声明域名的占比 · 未核验</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">Citation Rate<br>{{ "联网引用率" if grounded_count else "声明引用率" }}</div><div class="num">{{ "%.0f%%"|format(m.citation_rate*100) }}</div><div class="sub">{% if grounded_count %}含 Web Search 来源 URL 的回答{% else %}回答声明域名的占比 · 未核验{% endif %}</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Sentiment<br>情感倾向</div><div class="num">{{ m.sentiment_summary.get("pos",0) }}·{{ m.sentiment_summary.get("neu",0) }}·{{ m.sentiment_summary.get("neg",0) }}</div><div class="sub">正面 · 中性 · 负面</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
     </div>
 
@@ -315,14 +328,19 @@
       {% for a in r.answers %}
       {% set an = analysis_map[a.question_id] %}
       <article class="answer-card">
-        <div class="answer-head"><h3>{{ a.question_id }} · {% if an.brand_mentioned %}品牌已进入答案{% else %}品牌未进入答案{% endif %}</h3><div>{% if a.is_mock %}<span class="badge mock">MOCK</span>{% else %}<span class="badge real">{{ a.provider|upper }}</span>{% endif %} {% if an.parse_degraded %}<span class="badge mock">解析降级</span>{% endif %}</div></div>
+        <div class="answer-head"><h3>{{ a.question_id }} · {% if an.brand_mentioned %}品牌已进入答案{% else %}品牌未进入答案{% endif %}</h3><div>{% if a.is_mock %}<span class="badge mock">MOCK</span>{% else %}<span class="badge real">{{ a.provider|upper }}</span>{% endif %} {% if a.search_grounded %}<span class="badge real">WEB SEARCH · {{ a.source_urls|length }}</span>{% endif %} {% if an.parse_degraded %}<span class="badge mock">解析降级</span>{% endif %}</div></div>
         <div class="answer-meta">
           <span class="badge {{ 'pass' if an.brand_mentioned else 'fail' }}">提及 {{ "是 · 第 %d 位"|format(an.brand_position) if an.brand_mentioned else "否" }}</span>
           <span class="badge">情感 {{ {"pos":"正面","neu":"中性","neg":"负面"}[an.sentiment.value] }}</span>
           <span class="badge">引用 {{ an.citations|length }}</span>
         </div>
         <p class="evidence"><strong>竞品：</strong>{{ an.competitors|map(attribute="name")|join("、") or "无" }}</p>
+        {% if a.search_grounded and an.citations %}
+        <p class="evidence"><strong>联网检索来源：</strong>以下 URL 来自 DeepSeek Web Search 返回结果</p>
+        <ul class="source-list">{% for c in an.citations %}<li><a href="{{ c.url }}" target="_blank" rel="noopener noreferrer" title="{{ c.url }}">{{ c.domain }}</a></li>{% endfor %}</ul>
+        {% else %}
         <p class="evidence"><strong>声明引用源（未核验）：</strong>{{ an.citations|map(attribute="domain")|join("、") or "无" }}</p>
+        {% endif %}
         {% if an.evidence_quote %}<div class="quote">“{{ an.evidence_quote }}”</div>{% endif %}
         <details><summary>查看 AI 回答原文 · Ver respuesta original</summary><pre>{{ a.raw_text }}</pre></details>
       </article>
@@ -396,7 +414,7 @@
 
   <footer>
     <strong>AI 海外市场诊断智能体 · Prototype</strong><br>
-    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照；AI 回答声明的引用域名未经独立检索核验。
+    运行 ID {{ r.meta.run_id }} · 模式 {{ r.meta.mode.value }}{% if r.meta.model %} · 模型 {{ r.meta.model }}{% endif %} · 生成于 {{ r.meta.generated_at.isoformat() }}。标注 MOCK 的回答及其派生指标为模拟回放；快照模式的网站结果来自已保存的公开页面快照；WEB SEARCH 来源 URL 来自 DeepSeek API，尚未逐句人工核验。
   </footer>
 </main>
 

@@ -2,7 +2,7 @@
 
 模式规则（PLAN.md §8）：
 - 显式 --mock → mock
-- 有 DEEPSEEK_API_KEY → hybrid（LLM 真实调用，AI 平台回答可为 mock）
+- 有 DEEPSEEK_API_KEY → hybrid（DeepSeek V4 真实调用，回答默认联网搜索）
 - 无 key → mock（全链路 fixtures，保证评审者零配置可跑）
 """
 from __future__ import annotations
@@ -22,6 +22,13 @@ FIXTURES_DIR = PROJECT_ROOT / "fixtures"
 load_dotenv(PROJECT_ROOT / ".env")
 
 
+def _env_flag(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() not in {"0", "false", "no", "off"}
+
+
 @dataclass
 class Settings:
     deepseek_api_key: str = field(
@@ -31,7 +38,13 @@ class Settings:
         default_factory=lambda: os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
     )
     deepseek_model: str = field(
-        default_factory=lambda: os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
+        default_factory=lambda: os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+    )
+    deepseek_web_search: bool = field(
+        default_factory=lambda: _env_flag("DEEPSEEK_WEB_SEARCH", True)
+    )
+    deepseek_search_max_uses: int = field(
+        default_factory=lambda: int(os.getenv("DEEPSEEK_SEARCH_MAX_USES", "3"))
     )
     force_mock: bool = False
     force_live_audit: bool = False  # mock 模式下仍对官网做实时诊断（其余环节维持 mock）

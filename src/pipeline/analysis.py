@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import re
+from urllib.parse import urlparse
 
 from ..config import Settings
 from ..models import (
@@ -72,6 +73,21 @@ def _evidence_sentence(text: str, pos: int) -> str:
     return text[start:end].strip().strip("-*• ").strip()
 
 
+def _citations_from_source_urls(source_urls: list[str]) -> list[Citation]:
+    """将 Web Search 返回的 URL 转成权威 Citation，按 URL 去重。"""
+
+    citations: list[Citation] = []
+    seen: set[str] = set()
+    for url in source_urls:
+        normalized_url = url.strip()
+        domain = urlparse(normalized_url).netloc.lower()
+        if not domain or normalized_url in seen:
+            continue
+        seen.add(normalized_url)
+        citations.append(Citation(domain=domain, url=normalized_url))
+    return citations
+
+
 def heuristic_analyze(answer: AIAnswer, profile: BrandProfile) -> AnswerAnalysis:
     text = answer.raw_text
     brand_names = [profile.brand_name] + profile.brand_aliases
@@ -98,13 +114,19 @@ def heuristic_analyze(answer: AIAnswer, profile: BrandProfile) -> AnswerAnalysis
         else:
             competitors.append(CompetitorMention(name=name, position=rank))
 
-    citations = [
-        Citation(domain=m[0].lower(), url=None)
-        for m in dict.fromkeys(_DOMAIN_RE.findall(text))
-    ]
-    # 去重 domain
-    seen: set[str] = set()
-    citations = [c for c in citations if not (c.domain in seen or seen.add(c.domain))]
+    if answer.search_grounded and answer.source_urls:
+        citations = _citations_from_source_urls(answer.source_urls)
+    elif answer.is_mock:
+        citations = [
+            Citation(domain=m[0].lower(), url=None)
+            for m in dict.fromkeys(_DOMAIN_RE.findall(text))
+        ]
+        # 去重 domain
+        seen: set[str] = set()
+        citations = [c for c in citations if not (c.domain in seen or seen.add(c.domain))]
+    else:
+        # 真实回答只计入 Web Search 实际返回的 URL，不把模型声明域名当作联网引用。
+        citations = []
 
     sentiment = Sentiment.NEUTRAL
     evidence = ""
@@ -189,6 +211,10 @@ def llm_analyze(answer: AIAnswer, profile: BrandProfile, settings: Settings) -> 
     try:
         result = AnswerAnalysis(question_id=answer.question_id, **data)
         result.competitors = _normalize_competitors(result.competitors, profile)
+        if answer.search_grounded and answer.source_urls:
+            result.citations = _citations_from_source_urls(answer.source_urls)
+        elif not answer.is_mock:
+            result.citations = []
         return result
     except Exception as e:  # ValidationError 等
         raise ProviderError(f"抽取结果不符合契约: {e}")

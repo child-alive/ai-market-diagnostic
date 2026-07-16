@@ -82,7 +82,7 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 
 ### 环境要点（踩过的坑）
 - 本机 python3 = 3.10.6，项目 venv 在 `ai-market-diagnostic/.venv`（已 gitignore）；
-- **本机没有 DEEPSEEK_API_KEY**：hybrid 真实链路（question_gen LLM 生成、DeepSeekProvider、
+- **session-01 交接时本机没有 DEEPSEEK_API_KEY**：hybrid 真实链路（question_gen LLM 生成、DeepSeekProvider、
   llm_analyze）代码已写但从未实测，拿到 key 后先小规模验证这三处的 JSON 解析；
 - 本机网络可直连 deliworld.com，site_audit 实抓已验证（约 20 秒，限速 1 req/s）；
 - 上层目录的业务 PDF 与测试题 docx 刻意不入库；
@@ -139,23 +139,49 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 
 **Stage 3 完成 ✅**
 
-### DeepSeek 真实链路联调（用户配置 API 后）
+### DeepSeek 首版真实链路联调（用户配置 API 后）
 - [x] 三段小测通过：DeepSeek 实时生成 22 条问题（含题目指定西语问题）、单条真实回答、
       单条 JSON-mode 结构化抽取；`is_mock=false`、无降级
-- [x] 完整 hybrid 验收通过：22 问题 / 8 条 DeepSeek 回答 / 8 条结构化分析；
-      最终 `run_id=c271b6ac`，0 Mock、0 解析降级；SQLite 历史重渲染成功
-- [x] 最终真实指标：Visibility 62.5% / SOV 16.13% / Avg Position 1.2 /
+- [x] 首版完整 hybrid 验收通过：22 问题 / 8 条 DeepSeek 回答 / 8 条结构化分析；
+      `run_id=c271b6ac`，0 Mock、0 解析降级；SQLite 历史重渲染成功
+- [x] 首版真实指标：Visibility 62.5% / SOV 16.13% / Avg Position 1.2 /
       Citation Rate 100%；官网实时检查 15 页，问题仍为 `NO_HREFLANG_ES_MX`、`NO_SPANISH_CONTENT`
-- [x] `data/示例产物/report.{json,html}` 已升级为最终 hybrid 真实运行产物
+- [x] `data/示例产物/report.{json,html}` 当时已升级为 hybrid 真实运行产物；
+      当前提交版已由下方 Stage 4 的 V4 + Web Search 产物取代
 
 ### 决策记录（真实数据反馈）
 - DeepSeek 曾将“Deli”歧义解释为熟食并输出 FUD/Zwan 等食品品牌；修复为仅对原问题已包含 Deli 的问法
   追加“得力文具品牌”消歧。曾尝试全局消歧，但会向通用品类问题泄露目标品牌、污染 Visibility，验证后撤回
 - LLM 可能输出 `BIC`/`Bic` 大小写变体；抽取后按既有品牌词典做大小写规范化、去重并过滤零售商，
   不修改数据契约或规则驱动缺口模块
-- DeepSeek 未接检索工具，回答域名属于模型声明来源；报告与文档将 Citation Rate 明确标注为“声明引用率（未核验）”，
-  生产环境需增加 URL 可访问性与证据文本校验
+- 首版真实链路未接检索工具，回答域名属于模型声明来源；该限制已在下方 Stage 4
+  通过 DeepSeek V4 服务端 Web Search 解决，但仍需保留“未逐句人工核对证据”的边界
+
+### Stage 4 — DeepSeek V4 + 联网搜索增强（用户明确要求）
+- [x] 模型切换为 `deepseek-v4-flash`；`.env.example` 新增联网开关与单题最大搜索次数，
+      已有 `.env` 只需保留 key，无需额外搜索服务密钥
+- [x] `DeepSeekProvider` 回答阶段接入 Anthropic 兼容端点的服务端 Web Search；
+      解析 `web_search_tool_result`，将真实返回的 URL 写入 `AIAnswer.source_urls`
+- [x] 搜索失败降级路径完成：显式输出警告，普通回答明确说明无联网，不伪造 URL；
+      无 key / `--mock` 链路保持原有可复现性
+- [x] 数据契约和报告升级：记录模型、Web Search 开关、单条 grounded 状态与来源 URL；
+      报告显示 Web Search 标记、联网引用率与可点击来源
+- [x] 真实完整验收：`run_id=f141d182`，22 问题 / 8 回答 / 5 缺口 / 5 建议；
+      8/8 回答 `search_grounded=true`，共 64 个来源 URL / 38 个域名，0 Mock、0 解析降级
+- [x] 真实指标：Visibility 50% / SOV 17.39% / Avg Position 1.5 /
+      Citation Rate 100%；官网实时检查 15 页，非快照模式
+- [x] 回归与视觉 QA：17 个 pytest 用例通过；mock 基线保持 20/8/7/7；
+      1280px 桌面与 390px 移动端无溢出、无控制台错误；SQLite 历史重渲染成功
+- [x] `data/示例产物/report.{json,html}` 已更新为 V4 + Web Search 真实产物
+
+### 决策记录（V4 与联网搜索）
+- 偏离 PLAN 原 `deepseek-chat` 设定，改用 `deepseek-v4-flash`：用户明确要求切换模型与联网搜索，
+  且当前 DeepSeek 接口实测由 V4 模型支持服务端 Web Search；PLAN 的锁定模型行已同步更新
+- 保留 OpenAI 兼容 `/chat/completions` 用于问题生成和 JSON-mode 抽取，仅回答阶段使用
+  Anthropic 兼容 `/anthropic/v1/messages`：前者结构化输出已验收，后者能直接返回服务端搜索结果，改动最小
+- Citation Rate 改为“至少带一个 Web Search 来源 URL 的回答占比”；URL 来自 API
+  返回结果，但仍不宣称已完成逐句证据支持关系的人工审核
 
 ### 下一步
-1. Stage 4 为可选加分项，按剩余时间选择 FastAPI、第二 Provider、Query Fanout 或演示视频；
+1. Stage 4 联网搜索增强已完成；其余可选加分项为 FastAPI、第二 Provider、Query Fanout 或演示视频；
 2. 若进入产品化，优先接真实海外平台并扩大到 100+ 问题、多轮采样。

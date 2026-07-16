@@ -103,6 +103,28 @@ def test_heuristic_extracts_and_deduplicates_citation_domains() -> None:
     assert [c.domain for c in result.citations] == ["amazon.com.mx", "gob.mx"]
 
 
+def test_heuristic_prefers_web_search_urls_as_grounded_citations() -> None:
+    answer = make_answer("Deli aparece en fake.example.com.")
+    answer.search_grounded = True
+    answer.source_urls = [
+        "https://www.deliworld.com/about/",
+        "https://www.amazon.com.mx/s?k=deli",
+    ]
+
+    result = heuristic_analyze(answer, DELI_PROFILE)
+
+    assert [(c.domain, c.url) for c in result.citations] == [
+        ("www.deliworld.com", "https://www.deliworld.com/about/"),
+        ("www.amazon.com.mx", "https://www.amazon.com.mx/s?k=deli"),
+    ]
+
+    answer.search_grounded = False
+    answer.source_urls = []
+    answer.is_mock = False
+    ungrounded = heuristic_analyze(answer, DELI_PROFILE)
+    assert ungrounded.citations == []
+
+
 @pytest.mark.parametrize(
     ("text", "expected"),
     [

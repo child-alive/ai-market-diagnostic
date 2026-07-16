@@ -54,6 +54,10 @@ def run_diagnostic(settings: Settings, top_n: int = visibility.DEFAULT_TOP_N) ->
             generated_at=datetime.now(timezone.utc),
             mode=settings.mode,
             run_id=uuid.uuid4().hex[:8],
+            model=settings.deepseek_model if settings.mode == RunMode.HYBRID else "mock",
+            web_search_enabled=(
+                settings.mode == RunMode.HYBRID and settings.deepseek_web_search
+            ),
         ),
     )
 
