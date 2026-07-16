@@ -17,7 +17,9 @@
 - [x] Stage0-T1 目录结构 + requirements.txt + .env.example + README.md 初版
 - [x] Stage0-T2 models.py 全部契约（在 §6 基础上为 DiagnosticReport 增加 answers/analyses 字段，
       并给 AnswerAnalysis 增加 parse_degraded 降级标记——仅增字段，未改名）
-- [ ] Stage0-T3 MockProvider + fixtures（8 条西语模拟回答 + 问题种子）
+- [x] Stage0-T3 MockProvider + fixtures（20 条问题种子 + 8 条分层模拟回答：
+      q05/q07/q08/q13/q16 无得力，q06/q09 得力靠后，q01 得力前列；
+      未备 fixture 的问题回放通用兜底回答，保证演示不中断）
 - [ ] Stage0-T4 main.py --mock 空跑全管道输出占位 JSON
 - 验收：`pip install -r requirements.txt && python -m src.main --mock` 无报错出 JSON
 

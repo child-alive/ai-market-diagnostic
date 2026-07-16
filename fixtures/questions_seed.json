@@ -1,0 +1,176 @@
+{
+  "_comment": "问题种子：无 DEEPSEEK_API_KEY 时 question_gen 的回退数据。tier: brand=品牌词 regional=地区排名词 category=品类排名词",
+  "questions": [
+    {
+      "id": "q01",
+      "text_local": "¿Qué tal es la marca Deli en papelería? ¿Vale la pena?",
+      "text_zh": "得力这个文具品牌怎么样？值得买吗？",
+      "tier": "brand",
+      "funnel": "MOFU",
+      "value_score": 5,
+      "value_reason": "品牌词直接反映现有认知与口碑，是 AI 可见度的基线问题"
+    },
+    {
+      "id": "q02",
+      "text_local": "¿Dónde puedo comprar productos Deli en México?",
+      "text_zh": "在墨西哥哪里能买到得力的产品？",
+      "tier": "brand",
+      "funnel": "BOFU",
+      "value_score": 3,
+      "value_reason": "购买意图明确，但仅覆盖已认知用户，增量有限"
+    },
+    {
+      "id": "q03",
+      "text_local": "¿Los productos Deli son de buena calidad o son chinos baratos?",
+      "text_zh": "得力的产品质量好吗，还是廉价中国货？",
+      "tier": "brand",
+      "funnel": "MOFU",
+      "value_score": 3,
+      "value_reason": "涉及信任与原产地偏见，影响转化但搜索量中等"
+    },
+    {
+      "id": "q05",
+      "text_local": "¿Cuáles son las mejores marcas de papelería en México?",
+      "text_zh": "墨西哥最好的文具品牌有哪些？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 5,
+      "value_reason": "题目指定示例问题；品类榜单词是 AI 推荐位的核心战场"
+    },
+    {
+      "id": "q06",
+      "text_local": "¿Qué marca de bolígrafos es mejor en México?",
+      "text_zh": "在墨西哥哪个牌子的圆珠笔最好？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 4,
+      "value_reason": "高频单品品类词，直接对标 BIC 等强势竞品"
+    },
+    {
+      "id": "q07",
+      "text_local": "¿Cuál es la mejor marca de útiles escolares para el regreso a clases?",
+      "text_zh": "返校季最好的学生用品品牌是哪个？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 5,
+      "value_reason": "返校季是墨西哥文具消费峰值场景，商业价值最高"
+    },
+    {
+      "id": "q08",
+      "text_local": "¿Qué marcas de artículos de oficina recomiendan para equipar una empresa?",
+      "text_zh": "给公司采购办公用品推荐什么品牌？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 4,
+      "value_reason": "B2B 采购决策问题，客单价高，得力核心品类"
+    },
+    {
+      "id": "q09",
+      "text_local": "¿Qué marcas de papelería son baratas y de buena calidad?",
+      "text_zh": "哪些文具品牌便宜又好用？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 4,
+      "value_reason": "性价比定位与得力品牌策略高度契合，是最应拿下的问法"
+    },
+    {
+      "id": "q10",
+      "text_local": "¿Qué marca de cuadernos es la mejor para la escuela?",
+      "text_zh": "上学用哪个牌子的笔记本最好？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 3,
+      "value_reason": "单品品类词，墨西哥本土品牌 Norma/Scribe 优势明显"
+    },
+    {
+      "id": "q11",
+      "text_local": "¿Cuáles son las mejores tijeras y pegamento para manualidades escolares?",
+      "text_zh": "学校手工课用什么剪刀和胶水最好？",
+      "tier": "category",
+      "funnel": "TOFU",
+      "value_score": 2,
+      "value_reason": "长尾场景词，单价低，适合内容覆盖而非重点投入"
+    },
+    {
+      "id": "q12",
+      "text_local": "¿Qué debo comprar para la lista de útiles escolares?",
+      "text_zh": "开学清单应该买些什么？",
+      "tier": "category",
+      "funnel": "TOFU",
+      "value_score": 3,
+      "value_reason": "认知阶段高流量问题，适合用清单类内容建立品牌曝光"
+    },
+    {
+      "id": "q13",
+      "text_local": "¿Dónde comprar útiles escolares baratos en CDMX?",
+      "text_zh": "墨西哥城哪里能买到便宜的学生用品？",
+      "tier": "regional",
+      "funnel": "BOFU",
+      "value_score": 4,
+      "value_reason": "首都市场 + 明确购买意图，渠道类地区词代表"
+    },
+    {
+      "id": "q14",
+      "text_local": "¿Cuáles son las mejores papelerías en Guadalajara?",
+      "text_zh": "瓜达拉哈拉最好的文具店有哪些？",
+      "tier": "regional",
+      "funnel": "BOFU",
+      "value_score": 3,
+      "value_reason": "第二大城市地区排名词，验证区域渠道可见度"
+    },
+    {
+      "id": "q15",
+      "text_local": "¿Dónde conseguir artículos de oficina al por mayor en México?",
+      "text_zh": "在墨西哥哪里可以批发办公用品？",
+      "tier": "regional",
+      "funnel": "BOFU",
+      "value_score": 3,
+      "value_reason": "批发渠道问题，指向 B2B 分销机会"
+    },
+    {
+      "id": "q16",
+      "text_local": "¿Qué papelería en línea es confiable en México?",
+      "text_zh": "墨西哥哪个在线文具商城靠谱？",
+      "tier": "regional",
+      "funnel": "BOFU",
+      "value_score": 4,
+      "value_reason": "电商渠道信任问题，直接影响线上转化路径"
+    },
+    {
+      "id": "q17",
+      "text_local": "¿Cómo elegir una engrapadora para la oficina?",
+      "text_zh": "怎么挑选办公用订书机？",
+      "tier": "category",
+      "funnel": "TOFU",
+      "value_score": 2,
+      "value_reason": "选购指南类长尾词，适合官网内容建设"
+    },
+    {
+      "id": "q18",
+      "text_local": "¿Qué es mejor para tomar apuntes: bolígrafo o lápiz?",
+      "text_zh": "记笔记用圆珠笔好还是铅笔好？",
+      "tier": "category",
+      "funnel": "TOFU",
+      "value_score": 1,
+      "value_reason": "纯认知问题，与品牌选择距离远"
+    },
+    {
+      "id": "q19",
+      "text_local": "¿Cuánto cuesta la lista de útiles escolares en México este año?",
+      "text_zh": "今年墨西哥开学清单大概要花多少钱？",
+      "tier": "category",
+      "funnel": "TOFU",
+      "value_score": 3,
+      "value_reason": "价格敏感话题，性价比品牌可借势内容营销"
+    },
+    {
+      "id": "q20",
+      "text_local": "¿Qué marcas de calculadoras científicas recomiendan para estudiantes?",
+      "text_zh": "学生用什么牌子的科学计算器好？",
+      "tier": "category",
+      "funnel": "MOFU",
+      "value_score": 3,
+      "value_reason": "得力有计算器产品线，但 Casio 心智垄断，攻坚难度高"
+    }
+  ]
+}
