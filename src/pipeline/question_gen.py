@@ -10,7 +10,7 @@ import json
 from pydantic import ValidationError
 
 from ..config import FIXTURES_DIR, Settings
-from ..models import BrandProfile, RunMode, UserQuestion
+from ..models import BrandProfile, UserQuestion
 
 _GEN_PROMPT = """你是一名 GEO（生成式引擎优化）市场分析师。为以下品牌生成目标市场用户会向 AI 助手提出的问题：
 
@@ -37,7 +37,8 @@ def load_seed_questions() -> list[UserQuestion]:
 
 
 def generate_questions(profile: BrandProfile, settings: Settings) -> list[UserQuestion]:
-    if settings.mode != RunMode.HYBRID:
+    # 问题生成器目前仍是 DeepSeek；只配置 OpenAI/Gemini 时使用稳定种子。
+    if settings.force_mock or not settings.deepseek_api_key:
         return load_seed_questions()
 
     from ..providers.base import ProviderError

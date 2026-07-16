@@ -2,7 +2,7 @@
 
 模式规则（PLAN.md §8）：
 - 显式 --mock → mock
-- 有 DEEPSEEK_API_KEY → hybrid（DeepSeek V4 真实调用，回答默认联网搜索）
+- 任一 AI 平台 Key 已配置 → hybrid（只调用选中的 Provider）
 - 无 key → mock（全链路 fixtures，保证评审者零配置可跑）
 """
 from __future__ import annotations
@@ -71,7 +71,9 @@ class Settings:
 
     @property
     def mode(self) -> RunMode:
-        if self.force_mock or not self.deepseek_api_key:
+        if self.force_mock or not (
+            self.deepseek_api_key or self.openai_api_key or self.gemini_api_key
+        ):
             return RunMode.MOCK
         return RunMode.HYBRID
 

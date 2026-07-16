@@ -13,30 +13,112 @@ import uuid
 from datetime import datetime, timezone
 
 from .config import DATA_DIR, DELI_PROFILE, Settings
-from .models import DiagnosticReport, ReportMeta, RunMode
+from .models import DiagnosticReport, PlatformResult, ReportMeta, RunMode
 from .pipeline import analysis, gaps, question_gen, recommend, site_audit, visibility
-from .providers import MockProvider
+from .providers import GeminiSearchProvider, MockProvider, OpenAISearchProvider
 from .providers.base import AnswerProvider
 from .report import render
 from . import storage
 
 
+_REAL_PROVIDER_NAMES = ("deepseek", "openai", "gemini")
+
+
+def build_providers(
+    settings: Settings,
+    requested: list[str] | None = None,
+) -> list[AnswerProvider]:
+    """构造本次检测平台。
+
+    - 未显式指定：优先保持旧行为（DeepSeek）；若只有其他 Key，选首个可用平台；
+    - `auto`：运行全部已配置平台；
+    - 显式列表：缺 Key 直接报错，不偷偷降级 Mock。
+    """
+
+    if settings.force_mock:
+        return [MockProvider()]
+
+    available = {
+        "deepseek": bool(settings.deepseek_api_key),
+        "openai": bool(settings.openai_api_key),
+        "gemini": bool(settings.gemini_api_key),
+    }
+    if requested == ["auto"]:
+        selected = [name for name in _REAL_PROVIDER_NAMES if available[name]]
+    elif requested:
+        unknown = [name for name in requested if name not in _REAL_PROVIDER_NAMES]
+        if unknown:
+            raise ValueError(f"未知 Provider: {', '.join(unknown)}")
+        missing = [name for name in requested if not available[name]]
+        if missing:
+            env_names = ", ".join(f"{name.upper()}_API_KEY" for name in missing)
+            raise ValueError(f"已选 Provider 缺少配置: {env_names}")
+        selected = list(dict.fromkeys(requested))
+    elif available["deepseek"]:
+        selected = ["deepseek"]
+    else:
+        selected = [name for name in _REAL_PROVIDER_NAMES if available[name]][:1]
+
+    if not selected:
+        return [MockProvider()]
+
+    providers: list[AnswerProvider] = []
+    for name in selected:
+        if name == "deepseek":
+            from .providers.deepseek import DeepSeekProvider
+
+            providers.append(DeepSeekProvider(settings))
+        elif name == "openai":
+            providers.append(OpenAISearchProvider(settings))
+        else:
+            providers.append(GeminiSearchProvider(settings))
+    return providers
+
+
 def build_provider(settings: Settings) -> AnswerProvider:
-    if settings.mode == RunMode.HYBRID:
-        from .providers.deepseek import DeepSeekProvider
+    """向后兼容单 Provider 调用方。"""
 
-        return DeepSeekProvider(settings)
-    return MockProvider()
+    return build_providers(settings)[0]
 
 
-def run_diagnostic(settings: Settings, top_n: int = visibility.DEFAULT_TOP_N) -> DiagnosticReport:
+def _provider_model(provider: AnswerProvider, settings: Settings) -> str:
+    configured = {
+        "deepseek": settings.deepseek_model,
+        "openai": settings.openai_model,
+        "gemini": settings.gemini_model,
+        "mock": "mock",
+    }.get(provider.name, provider.name)
+    return str(getattr(provider, "model", configured))
+
+
+def run_diagnostic(
+    settings: Settings,
+    top_n: int = visibility.DEFAULT_TOP_N,
+    provider_names: list[str] | None = None,
+) -> DiagnosticReport:
     profile = DELI_PROFILE
-    provider = build_provider(settings)
+    providers = build_providers(settings, provider_names)
 
     questions = question_gen.generate_questions(profile, settings)
-    answers = visibility.check_visibility(questions, provider, top_n)
-    analyses = analysis.analyze_answers(answers, profile, settings)
-    metrics = analysis.aggregate_metrics(analyses)
+    platform_results: list[PlatformResult] = []
+    for provider in providers:
+        platform_answers = visibility.check_visibility(questions, provider, top_n)
+        platform_analyses = analysis.analyze_answers(platform_answers, profile, settings)
+        platform_results.append(
+            PlatformResult(
+                provider=provider.name,
+                model=_provider_model(provider, settings),
+                answers=platform_answers,
+                analyses=platform_analyses,
+                metrics=analysis.aggregate_metrics(platform_analyses),
+            )
+        )
+
+    # 保留旧报告字段为“主平台”切片，不破坏已验收的缺口/建议规则。
+    primary = platform_results[0]
+    answers = primary.answers
+    analyses = primary.analyses
+    metrics = primary.metrics
     audit = site_audit.audit_site(profile, settings)
     gap_list = gaps.find_gaps(questions, analyses, audit)
     recs = recommend.make_recommendations(metrics, gap_list, audit)
@@ -50,13 +132,27 @@ def run_diagnostic(settings: Settings, top_n: int = visibility.DEFAULT_TOP_N) ->
         site_audit=audit,
         gaps=gap_list,
         recommendations=recs,
+        platform_results=platform_results,
         meta=ReportMeta(
             generated_at=datetime.now(timezone.utc),
-            mode=settings.mode,
+            mode=(
+                RunMode.MOCK
+                if all(result.provider == "mock" for result in platform_results)
+                else RunMode.HYBRID
+            ),
             run_id=uuid.uuid4().hex[:8],
-            model=settings.deepseek_model if settings.mode == RunMode.HYBRID else "mock",
-            web_search_enabled=(
-                settings.mode == RunMode.HYBRID and settings.deepseek_web_search
+            model=primary.model,
+            web_search_enabled=any(
+                answer.search_grounded
+                for result in platform_results
+                for answer in result.answers
+            ),
+            providers=[result.provider for result in platform_results],
+            models={result.provider: result.model for result in platform_results},
+            notes=(
+                [f"缺口与建议仍基于主平台 {primary.provider} 的结果。"]
+                if len(platform_results) > 1
+                else []
             ),
         ),
     )
@@ -70,6 +166,13 @@ def main() -> None:
     parser.add_argument("--live-audit", action="store_true",
                         help="mock 模式下仍对官网做实时诊断（其余环节维持 mock）")
     parser.add_argument("--run-id", help="从 SQLite 读取指定历史运行并重渲染报告")
+    parser.add_argument(
+        "--providers",
+        help=(
+            "回答平台，逗号分隔：deepseek,openai,gemini；"
+            "传 auto 运行全部已配置平台（默认保持单平台）"
+        ),
+    )
     args = parser.parse_args()
 
     if args.run_id:
@@ -85,10 +188,27 @@ def main() -> None:
         print(f"[out]  {html_path}  ← 双击用浏览器打开")
         return
 
+    if args.mock and args.providers:
+        parser.error("--mock 不能与 --providers 同时使用")
+    provider_names = None
+    if args.providers:
+        provider_names = [name.strip().lower() for name in args.providers.split(",") if name.strip()]
+        if not provider_names:
+            parser.error("--providers 不能为空")
+        if "auto" in provider_names and provider_names != ["auto"]:
+            parser.error("auto 不能与具体 Provider 混用")
+
     settings = Settings(force_mock=args.mock, force_live_audit=args.live_audit)
     print(f"[run] mode={settings.mode.value}")
 
-    report = run_diagnostic(settings, top_n=args.top_n)
+    try:
+        report = run_diagnostic(
+            settings,
+            top_n=args.top_n,
+            provider_names=provider_names,
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
     storage.save_report(report)
     json_path = render.write_json(report, DATA_DIR)
     html_path = render.write_html(report, DATA_DIR)
@@ -96,6 +216,7 @@ def main() -> None:
     print(f"[done] 问题 {len(report.questions)} 条 | AI 回答 {len(report.answers)} 条 "
           f"| 缺口 {len(report.gaps)} 项 | 建议 {len(report.recommendations)} 条")
     print(f"[db]   run_id={report.meta.run_id} → {storage.DEFAULT_DB_PATH}")
+    print(f"[platforms] {', '.join(report.meta.providers)}")
     print(f"[out]  {json_path}")
     print(f"[out]  {html_path}  ← 双击用浏览器打开")
 

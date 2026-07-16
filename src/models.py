@@ -131,6 +131,8 @@ class Citation(BaseModel):
 
 class AnswerAnalysis(BaseModel):
     question_id: str
+    provider: str = ""                  # 与 question_id 组成跨平台唯一标识
+    model: str = ""
     brand_mentioned: bool
     brand_position: Optional[int] = None
     competitors: list[CompetitorMention] = Field(default_factory=list)
@@ -157,6 +159,16 @@ class VisibilityMetrics(BaseModel):
     sentiment_summary: dict[str, int] = Field(default_factory=dict)  # {pos: n, neu: n, neg: n}
     competitor_ranking: list[CompetitorRank] = Field(default_factory=list)
     questions_checked: int = 0
+
+
+class PlatformResult(BaseModel):
+    """单个 AI 平台的完整检测切片；顶层旧字段仍保留主平台结果。"""
+
+    provider: str
+    model: str = ""
+    answers: list[AIAnswer] = Field(default_factory=list)
+    analyses: list[AnswerAnalysis] = Field(default_factory=list)
+    metrics: VisibilityMetrics
 
 
 # ---------------------------------------------------------------- ④ 网站诊断
@@ -204,6 +216,8 @@ class ReportMeta(BaseModel):
     run_id: str = ""
     model: str = ""
     web_search_enabled: bool = False
+    providers: list[str] = Field(default_factory=list)
+    models: dict[str, str] = Field(default_factory=dict)
     notes: list[str] = Field(default_factory=list)
 
 
@@ -213,6 +227,7 @@ class DiagnosticReport(BaseModel):
     answers: list[AIAnswer] = Field(default_factory=list)
     analyses: list[AnswerAnalysis] = Field(default_factory=list)
     metrics: Optional[VisibilityMetrics] = None
+    platform_results: list[PlatformResult] = Field(default_factory=list)
     site_audit: Optional[SiteAuditResult] = None
     gaps: list[ContentGap] = Field(default_factory=list)
     recommendations: list[Recommendation] = Field(default_factory=list)

@@ -48,6 +48,7 @@ class GeminiSearchProvider(AnswerProvider):
         if not settings.gemini_api_key:
             raise ValueError("GEMINI_API_KEY 缺失，不能构造 GeminiSearchProvider")
         self.settings = settings
+        self.model = settings.gemini_model
 
     @staticmethod
     def _parse_response(

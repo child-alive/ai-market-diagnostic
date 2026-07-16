@@ -109,6 +109,7 @@ class DeepSeekProvider(AnswerProvider):
 
     def __init__(self, settings: Settings):
         self.settings = settings
+        self.model = settings.deepseek_model
         self.client = DeepSeekClient(settings)
 
     @staticmethod

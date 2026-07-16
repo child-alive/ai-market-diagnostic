@@ -204,3 +204,21 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
 - Gemini 选当前官方推荐的 Interactions API，因为它直接返回
   `google_search_call` 与文本区间级 `url_citation`，便于下一任务做逐句证据验证
 - 仍用 `httpx` 直连，不引入两套 SDK；与已验收 DeepSeek Provider 的依赖策略保持一致
+
+### Stage4-T3 — 多平台调度与分平台指标
+- [x] CLI 新增 `--providers`：支持 `deepseek,openai,gemini` 显式列表与 `auto`；
+      显式选中但缺 Key 时立即报错，`--mock` 与 `--providers` 互斥
+- [x] 同一份问题地图依次运行多个 Provider；`PlatformResult` 对每个平台独立保存
+      answers / analyses / VisibilityMetrics，`AnswerAnalysis` 通过 provider + question_id 区分同题多平台结果
+- [x] 向后兼容：顶层 `answers/analyses/metrics` 仍是主平台切片；旧运行
+      `f141d182` 可从 SQLite 恢复并重渲染，旧字段无需迁移
+- [x] 只有 OpenAI/Gemini Key 时也可进入 hybrid；问题生成与结构化抽取在无 DeepSeek Key
+      时分别使用稳定问题种子与启发式抽取，不错把其他平台 Key 当成 DeepSeek Key
+- [x] 多平台单测覆盖 auto 选择、缺 Key 报错、主平台兼容与独立指标；
+      全量 `23 passed`，mock 基线保持 20/8/7/7
+
+### 决策记录（多平台调度）
+- 不把三平台回答直接混成一个 Visibility/SOV，而是各自聚合；否则平台样本量与回答分布
+  会被掩盖，无法回答“得力在 ChatGPT 和 Gemini 中分别如何”
+- 缺口和建议规则暂时继续使用主平台切片，并写入 `meta.notes`；等报告完成跨平台
+  对比后再设计“共识缺口”规则，避免未验收就改动已通过的推荐模块

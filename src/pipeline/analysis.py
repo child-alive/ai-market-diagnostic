@@ -20,7 +20,6 @@ from ..models import (
     Citation,
     CompetitorMention,
     CompetitorRank,
-    RunMode,
     Sentiment,
     VisibilityMetrics,
 )
@@ -142,6 +141,8 @@ def heuristic_analyze(answer: AIAnswer, profile: BrandProfile) -> AnswerAnalysis
 
     return AnswerAnalysis(
         question_id=answer.question_id,
+        provider=answer.provider,
+        model=answer.model,
         brand_mentioned=brand_first is not None,
         brand_position=brand_position,
         competitors=competitors,
@@ -209,7 +210,12 @@ def llm_analyze(answer: AIAnswer, profile: BrandProfile, settings: Settings) -> 
         )}]
     )
     try:
-        result = AnswerAnalysis(question_id=answer.question_id, **data)
+        result = AnswerAnalysis(
+            question_id=answer.question_id,
+            provider=answer.provider,
+            model=answer.model,
+            **data,
+        )
         result.competitors = _normalize_competitors(result.competitors, profile)
         if answer.search_grounded and answer.source_urls:
             result.citations = _citations_from_source_urls(answer.source_urls)
@@ -227,7 +233,7 @@ def analyze_answers(
 
     results: list[AnswerAnalysis] = []
     for a in answers:
-        if settings.mode == RunMode.HYBRID:
+        if settings.deepseek_api_key and not settings.force_mock:
             try:
                 results.append(llm_analyze(a, profile, settings))
                 continue

@@ -20,6 +20,7 @@ _GENERIC_ANSWER = (
 
 class MockProvider(AnswerProvider):
     name = "mock"
+    model = "mock"
 
     def __init__(self, fixtures_dir: Path | None = None):
         self.fixtures_dir = fixtures_dir or FIXTURES_DIR

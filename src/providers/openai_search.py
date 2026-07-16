@@ -48,6 +48,7 @@ class OpenAISearchProvider(AnswerProvider):
         if not settings.openai_api_key:
             raise ValueError("OPENAI_API_KEY 缺失，不能构造 OpenAISearchProvider")
         self.settings = settings
+        self.model = settings.openai_model
 
     @staticmethod
     def _parse_response(data: dict) -> tuple[str, list[SourceAnnotation]]:
