@@ -245,3 +245,19 @@ Stage 0 ✅ / Stage 1 ✅（MVP 达成，已满足题目最低交付要求）/ S
   结果用于把人工审核排优先级，不能表述为已完成人工核验
 - OpenAI/Gemini Provider 与跨平台报告代码已完成，但 Stage 4“第二个真实 Provider”仍不勾选，
   直到用户配置真实 Key 并完成至少单题冒烟与同题跨平台验收
+
+### Stage4-T5 — OpenAI / Gemini 真实 Key 额度诊断
+- [x] 三平台 Key 均被本地配置正确识别；测试过程只输出布尔状态、模型和错误类型，未输出 Key
+- [x] OpenAI `gpt-5-search-api` 单题请求到达官方 `/v1/chat/completions`，返回
+      `429 insufficient_quota`：认证和请求端点有效，但 API 账户无可用额度；ChatGPT 免费/订阅额度不等于 API 额度
+- [x] Gemini 官方 `/v1beta/models` 返回 200，确认 Key 有效且项目可见
+      `gemini-3.5-flash`、`gemini-3-flash-preview`、`gemini-3.1-flash-lite` 等模型
+- [x] Gemini `gemini-3.5-flash` Interactions 请求返回 `429`；另以官方
+      `generateContent + google_search` 小测 `gemini-3-flash-preview` 与 `gemini-3.1-flash-lite`，均返回
+      `429 RESOURCE_EXHAUSTED`；`gemini-2.5-flash` 对新用户返回 404 已停用
+- [x] 当前结论：两套 Provider 的官方真实请求均被额度阻塞，**未把本次测试记录为真实链路通过**；
+      下一步先检查 Google AI Studio 项目实际 rate limit，OpenAI 则需独立 API credits 或经契约审计的代理
+
+### 决策记录（官方 API 与代理）
+- 暂不直接切换未知中转站：本项目要求平台原生联网搜索与文本区间引用；普通 OpenAI 兼容代理即使能聊天，
+  也可能不支持 `gpt-5-search-api`、`web_search_options`、Google Search Grounding 或原生引用注解，届时测到的不是同一条链路
