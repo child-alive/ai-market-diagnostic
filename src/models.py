@@ -80,6 +80,12 @@ class EvidenceStatus(str, Enum):
     CONTRADICTED = "contradicted"  # 预留给后续语义/人工核验
 
 
+class CrawlerPurpose(str, Enum):
+    TRAINING = "training"
+    RETRIEVAL = "retrieval"
+    BOTH = "both"
+
+
 # ---------------------------------------------------------------- 输入
 
 class BrandProfile(BaseModel):
@@ -231,6 +237,13 @@ class SiteIssue(BaseModel):
     detail: str
 
 
+class AICrawlerAccess(BaseModel):
+    user_agent: str
+    purpose: CrawlerPurpose
+    allowed: bool
+    rule_source: str = "no_rule"         # specific / wildcard / no_rule
+
+
 class SiteAuditResult(BaseModel):
     crawlable: bool = False
     robots_ok: bool = False
@@ -241,6 +254,15 @@ class SiteAuditResult(BaseModel):
     spanish_content_found: bool = False
     issues: list[SiteIssue] = Field(default_factory=list)
     snapshot_mode: bool = False          # 网络失败降级为本地快照时为 True
+    advanced_checks_completed: bool = False
+    ai_crawlers: list[AICrawlerAccess] = Field(default_factory=list)
+    llms_txt_found: bool = False
+    llms_full_txt_found: bool = False
+    raw_html_text_chars: int = 0
+    brand_in_raw_html: bool = False
+    likely_js_dependent: bool = False
+    direct_answer_content_found: bool = False
+    faq_content_found: bool = False
 
 
 # ---------------------------------------------------------------- ⑤⑥ 缺口与建议

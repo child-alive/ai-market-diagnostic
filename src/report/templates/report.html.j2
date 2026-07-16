@@ -482,6 +482,50 @@
       <div class="audit-item"><small>检查页面 / Páginas</small><strong>{{ s.pages_checked }} 页</strong></div>
       <div class="audit-item"><small>数据模式 / Modo</small><strong>{{ "快照回放" if s.snapshot_mode else "实时抓取" }}</strong></div>
     </div>
+    {% if s.advanced_checks_completed %}
+    <div class="grid-2">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>AI 爬虫</th><th>用途</th><th>robots.txt</th><th>规则来源</th></tr></thead>
+          <tbody>
+            {% for purpose, label in [("retrieval", "搜索 / 引用爬虫"), ("both", "训练 + Grounding 控制 token"), ("training", "训练 / 数据采集爬虫")] %}
+            <tr><td colspan="4" class="strong">{{ label }}</td></tr>
+            {% for crawler in s.ai_crawlers if crawler.purpose.value == purpose %}
+            <tr>
+              <td class="model-name">{{ crawler.user_agent }}</td>
+              <td>{{ "检索/引用" if purpose == "retrieval" else "训练 + Grounding" if purpose == "both" else "训练/数据采集" }}</td>
+              <td><span class="badge {{ 'pass' if crawler.allowed else 'fail' }}">{{ "ALLOW" if crawler.allowed else "BLOCK" }}</span></td>
+              <td>{{ {"specific":"专用规则","wildcard":"继承 User-agent: *","no_rule":"未声明（默认允许）"}[crawler.rule_source] }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>AI 可读性与内容可提取性</h3><span class="badge">HEURISTIC</span></div>
+        <div class="audit-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          {% set advanced_checks = [
+            ("llms.txt", s.llms_txt_found, "根目录文件"),
+            ("llms-full.txt", s.llms_full_txt_found, "完整内容导航"),
+            ("原始 HTML 品牌实体", s.brand_in_raw_html, s.raw_html_text_chars|string + " 字符"),
+            ("不依赖客户端 JS", not s.likely_js_dependent, "原始 HTML 启发式"),
+            ("直接回答式段落", s.direct_answer_content_found, "段落长度启发式"),
+            ("FAQ 结构", s.faq_content_found, "FAQPage / details / 标题")
+          ] %}
+          {% for label, passed, detail in advanced_checks %}
+          <div class="audit-item"><small>{{ label }}</small><strong>{{ "已发现" if passed else "未发现 / 需复核" }}</strong><br><span class="badge {{ 'pass' if passed else 'P2' }}">{{ "PASS" if passed else "GAP" }}</span> <small style="display:inline">{{ detail }}</small></div>
+          {% endfor %}
+        </div>
+        <p class="evidence"><strong>口径：</strong><code>llms.txt</code> 是新兴约定，缺失不等于无法被 AI 抓取；屏蔽训练爬虫也是可合理的数据权利选择。搜索/引用或 Grounding 相关访问被屏蔽，才可能直接影响 GEO 可见性。Google-Extended 是控制 token，并非独立 HTTP user-agent。</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="data-notice">
+      <span class="badge">LEGACY RUN</span>
+      <div><strong>该历史运行生成时尚未记录 AI 爬虫、llms.txt 与 JS 可见性字段。</strong> 页面不用默认 false 冒充实测结论；新运行会自动完成这些检查。</div>
+    </div>
+    {% endif %}
     {% if s.issues %}
     <div class="issue-list">
       {% for i in s.issues %}<div class="issue"><span class="badge {{ 'P0' if i.severity.value == 'high' else 'P1' if i.severity.value == 'medium' else 'P2' }}">{{ i.severity.value|upper }}</span><code>{{ i.code }}</code><span>{{ i.detail }}</span></div>{% endfor %}

@@ -32,7 +32,7 @@
 - 为 DeepSeek V4、OpenAI Search、Gemini Google Search Grounding 和 Mock 实现了统一 Provider 契约，多平台结果独立存储、独立计算；
 - 将品牌词与无品牌词分层：头版只用 Unbranded Visibility 衡量主动推荐竞争力，品牌词改用于认知、情感和描述准确性诊断；
 - 保存 API 返回的搜索来源，并提供可选的页面级证据预审，始终区分“有来源”和“来源支持结论”；
-- 完成 15 页上限的官网轻量实抓/快照降级、SQLite 历史运行存档、静态 HTML/JSON 报告与 33 个回归测试。
+- 完成 15 页上限的官网轻量实抓/快照降级；站点审计细分 8 个 AI 访问 token、`llms.txt`、原始 HTML/JS 依赖与内容可提取性；并提供 SQLite 历史运行存档、静态 HTML/JSON 报告与 37 个回归测试。
 
 ## 2. 为什么这样设计
 
@@ -57,7 +57,7 @@
 
 ## 4. 下一步做什么
 
-1. 补齐 GEO 站点审计细节：AI 爬虫分项、`llms.txt`、JS 内容可见性、提及 vs 推荐、来源质量分层；
+1. 补齐指标语义：提及 vs 推荐、来源质量分层与多轮采样波动；
 2. 实现 Query Fanout：高价值无品牌词问题派生 3~5 个子问法，计算 Fanout Coverage；
 3. 将单轮样本扩展为 100+ Prompt Set 和多轮采样，给出分布、波动与置信区间；
 4. 在官方额度/权限恢复后，分别完成 OpenAI Search 与 Gemini Grounding 单题冒烟，再运行同一 Prompt Set 的多平台比较；

@@ -460,3 +460,42 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 ### 下一步
 1. 验证导览页的相对链接、mock 命令与回归基线后提交独立 commit；
 2. 进入第四部 A/B：site_audit 领域能力补齐与指标/文档层升级。
+
+### 冲刺-P1 第四部 A：GEO 站点审计增强
+- [x] `SiteAuditResult` 只增带默认值字段，新增 8 个 AI 访问 token 的 robots.txt
+      逐项状态、规则来源（专用 / `User-agent: *` / 未声明）与用途分类；旧 JSON / SQLite
+      因 `advanced_checks_completed=false` 继续兼容，历史报告不会用默认 false 冒充实测。
+- [x] 用途区分为训练/数据采集、搜索/引用，以及“训练 + Grounding”混合控制。
+      GPTBot、ClaudeBot、Bytespider、CCBot 归训练/数据采集；OAI-SearchBot、
+      ChatGPT-User、PerplexityBot 归搜索/引用；Google-Extended 单列为混合控制 token。
+- [x] 增加 `/llms.txt` 与 `/llms-full.txt` 检测，并拒绝把返回 200 的 HTML soft-404
+      误判为有效文本文件；报告明确说明该约定非强制标准，缺失不等于 AI 无法抓取。
+- [x] 增加原始 HTML 正文字符量、品牌实体、可能依赖客户端 JS、直接回答式段落与
+      FAQPage/details/标题结构启发式；报告全部标注 HEURISTIC，不把预警写成确定事实。
+- [x] 2026-07-17 实时官网验收：`run_id=a7ec0a37`，AI 回答为 Mock、网站为实时抓取，
+      `pages_checked=15`、`snapshot_mode=false`；8 项均继承 wildcard 允许，未发现两个
+      llms 文件；首页原始 HTML 正文约 24,824 字符且含品牌实体，未触发 JS 依赖预警；
+      发现直接回答式段落，未发现 FAQ 结构。
+- [x] 新增 4 个站点审计测试并扩展报告渲染断言；全量 `37 passed`；Mock 基线保持
+      20 问题 / 8 回答 / 7 缺口 / 7 建议。
+
+### 决策记录（AI crawler 口径）
+- Google 官方文档确认 `Google-Extended` 同时控制未来 Gemini 模型训练与 Gemini Apps /
+  Vertex AI 的部分 Grounding，且不是独立 HTTP user-agent。因此偏离最初“仅分两组”的
+  简化清单，增加 `CrawlerPurpose.BOTH` 并在报告单列，避免错误归为纯训练爬虫。
+- robots.txt 只证明声明规则的解析结果，不能证明 WAF/CDN、IP allowlist、验证码或运行时
+  网络一定放行；报告不把 `ALLOW` 扩大解释为端到端抓取成功。
+- OpenAI 官方文档 MCP 本会话不可用；按 `openai-docs` 技能尝试安装时，本机 Codex CLI
+  内部二进制路径报 `ENOENT`，随后仅使用 OpenAI 官方 Help Center 页面作来源核验。
+  这是文档工具环境问题，不影响项目代码、API key 或 Provider 状态。
+
+### 交接连续性（Fable5 尚未复核）
+- 用户再次明确：当前继续按《追加指令》开发，不等待 Fable5 额度恢复；Fable5 恢复后
+  对本节及后续 commit 做独立复核即可，不需要猜测为何中途继续。
+- Codex 内置浏览器无法访问 `file://`、loopback 与局域网本地服务的事实已在上文记录；
+  这不是用户权限缺失。第四部 A 的验收依据为真实 HTTP 官网抓取、HTML 内容检查、
+  模板渲染与自动化测试，不声称完成本地浏览器视觉 QA。
+
+### 下一步
+1. 提交第四部 A 的独立 commit；
+2. 进入第四部 B：提及 vs 推荐、来源质量分层、采样方法论与术语对齐。
