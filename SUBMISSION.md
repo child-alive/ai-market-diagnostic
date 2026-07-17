@@ -42,7 +42,7 @@
 - 完成 3 个无品牌词 × 3 轮的真实 DeepSeek 重复采样，保存逐轮回答与来源，展示 0%~33.3% 的实际波动；
 - 完成 Query Fanout：高价值无品牌词按同义改写/场景细化/追问式派生 3~5 个分支，强制品牌泄漏检查，并将 Parent / Branch Coverage 与主 Prompt Set 分开统计；
 - 完成 15 页上限的官网轻量实抓/快照降级；站点审计细分 8 个 AI 访问 token、`llms.txt`、原始 HTML/JS 依赖与内容可提取性；并提供 SQLite 历史运行存档与静态 HTML/JSON 报告；
-- 完成 Vue 3 + TypeScript 双受众网页：真实数据七阶段回放、产品/技术视角、完整报告入口，以及固定 Prompt Set、SSE 流式进度、限流/并发/超时保护的 FastAPI 实况模式；共 57 个回归测试。
+- 完成 Vue 3 + TypeScript 双受众网页：真实数据七阶段回放、产品/技术视角、完整报告入口，以及固定 Prompt Set、SSE 流式进度、限流/并发/超时保护的 FastAPI 实况模式；共 58 个回归测试。
 
 ## 2. 为什么这样设计
 

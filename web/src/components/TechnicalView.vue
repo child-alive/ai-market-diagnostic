@@ -62,7 +62,7 @@ const stageCommand = computed(() => [
   <div class="technical-page">
     <section id="top" class="technical-hero hero-entrance">
       <div>
-        <span class="candidate-byline">刘畅 · AI 研发工程师候选作品</span>
+        <div class="candidate-byline"><strong>刘畅</strong><span>应聘岗位 · AI 研发工程师</span></div>
         <span class="tech-kicker">TECHNICAL VIEW · 给技术评审</span>
         <h1>一条可复现、<br>可审计、可安全降级的诊断管道。</h1>
         <p>从模块边界、数据契约、真实调用到失败降级，展示这条诊断链路如何可靠运行。</p>
@@ -71,7 +71,7 @@ const stageCommand = computed(() => [
       <div class="delivery-console">
         <header><i></i><i></i><i></i><span>delivery.status</span></header>
         <dl>
-          <div><dt>tests</dt><dd>57 passed</dd></div>
+          <div><dt>tests</dt><dd>58 passed</dd></div>
           <div><dt>grounded</dt><dd>{{ report.answers.filter(item => item.search_grounded).length }}/{{ report.answers.length }}</dd></div>
           <div><dt>main_sources</dt><dd>{{ mainSourceCount }}</dd></div>
           <div><dt>site_pages</dt><dd>{{ report.site_audit.pages_checked }}</dd></div>

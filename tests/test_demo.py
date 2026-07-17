@@ -6,6 +6,7 @@ import json
 import asyncio
 
 import httpx
+from starlette.requests import Request
 
 from src.config import Settings
 from src.demo_api import SlidingWindowLimiter, _readline_until_disconnect, create_app
@@ -64,6 +65,7 @@ def test_live_endpoint_fails_closed_without_server_key() -> None:
 
     assert health.status_code == 200
     assert health.json()["live_available"] is False
+    assert health.json()["live_busy"] is False
     assert response.status_code == 503
     assert "回放模式" in response.json()["detail"]
     assert "key" not in response.text.lower()
@@ -122,3 +124,30 @@ def test_live_stream_detects_browser_disconnect_without_waiting_for_worker() -> 
         return False
 
     assert asyncio.run(scenario()) is True
+
+
+def test_live_request_does_not_lock_before_stream_iteration() -> None:
+    async def scenario() -> bool:
+        app = create_app(live_enabled=True, mount_static=False)
+        route = next(
+            route
+            for route in app.routes
+            if getattr(route, "path", None) == "/api/live-diagnose/stream"
+        )
+        request = Request({
+            "type": "http",
+            "method": "POST",
+            "path": "/api/live-diagnose/stream",
+            "headers": [],
+            "client": ("203.0.113.8", 12345),
+        })
+
+        response = await route.endpoint(  # type: ignore[attr-defined]
+            payload={"question_limit": 3},
+            request=request,
+        )
+        locked_before_iteration = app.state.live_semaphore.locked()
+        await response.body_iterator.aclose()
+        return locked_before_iteration
+
+    assert asyncio.run(scenario()) is False

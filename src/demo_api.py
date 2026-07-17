@@ -122,6 +122,7 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
     )
     limiter = SlidingWindowLimiter(_positive_int("DEMO_RATE_LIMIT_PER_HOUR", 2))
     semaphore = asyncio.Semaphore(1)
+    app.state.live_semaphore = semaphore
     timeout_seconds = _positive_int("DEMO_LIVE_TIMEOUT_SECONDS", 180)
 
     def is_live_enabled() -> bool:
@@ -144,6 +145,7 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
             "status": "ok",
             "replay_available": (WEB_DIST_DIR / "demo-report.json").exists(),
             "live_available": is_live_enabled(),
+            "live_busy": semaphore.locked(),
             "live_question_range": [3, 5],
         }
 
@@ -155,17 +157,16 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
                 detail="实况服务未配置 DeepSeek Web Search；请使用不耗额度的回放模式",
             )
 
-        try:
-            await asyncio.wait_for(semaphore.acquire(), timeout=0.05)
-        except asyncio.TimeoutError as exc:
+        # 这里只做无状态的快速判断；真正占用信号量必须在
+        # event_stream 内完成，否则客户端在流开始前断开会永久泄漏锁。
+        if semaphore.locked():
             raise HTTPException(
                 status_code=409,
                 detail="已有一项实况诊断正在运行，请稍后重试或使用回放模式",
-            ) from exc
+            )
 
         ip = _client_ip(request)
         if not await limiter.allow(ip):
-            semaphore.release()
             raise HTTPException(
                 status_code=429,
                 detail="本 IP 本小时的 2 次实况额度已用完；回放模式仍可完整使用",
@@ -173,9 +174,20 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
 
         async def event_stream():  # type: ignore[no-untyped-def]
             process: asyncio.subprocess.Process | None = None
+            lease_acquired = False
             terminal_event_seen = False
             deadline = asyncio.get_running_loop().time() + timeout_seconds
             try:
+                try:
+                    await asyncio.wait_for(semaphore.acquire(), timeout=0.05)
+                    lease_acquired = True
+                except asyncio.TimeoutError:
+                    yield _sse({
+                        "type": "error",
+                        "message": "已有一项实况诊断正在运行，请稍后重试",
+                    })
+                    return
+
                 process = await asyncio.create_subprocess_exec(
                     sys.executable,
                     "-m",
@@ -228,7 +240,8 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
             finally:
                 if process is not None:
                     await _terminate(process)
-                semaphore.release()
+                if lease_acquired:
+                    semaphore.release()
 
         return StreamingResponse(
             event_stream(),

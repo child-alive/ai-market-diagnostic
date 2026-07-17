@@ -50,7 +50,7 @@ onMounted(loadReport)
     <header class="audience-nav">
       <a class="brand-lockup" href="#top" aria-label="返回页面顶部">
         <span class="brand-mark">J</span>
-        <span><b>聚路 GEO Lab</b><small>刘畅 · AI 研发工程师候选作品</small></span>
+        <span><b>聚路 GEO Lab</b><small><strong>刘畅</strong> · AI 研发工程师</small></span>
       </a>
 
       <nav class="audience-switch" aria-label="页面阅读视角">
@@ -71,7 +71,7 @@ onMounted(loadReport)
       </nav>
 
       <div class="nav-actions">
-        <button v-if="liveEnabled" class="nav-live-link" @click="focusLiveDemo">现场演示 ↓</button>
+        <button v-if="liveEnabled" class="nav-live-link" @click="focusLiveDemo"><i></i>现场试一下～</button>
         <a class="nav-report-link" :href="reportHref" target="_blank" rel="noopener">完整报告 ↗</a>
       </div>
     </header>
