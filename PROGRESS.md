@@ -1081,6 +1081,9 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       DeepSeek 任务实际运行、API 余额或 Key 数量问题，而是内存信号量的幽灵占用。
 - [x] 旧实现在返回 `StreamingResponse` 前就执行 `semaphore.acquire()`；如果客户端在流生成器
       第一次迭代前就暂停、刷新或断开，生成器 `finally` 永远不会运行，锁也永远不会释放。
+- [x] 公网部署后健康响应未出现新增的 `live_busy`，且 MainPID 未变；进一步定位到
+      `systemctl enable --now` 对已经 active 的服务不会重启。因此上一次网页静态资源已更新，
+      FastAPI 却仍在执行旧进程，这是“界面变了但 409 仍在”的直接部署原因。
 
 ### 修复
 - [x] 端点返回响应前只做 `semaphore.locked()` 快速判断，不占用锁；占锁移入
@@ -1089,6 +1092,8 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       `locked() is False`；与上一轮“迭代中浏览器断开”测试共同覆盖两个断开窗口。
 - [x] `/api/health` 新增只读 `live_busy`，用于公网直接验证主动断开后信号量已释放；
       该字段不包含 Key、IP 或请求内容。
+- [x] 远端安装脚本改为 `enable` 后每次明确 `restart ai-market-diagnostic`；首次部署和
+      重复部署都会加载当前代码，不再出现前端新、后端旧的混合版本。
 - [x] 当前 `58 passed`、Mock `20 / 8 / 7 / 7`、Vue typecheck 与国内/国际双构建全部通过。
 
 ### 候选人与现场入口

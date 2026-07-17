@@ -122,7 +122,10 @@ if [[ "$PUBLIC_PORT" = "80" ]]; then
 fi
 
 systemctl daemon-reload
-systemctl enable --now "$SERVICE_NAME"
+systemctl enable "$SERVICE_NAME"
+# 重复部署时服务可能已在运行；enable --now 不会重启旧进程。
+# 每次同步新代码后必须显式 restart，否则公网 API 仍执行上一版代码。
+systemctl restart "$SERVICE_NAME"
 nginx -t
 systemctl enable --now nginx
 systemctl reload nginx
