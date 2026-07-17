@@ -19,7 +19,17 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "data"
 FIXTURES_DIR = PROJECT_ROOT / "fixtures"
 
-load_dotenv(PROJECT_ROOT / ".env")
+
+def _load_project_dotenv() -> None:
+    """本机开发时读取 .env；生产环境可由 systemd 预先注入环境变量。"""
+    try:
+        load_dotenv(PROJECT_ROOT / ".env")
+    except PermissionError:
+        # 生产 .env 保持 root-only，应用用户不重复直读密钥文件。
+        pass
+
+
+_load_project_dotenv()
 
 
 def _env_flag(name: str, default: bool) -> bool:

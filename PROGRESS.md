@@ -1029,6 +1029,9 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       `python -m uvicorn` 启动，避免再依赖 console script 的执行位。
 - [x] 第二次部署验证发现旧 `.venv/bin/pip` 也可能已被收紧为 `640`；依赖安装
       同步改用 `python -m pip`，使首次安装与重复部署都不依赖 console script 执行位。
+- [x] 服务器 `.env` 配置为 `root:root 600` 后，python-dotenv 会以 `www-data` 再次尝试读取并
+      抛出 `PermissionError`；配置加载现在只忽略该权限错误，继续使用 systemd 已注入的环境变量。
+- [x] 新增配置安全边界测试；不改为 root 运行应用，不降低服务器密钥文件权限。
 
 ### 决策记录
 - 保留服务进程以 `www-data` 运行和目录最小权限的安全设计；不通过改成 root 运行或
