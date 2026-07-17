@@ -1213,3 +1213,22 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 ### 决策记录
 - 用户交付时间优先，接受“自动化租约回归 + 服务器健康检查 + 用户正常浏览器人工验收”的证据组合，
   不再继续消耗时间做额外公网压力测试；如未来将演示升级为正式服务，再补共享租约与持续压力测试。
+
+---
+
+## 2026-07-17 session-21 (Codex，GitHub 门面与国际包终审)
+
+### GitHub 门面
+- [x] `main` 已推送至 GitHub；README 首屏提供国内动态演示、国际静态演示与评审导览三个入口。
+- [x] 仓库 Homepage 设置为 `https://ai-market-diagnostic.pages.dev/`，简介保留候选人“刘畅”与
+      “AI 研发工程师”岗位，新增 GEO / AI Search / DeepSeek / FastAPI / Vue 等检索标签。
+
+### 国际静态包压缩终审
+- [x] 入口体积：国际版首屏 JS gzip 37.60 kB、CSS gzip 7.31 kB，合计约 44.91 kB。
+- [x] 路由完整：本地静态预览 `/`、`/report/`、`/demo-report.json` 均返回 200。
+- [x] 部署边界：`dist-intl` 中未发现 `LivePanel`、`live-diagnose` 或 `/api/` 引用；实况能力只留在国内版。
+- [x] 安全冻结：`.env` 未被 Git 跟踪；常见长格式 OpenAI/Gemini 密钥模式在跟踪文件中无命中；工作树干净。
+
+### 交付裁决
+- **可提交，但国际线路有一个用户动作：** 将本次新构建的 `web/dist-intl/` 重新上传到现有
+  Cloudflare Pages 项目；上传前的线上 URL 仍可能展示旧构建，不应把本地新包误称为已经发布。
