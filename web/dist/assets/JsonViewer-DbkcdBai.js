@@ -1,1 +1,0 @@
-import{d as s,o as t,c as n,t as o}from"./index-Cq06CdJG.js";const a={class:"json-viewer"},l=s({__name:"JsonViewer",props:{value:{}},setup(e){return(r,c)=>(t(),n("pre",a,o(JSON.stringify(e.value,null,2)),1))}});export{l as default};

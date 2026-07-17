@@ -13,8 +13,8 @@
 - Desktop form factor；冷缓存单次验收。
 - 显式桌面视口：1440×900、DPR 1。
 
-原始机器可读报告见 `lighthouse-desktop-fast3g.report.json`，可视化报告见
-`lighthouse-desktop-fast3g.report.html`；二者都包含 Lighthouse 最终截图与完整审计明细。
+第一轮原始报告见 `lighthouse-desktop-fast3g.report.json/.html`。双视角重构后的同口径报告见
+`lighthouse-redesign.report.json/.html`；两组都包含 Lighthouse 最终截图与完整审计明细。
 
 ## 结果
 
@@ -26,5 +26,11 @@
 | CLS | — | 0.0014 | 记录 |
 | 总阻塞时间 | — | 122.739ms | 记录 |
 | 首屏总传输 | — | 约 94KiB | 记录 |
+
+## 双视角重构后复测
+
+2026-07-17 按完全相同口径重新测试产品视角首屏：LCP 2154.995ms、CLS 0、TBT 31.838ms、
+5 个请求、总传输约 92KiB；生产构建首屏主 JS 34.36KB gzip、CSS 6.13KB gzip。
+重构后的产品结论、六项原地下拉和独立技术视图均保留在预算内。
 
 说明：性能批次的连续两次同口径 LCP 为 1871.325ms、1872.442ms；完成全部视觉与叙事增量后复测为 1971.537ms，仍有约 528ms 预算余量。公网服务器延迟、缓存和代理配置仍会影响线上结果；部署后应按同一口径再跑一次。Nginx 已启用 `gzip_static`，构建会为 HTML/CSS/JS/JSON 生成 `.gz` 文件。
