@@ -4,9 +4,15 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vue-tsc -b && vite build && node scripts/precompress.mjs dist",
-    "preview": "vite preview --host 0.0.0.0"
+    "dev": "vite --host 0.0.0.0 --mode domestic",
+    "typecheck": "vue-tsc -b",
+    "build": "npm run build:domestic",
+    "build:domestic": "npm run typecheck && vite build --mode domestic --outDir dist && node scripts/prepare-static.mjs dist && node scripts/precompress.mjs dist",
+    "build:intl": "npm run typecheck && vite build --mode international --outDir dist-intl && node scripts/prepare-static.mjs dist-intl && node scripts/precompress.mjs dist-intl",
+    "build:all": "npm run build:domestic && npm run build:intl",
+    "preview": "npm run preview:domestic",
+    "preview:domestic": "vite preview --host 0.0.0.0 --outDir dist",
+    "preview:intl": "vite preview --host 0.0.0.0 --outDir dist-intl"
   },
   "dependencies": {
     "vue": "^3.5.17"

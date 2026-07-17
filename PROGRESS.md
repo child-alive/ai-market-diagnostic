@@ -774,3 +774,25 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 
 ### 下一步
 - 网页冲刺第二批：国内/国际双构建、`/report` 路由、Cloudflare Pages 指引与提交入口双 URL。
+
+---
+
+## 2026-07-17 session-07 (Codex，网页冲刺：双版本构建)
+
+### 国内动态版 / 国际静态版
+- [x] 新增 `domestic` / `international` 两套 Vite mode：国内版启用 `/api` 实况；国际版在
+      构建时关闭实况入口，未生成 LivePanel chunk，也不会主动请求 `/api`
+- [x] `npm run build:all` 同时产出 `web/dist` 与 `web/dist-intl`；两者均生成 gzip 预压缩文件
+- [x] 构建后将自包含完整报告复制到 `/report/index.html`；国内、国际预览的 `/report/` 均验收通过
+- [x] 国内版预览确认实况按钮可用；国际版确认禁用按钮、静态边界说明和国内版引导文案存在
+- [x] 新增 Cloudflare Pages 国际版指引；ECS/Nginx 改用国内构建并统一 `/report/` 路由
+- [x] `SUBMISSION.md` 拆成国内动态版 / 国际静态版双 URL 占位，保留部署前不虚构公网地址的口径
+- [x] 两套生产构建、桌面浏览器 DOM、报告路由与控制台检查通过；国际版构建未发现 `/api` 字面量
+
+### 决策记录
+- 国际版不提供“点了再报错”的假实况按钮，而是在构建期关闭功能并解释如何前往国内版；这样
+  Cloudflare Pages 无需后端或密钥，部署边界与用户预期一致。
+- `/report/` 由构建脚本复制自同一份 `full-report.html`，不维护第二套报告模板，避免数据漂移。
+
+### 下一步
+- 网页冲刺第三批：评审者证据卡、问题式叙事、产品/技术 URL 状态、回放速度与跳过、移动端与元信息。

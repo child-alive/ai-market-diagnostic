@@ -97,7 +97,11 @@ server {
     }
 
     location = /report {
-        return 302 /full-report.html;
+        return 302 /report/;
+    }
+
+    location ^~ /report/ {
+        try_files \$uri \$uri/ /report/index.html;
     }
 
     location / {

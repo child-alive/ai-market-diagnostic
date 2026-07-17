@@ -4,6 +4,10 @@ import type { Perspective, Report } from './types'
 
 const TechnicalPanel = defineAsyncComponent(() => import('./components/TechnicalPanel.vue'))
 const LivePanel = defineAsyncComponent(() => import('./components/LivePanel.vue'))
+const liveEnabled = import.meta.env.VITE_ENABLE_LIVE === 'true'
+const apiBase = import.meta.env.VITE_API_BASE
+const domesticUrl = import.meta.env.VITE_DOMESTIC_URL
+const reportHref = `${import.meta.env.BASE_URL}report/`
 
 const report = ref<Report | null>(null)
 const loadError = ref('')
@@ -94,6 +98,12 @@ function selectStage(index: number): void {
   isPlaying.value = false
 }
 
+function enterLive(): void {
+  if (!liveEnabled) return
+  showLive.value = true
+  isPlaying.value = false
+}
+
 async function loadReport(): Promise<void> {
   try {
     const response = await fetch(`${import.meta.env.BASE_URL}demo-report.json`)
@@ -146,7 +156,7 @@ onUnmounted(() => {
             <button class="primary-button" @click="showLive = false; restartReplay()">
               <span>▶</span> 重播真实诊断
             </button>
-            <a class="text-button" href="./full-report.html" target="_blank" rel="noopener">打开完整报告 ↗</a>
+            <a class="text-button" :href="reportHref" target="_blank" rel="noopener">打开完整报告 ↗</a>
           </div>
           <p class="scope-note">单平台单轮采样（无品牌词 {{ report.metrics.unbranded.questions_checked }} 题 + 分支 {{ report.fanout_metrics.queries_checked }} 题）· 观测值非定论 · 不等同于 ChatGPT / Gemini 市场表现</p>
         </div>
@@ -174,14 +184,24 @@ onUnmounted(() => {
         <div>
           <span class="section-index">DEMO MODE</span>
           <h2>一份数据，两种观看方式</h2>
-          <p>回放不消耗 API；实况只在明确启动后调用服务端 DeepSeek。</p>
+          <p v-if="liveEnabled">回放不消耗 API；实况只在明确启动后调用服务端 DeepSeek。</p>
+          <p v-else>当前为国际静态版：回放与完整报告可直接查看，实况 API 已从构建中关闭。</p>
+          <p v-if="!liveEnabled" class="intl-live-note">
+            如需现场联网问询，
+            <a v-if="domesticUrl" :href="domesticUrl" rel="noopener">前往国内动态版 ↗</a>
+            <span v-else>请使用提交导览中的国内动态版地址。</span>
+          </p>
         </div>
         <div class="mode-switch">
           <button :class="{ active: !showLive }" @click="showLive = false">
             <span>01</span><b>回放模式</b><small>默认 · 零成本 · 永不翻车</small>
           </button>
-          <button :class="{ active: showLive }" @click="showLive = true; isPlaying = false">
-            <span>02</span><b>实况模式</b><small>技术评审 · 3 次联网问询</small>
+          <button
+            :class="{ active: showLive, disabled: !liveEnabled }"
+            :disabled="!liveEnabled"
+            @click="enterLive"
+          >
+            <span>02</span><b>实况模式</b><small>{{ liveEnabled ? '技术评审 · 3 次联网问询' : '国际版已关闭 · 前往国内版' }}</small>
           </button>
         </div>
       </section>
@@ -317,8 +337,8 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <Suspense v-else>
-        <LivePanel api-base="/api" @exit="showLive = false; restartReplay()" />
+      <Suspense v-else-if="liveEnabled">
+        <LivePanel :api-base="apiBase" @exit="showLive = false; restartReplay()" />
         <template #fallback><section class="lazy-panel-skeleton">正在加载实况模块…</section></template>
       </Suspense>
 
@@ -334,7 +354,7 @@ onUnmounted(() => {
       <footer>
         <div class="brand-lockup"><span class="brand-mark">J</span><span><b>聚路 GEO Lab</b><small>Prototype delivery · 2026</small></span></div>
         <p>真实数据：DeepSeek run {{ report.meta.run_id }} · 主回答 {{ report.answers.length }} · 主来源 {{ mainSourceCount }} · Fanout 来源 {{ fanoutSourceCount }}</p>
-        <a href="./full-report.html" target="_blank" rel="noopener">完整诊断报告 ↗</a>
+        <a :href="reportHref" target="_blank" rel="noopener">完整诊断报告 ↗</a>
       </footer>
     </template>
 

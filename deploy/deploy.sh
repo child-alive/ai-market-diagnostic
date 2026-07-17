@@ -16,7 +16,7 @@ if [[ ! "$PUBLIC_PORT" =~ ^[0-9]+$ ]] || (( PUBLIC_PORT < 1 || PUBLIC_PORT > 655
   exit 2
 fi
 if [[ ! -f "$ROOT_DIR/web/dist/index.html" ]]; then
-  echo "缺少 web/dist/index.html，请先在 web/ 运行 npm ci && npm run build"
+  echo "缺少 web/dist/index.html，请先在 web/ 运行 npm ci && npm run build:domestic"
   exit 2
 fi
 
