@@ -1107,3 +1107,20 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 
 ### 决策记录
 - 不增加 API Key：409 发生在 Provider 调用前，增加 Key 无法改变信号量状态，只会掩盖真正缺陷。
+
+---
+
+## 2026-07-17 session-16 (Codex，GitHub 公开交付)
+
+### 发布结果
+- [x] 本机安装并通过 GitHub 官方设备流程授权 GitHub CLI，当前发布账号为 `child-alive`。
+- [x] 创建公开仓库 `child-alive/ai-market-diagnostic`，默认分支为 `main`，并上传本地完整 Git 历史。
+- [x] 公网仓库地址：`https://github.com/child-alive/ai-market-diagnostic`。
+- [x] 首轮发布后核验：仓库可见性为 `PUBLIC`；本地与远端 `main` 均指向提交
+      `a259d722a798df085bebc439c3e9ab41fb7dfda9`；发布前工作树干净。
+
+### 安全边界
+- [x] 发布前已确认精确文件 `.env` 未被 Git 跟踪、完整历史中也未出现 `.env`；
+      常见 DeepSeek/OpenAI/Gemini 长密钥模式扫描无命中。
+- [x] 仅发布仓库内的提交历史，不上传服务器 `/opt/ai-market-diagnostic/.env`、
+      本机 SSH 私钥或 GitHub 登录凭据。
