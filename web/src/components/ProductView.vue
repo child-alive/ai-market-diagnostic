@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
 import type { Report } from '../types'
+import { useScrollReveal } from '../composables/useScrollReveal'
 
 const props = defineProps<{ report: Report; reportHref: string }>()
 
@@ -10,6 +11,8 @@ const isPlaying = ref(true)
 const replaySpeed = ref<1 | 2>(1)
 const replayRun = ref(0)
 let replayTimer: number | undefined
+
+useScrollReveal('.product-page')
 
 const mainSourceCount = computed(() => props.report.answers.reduce((sum, item) => sum + item.source_urls.length, 0))
 const groundedCount = computed(() => props.report.answers.filter((item) => item.search_grounded).length)
@@ -32,8 +35,8 @@ const assessmentItems = computed(() => [
   },
   {
     title: '是否能合理控制范围，并解释为什么先做这些',
-    answer: '先完成一条 DeepSeek 真实联网闭环，再用 Mock 保证任何评审环境都能复现；没有为了展示强行做登录或大规模爬虫。',
-    evidence: ['真实主样本 8 条回答，8/8 带 Web Search 来源。', 'Mock 一条命令可运行；多平台代码存在，但未通过官方额度的部分不冒充已验收。'],
+    answer: '先完成一条 DeepSeek 真实联网闭环，再用离线模式保证任何评审环境都能复现；没有为了展示强行做登录或大规模爬虫。',
+    evidence: ['真实主样本 8 条回答，8/8 带联网搜索来源。', '离线模式一条命令可运行；多平台代码存在，但未通过官方额度的部分不冒充已验收。'],
   },
   {
     title: '交付物是否清楚、可查看、可运行或可继续迭代',
@@ -43,18 +46,18 @@ const assessmentItems = computed(() => [
   {
     title: '代码结构、数据设计、错误处理和工程意识',
     answer: '工程目标是“真实链路能跑，外部服务失败也不会毁掉演示”。',
-    evidence: ['55 项回归测试；Pydantic 契约；SQLite 历史存档。', '密钥不进前端；实况限流、并发 1、超时终止；异常时保留稳定回放。'],
+    evidence: ['55 项自动测试；统一数据契约；历史运行可保存、可回查。', '密钥不进入页面；实况限流、并发 1、超时终止；异常时保留稳定回放。'],
   },
   {
     title: '是否有独立判断，指出需求中的不确定性、数据限制或平台限制',
     answer: '主动拆开容易制造漂亮数字的口径，并把未验证部分明确标出来。',
-    evidence: ['品牌词与无品牌词分层；Mention 不等于 Recommendation。', '有来源 URL 不等于逐句事实核验；单平台单轮样本不冒充 ChatGPT / Gemini 市场结论。'],
+    evidence: ['品牌词与无品牌词分层；“被提及”不等于“被推荐”。', '有来源链接不等于逐句事实核验；单平台单轮样本不冒充 ChatGPT / Gemini 市场结论。'],
   },
 ])
 
 const stages = computed(() => [
   { no: '01', label: '发现用户问题', result: `${props.report.questions.length} 个西语需求问题`, explanation: '先模拟当地用户会怎么问，再按购买阶段和商业价值筛选。', proof: '品牌词与无品牌词从问题层就分开。' },
-  { no: '02', label: '取得真实回答', result: `${groundedCount.value}/${props.report.answers.length} 条联网成功`, explanation: '调用 DeepSeek Web Search，保留回答原文与来源 URL。', proof: `${mainSourceCount.value} 个主回答来源可回查。` },
+  { no: '02', label: '取得真实回答', result: `${groundedCount.value}/${props.report.answers.length} 条联网成功`, explanation: '调用 DeepSeek 联网搜索，保留回答原文与来源链接。', proof: `${mainSourceCount.value} 个主回答来源可回查。` },
   { no: '03', label: '判断品牌表现', result: `无品牌词提及 ${percent(props.report.metrics.unbranded.visibility_rate)}`, explanation: '分别识别提及、推荐、顺位、竞品和来源，不把“认识品牌”误算成“主动推荐”。', proof: `品牌词可见度 ${percent(props.report.metrics.branded.visibility_rate)}，无品牌词推荐 ${percent(props.report.metrics.unbranded.recommendation_rate)}。` },
   { no: '04', label: '检查官网承接', result: `${props.report.site_audit.pages_checked} 页实抓`, explanation: '检查 AI 与搜索引擎是否能抓取、理解并找到目标市场内容。', proof: '本次抓取未发现 es-MX hreflang 与西语页面。' },
   { no: '05', label: '扩展问题分支', result: `${props.report.fanout_metrics.queries_checked} 个派生问法`, explanation: '把高价值问题换一种问法继续测，避免只靠单一 Prompt 得出结论。', proof: `分支提及覆盖 ${percent(props.report.fanout_metrics.mention_coverage)}，且品牌泄漏为 0。` },
@@ -63,6 +66,12 @@ const stages = computed(() => [
 ])
 
 const currentStage = computed(() => stages.value[activeStage.value])
+
+const recommendationTitles = ['补齐墨西哥官网的语言与抓取信号', '上线墨西哥本地购买渠道页', '围绕高价值问题建立西语内容集群']
+const recommendationCards = computed(() => props.report.recommendations.slice(0, 3).map((item, index) => ({
+  ...item,
+  displayTitle: recommendationTitles[index] ?? item.action,
+})))
 
 function percent(value: number | null | undefined): string {
   if (value === null || value === undefined) return '—'
@@ -112,7 +121,7 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
 
 <template>
   <div class="product-page">
-    <section id="top" class="product-hero">
+    <section id="top" class="product-hero hero-entrance">
       <div class="product-hero-copy">
         <span class="view-label">PRODUCT VIEW · 给 HR 与产品经理</span>
         <p class="product-definition">AI 海外市场诊断智能体：输入品牌与目标市场，找出 AI 推荐缺口、官网承接问题与行动优先级。</p>
@@ -122,7 +131,7 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
           <button class="primary-action" @click="restartAndFocus">▶ 从头播放诊断过程</button>
           <a class="secondary-action" :href="reportHref" target="_blank" rel="noopener">打开完整报告 ↗</a>
         </div>
-        <small class="sample-note">真实 DeepSeek 单平台单轮样本 · 无品牌词 {{ report.metrics.unbranded.questions_checked }} 题 + Fanout {{ report.fanout_metrics.queries_checked }} 题 · 观测值非市场定论</small>
+        <small class="sample-note">真实联网单平台样本 · 通用需求 {{ report.metrics.unbranded.questions_checked }} 题 + 派生问法 {{ report.fanout_metrics.queries_checked }} 题 · 观测值非市场定论</small>
       </div>
 
       <div class="outcome-board" aria-label="核心业务结论">
@@ -132,11 +141,11 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
       </div>
     </section>
 
-    <section class="assessment-section">
+    <section class="assessment-section" data-reveal>
       <header class="section-intro">
         <span>TEST BRIEF · 直接回应测试题</span>
         <h2>测试题明确会看这六件事，我们逐项回答。</h2>
-        <p>点击任意一项，在原地查看“我们怎么理解、做了什么、证据是什么”，不再把你送到一个难以对应的页面位置。</p>
+        <p>点击任意一项，在原地查看项目判断、实现方式与可核验证据。</p>
       </header>
       <div class="assessment-list">
         <details v-for="(item, index) in assessmentItems" :key="item.title" :open="index === 0">
@@ -149,7 +158,7 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
       </div>
     </section>
 
-    <section ref="journeySection" class="journey-section">
+    <section ref="journeySection" class="journey-section" data-reveal>
       <header class="section-intro">
         <span>HOW IT WORKS · 诊断过程</span>
         <h2>这个结论是怎么一步步得出的？</h2>
@@ -187,19 +196,19 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
       </article>
     </section>
 
-    <section class="recommendation-section">
+    <section class="recommendation-section" data-reveal>
       <header class="section-intro">
         <span>NEXT ACTION · 客户下一步</span>
         <h2>不是“多做内容”，而是按证据排出先后顺序。</h2>
       </header>
       <div class="recommendation-grid">
-        <article v-for="item in report.recommendations.slice(0, 3)" :key="item.action">
-          <span>{{ item.priority }} · 工作量 {{ item.effort }}</span><h3>{{ item.action }}</h3><p>{{ item.expected_impact }}</p>
+        <article v-for="item in recommendationCards" :key="item.action">
+          <span>{{ item.priority }} · 工作量 {{ item.effort }}</span><h3>{{ item.displayTitle }}</h3><p>{{ item.expected_impact }}</p>
         </article>
       </div>
     </section>
 
-    <section class="product-report-cta">
+    <section class="product-report-cta" data-reveal>
       <div><span>FULL EVIDENCE</span><h2>需要逐条问题、回答、来源和建议？</h2><p>完整报告保留真实回答原文、来源 URL、官网诊断和口径说明。</p></div>
       <a :href="reportHref" target="_blank" rel="noopener">打开完整诊断报告 ↗</a>
     </section>

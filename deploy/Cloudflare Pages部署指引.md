@@ -10,14 +10,8 @@ npm ci
 npm run build:intl
 ```
 
-产物是 `web/dist-intl/`。若国内动态版已经有公网地址，可在构建时回填国际版引导链接：
-
-```bash
-VITE_DOMESTIC_URL=https://<国内动态版域名或 IP:端口>/ npm run build:intl
-```
-
-它只用于页面右上角“线路说明”中的动态线路链接，不是密钥。未设置时页面会明确说明
-另一条公网线路尚未配置，不展示无效跳转。
+产物是 `web/dist-intl/`。国内动态版与国际静态版的公网地址统一写入 `SUBMISSION.md`，
+不在演示页面内展示部署状态或未完成事项。
 
 ## 2. 优先方案：控制台直接拖拽
 
@@ -61,7 +55,7 @@ npm run preview:intl -- --port 4174
 | Build output directory | `dist-intl` |
 | Node.js | 20 或更新 |
 
-在 Pages 项目的环境变量中设置可选的 `VITE_DOMESTIC_URL`，然后重新部署。
+该构建不需要前端环境变量或 API 密钥。
 
 ## 5. 上线后回填
 

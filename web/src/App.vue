@@ -12,8 +12,6 @@ const loadError = ref('')
 
 const liveEnabled = import.meta.env.VITE_ENABLE_LIVE === 'true'
 const apiBase = import.meta.env.VITE_API_BASE
-const domesticUrl = import.meta.env.VITE_DOMESTIC_URL
-const internationalUrl = import.meta.env.VITE_INTERNATIONAL_URL
 const reportHref = new URL(`${import.meta.env.BASE_URL}report/`, window.location.href).href
 
 function selectPerspective(value: Perspective): void {
@@ -66,39 +64,31 @@ onMounted(loadReport)
         </button>
       </nav>
 
-      <details class="line-status">
-        <summary><i :class="{ online: liveEnabled }"></i>{{ liveEnabled ? '动态演示环境' : '静态演示环境' }}</summary>
-        <div>
-          <b>线路说明</b>
-          <p>国内版与国际版使用同一套页面和同一份报告，不会按网络自动切换；区别只在是否连接实况 API。</p>
-          <a v-if="!liveEnabled && domesticUrl" :href="domesticUrl">打开动态演示线路 ↗</a>
-          <a v-else-if="liveEnabled && internationalUrl" :href="internationalUrl">打开国际静态线路 ↗</a>
-          <small v-else>另一条公网线路尚未回填，因此不展示无效链接。</small>
-        </div>
-      </details>
+      <a class="nav-report-link" :href="reportHref" target="_blank" rel="noopener">完整报告 ↗</a>
     </header>
 
     <section v-if="loadError" class="fatal-state">
       <span>DATA LOAD ERROR</span><h1>回放数据没有加载成功</h1><p>{{ loadError }}</p>
     </section>
 
-    <template v-else-if="report">
-      <ProductView
-        v-if="perspective === 'product'"
-        :report="report"
-        :report-href="reportHref"
-      />
-      <Suspense v-else>
-        <TechnicalView
+    <Transition v-else-if="report" name="view-swap" mode="out-in">
+      <div :key="perspective" class="view-frame">
+        <ProductView
+          v-if="perspective === 'product'"
           :report="report"
           :report-href="reportHref"
-          :live-enabled="liveEnabled"
-          :api-base="apiBase"
-          :domestic-url="domesticUrl"
         />
-        <template #fallback><section class="view-loader">正在加载技术评审视图…</section></template>
-      </Suspense>
-    </template>
+        <Suspense v-else>
+          <TechnicalView
+            :report="report"
+            :report-href="reportHref"
+            :live-enabled="liveEnabled"
+            :api-base="apiBase"
+          />
+          <template #fallback><section class="view-loader">正在加载技术评审视图…</section></template>
+        </Suspense>
+      </div>
+    </Transition>
 
     <section v-else class="app-skeleton" aria-label="诊断报告加载中" aria-busy="true">
       <div><i></i><i></i><i></i><i></i></div><aside><i></i><i></i><i></i></aside>

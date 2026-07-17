@@ -3,8 +3,6 @@
 interface ImportMetaEnv {
   readonly VITE_ENABLE_LIVE: string
   readonly VITE_API_BASE: string
-  readonly VITE_DOMESTIC_URL: string
-  readonly VITE_INTERNATIONAL_URL: string
 }
 
 interface ImportMeta {

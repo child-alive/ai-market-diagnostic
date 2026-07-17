@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref } from 'vue'
 import type { Report } from '../types'
+import { useScrollReveal } from '../composables/useScrollReveal'
 
 const props = defineProps<{
   report: Report
   reportHref: string
   liveEnabled: boolean
   apiBase: string
-  domesticUrl: string
 }>()
 
 const TechnicalPanel = defineAsyncComponent(() => import('./TechnicalPanel.vue'))
@@ -18,6 +18,8 @@ const LivePanel = buildLiveEnabled
   : null
 const activeStage = ref(0)
 const showLive = ref(false)
+
+useScrollReveal('.technical-page')
 
 const mainSourceCount = computed(() => props.report.answers.reduce((sum, item) => sum + item.source_urls.length, 0))
 const fanoutSourceCount = computed(() => props.report.fanout_answers.reduce((sum, item) => sum + item.source_urls.length, 0))
@@ -58,11 +60,11 @@ const stageCommand = computed(() => [
 
 <template>
   <div class="technical-page">
-    <section id="top" class="technical-hero">
+    <section id="top" class="technical-hero hero-entrance">
       <div>
         <span class="tech-kicker">TECHNICAL VIEW · 给技术评审</span>
         <h1>一条可复现、<br>可审计、可安全降级的诊断管道。</h1>
-        <p>这里不重复产品故事，只展示工程结构、数据边界、真实链路和失败时如何兜底。</p>
+        <p>从模块边界、数据契约、真实调用到失败降级，展示这条诊断链路如何可靠运行。</p>
         <div class="tech-actions"><a :href="reportHref" target="_blank" rel="noopener">检查完整报告 ↗</a><code>run_id={{ report.meta.run_id }}</code></div>
       </div>
       <div class="delivery-console">
@@ -78,7 +80,7 @@ const stageCommand = computed(() => [
       </div>
     </section>
 
-    <section class="architecture-section">
+    <section class="architecture-section" data-reveal>
       <header class="tech-section-head"><span>01 · SYSTEM DECOMPOSITION</span><h2>七个模块，一份统一数据契约。</h2><p>每个模块可单测、可替换；下游只读取模型字段，不依赖上游内部实现。</p></header>
       <div class="architecture-flow">
         <button v-for="(module, index) in modules" :key="module.no" :class="{ active: activeStage === index }" @click="activeStage = index">
@@ -87,8 +89,8 @@ const stageCommand = computed(() => [
       </div>
     </section>
 
-    <section class="trace-section">
-      <header class="tech-section-head"><span>02 · INSPECTABLE TRACE</span><h2>选择模块，查看命令、字段与原始数据。</h2><p>原始 JSON 默认不加载；只有技术评审主动展开时才请求对应组件。</p></header>
+    <section class="trace-section" data-reveal>
+      <header class="tech-section-head"><span>02 · INSPECTABLE TRACE</span><h2>选择模块，查看命令、字段与原始数据。</h2><p>沿同一个 run_id 回查每一步输入输出；原始 JSON 按需展开，避免信息过载。</p></header>
       <div class="trace-layout">
         <nav aria-label="技术模块">
           <button v-for="(module, index) in modules" :key="module.no" :class="{ active: activeStage === index }" @click="activeStage = index"><span>{{ module.no }}</span>{{ module.label }}</button>
@@ -100,7 +102,7 @@ const stageCommand = computed(() => [
       </div>
     </section>
 
-    <section class="engineering-section">
+    <section class="engineering-section" data-reveal>
       <header class="tech-section-head"><span>03 · RELIABILITY BOUNDARY</span><h2>外部服务失败，主交付仍然成立。</h2></header>
       <div class="engineering-grid">
         <article><b>DATA CONTRACT</b><h3>Pydantic 是唯一模块边界</h3><p>JSON 字段固定；报告、SQLite、网页都消费同一份 Report。</p></article>
@@ -110,12 +112,12 @@ const stageCommand = computed(() => [
       </div>
     </section>
 
-    <section class="environment-section">
-      <header class="tech-section-head"><span>04 · DEPLOYMENT & LIVE</span><h2>同一套前端，两种部署能力。</h2><p>页面不会按网络环境偷偷切换。国内和国际是两个明确 URL，内容相同，仅实况 API 能力不同。</p></header>
+    <section class="environment-section" data-reveal>
+      <header class="tech-section-head"><span>04 · CONTROLLED EXECUTION</span><h2>真实调用可演示，也不会绑架主交付。</h2><p>稳定回放保证任何环境都能复现；受控实况用于验证真实链路，并把密钥、额度和并发风险留在服务端。</p></header>
 
       <div v-if="!showLive" class="environment-grid">
-        <article :class="{ current: liveEnabled }"><span>动态演示线路</span><h3>回放 + 报告 + 实况 API</h3><p>部署在 ECS；API 同源 `/api`，Key 只在服务器。</p><button v-if="liveEnabled" @click="showLive = true">启动 3 题实况诊断</button><a v-else-if="domesticUrl" :href="domesticUrl">打开动态线路 ↗</a><small v-else>动态公网地址尚未配置，不展示无效跳转。</small></article>
-        <article :class="{ current: !liveEnabled }"><span>国际静态线路</span><h3>回放 + 报告，无 API</h3><p>部署在 Cloudflare Pages；不包含 Key，也不会请求 `/api`。</p><small>{{ liveEnabled ? '当前打开的是动态演示环境。' : '当前打开的是静态演示环境。' }}</small></article>
+        <article class="current"><span>EVIDENCE REPLAY</span><h3>稳定回放</h3><p>固化同一个真实 run 的问题、回答、来源与报告；默认零 API 消耗，结果可重复核验。</p><small>评审入口始终可用</small></article>
+        <article><span>CONTROLLED LIVE</span><h3>受控实况</h3><p>固定 3 个无品牌词，服务端持有密钥，并设置限流、并发 1 与超时终止。</p><button v-if="liveEnabled" @click="showLive = true">启动 3 题实况诊断</button><small v-else>实况能力按部署环境显式启用</small></article>
       </div>
 
       <Suspense v-else-if="liveEnabled && LivePanel">
@@ -124,7 +126,7 @@ const stageCommand = computed(() => [
       </Suspense>
     </section>
 
-    <section class="technical-handoff">
+    <section class="technical-handoff" data-reveal>
       <div><span>REPRODUCE</span><h2>三步复现，不要求评审者提供 Key。</h2></div>
       <pre>python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
