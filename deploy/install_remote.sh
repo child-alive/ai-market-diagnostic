@@ -20,8 +20,8 @@ apt-get update
 apt-get install -y python3 python3-venv nginx
 
 python3 -m venv "$APP_DIR/.venv"
-"$APP_DIR/.venv/bin/pip" install --upgrade pip
-"$APP_DIR/.venv/bin/pip" install -r "$APP_DIR/requirements.txt"
+"$APP_DIR/.venv/bin/python" -m pip install --upgrade pip
+"$APP_DIR/.venv/bin/python" -m pip install -r "$APP_DIR/requirements.txt"
 
 chown -R root:www-data "$APP_DIR"
 find "$APP_DIR" -type d -exec chmod 750 {} +

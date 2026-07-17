@@ -1027,6 +1027,8 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       从可执行文件改成了 `640`，导致 `www-data` 无法启动；业务代码未报错。
 - [x] 安装脚本现在会恢复 `.venv/bin` 普通文件的执行位，systemd 同时改用
       `python -m uvicorn` 启动，避免再依赖 console script 的执行位。
+- [x] 第二次部署验证发现旧 `.venv/bin/pip` 也可能已被收紧为 `640`；依赖安装
+      同步改用 `python -m pip`，使首次安装与重复部署都不依赖 console script 执行位。
 
 ### 决策记录
 - 保留服务进程以 `www-data` 运行和目录最小权限的安全设计；不通过改成 root 运行或
