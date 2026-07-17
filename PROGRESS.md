@@ -748,3 +748,29 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 - 按用户指令：收尾五项完成后暂停；演示网页视觉/交互调整等用户具体清单，不自行发挥
 
 **收尾五项全部完成 ✅（40 commits，工作树干净）**
+
+---
+
+## 2026-07-17 session-06 (Codex，网页冲刺：性能预算)
+
+### 性能预算与零外部依赖
+- [x] 冲刺前基线确认：55 passed；Mock 20/8/7/7；网页生产构建成功
+- [x] 移除 Google Fonts 阻塞请求，统一改用系统字体栈；Vue 首屏无外部 CDN/字体依赖
+- [x] 移除完整报告中的 ECharts CDN，以无依赖 CSS 条形图保留同一组 SOV 数据和无障碍描述
+- [x] 技术视角、实况模块、原始 JSON 查看器改为按需异步加载；首屏增加 CSS 骨架
+- [x] 构建后为 HTML/CSS/JS/JSON 生成 gzip 预压缩文件；Nginx 启用 `gzip_static`
+- [x] 生产构建预算：首屏主 JS 33.74KB gzip（预算 300KB）；首屏 5 请求（预算 15）
+- [x] Chrome Lighthouse 12.8.2 实测：DevTools 实际节流、4× CPU、150ms RTT、1600Kbps、
+      1440×900；增加首屏数据 preload 后连续两次 LCP 1871.325/1872.442ms（预算 2500ms），
+      CLS 0.0014、TBT 126.879ms、总传输约 90KiB
+- [x] 原始性能报告与口径保存至 `web/performance/`；`deploy/install_remote.sh` 语法通过；
+      页面 DOM 可读、控制台无已发现的运行时阻断
+
+### 决策记录
+- 使用项目内纯 Node 构建后脚本生成 `.gz`，不新增运行时或开发依赖；原因是当前 TypeScript
+  配置未引入 Node 类型，为预压缩额外扩展依赖树不划算。
+- 完整报告的 SOV 图是固定示例产物，仅需呈现 8 个确定值；改用 CSS 图表比整包加载 ECharts
+  更符合性能预算，数值、排序和可访问语义保持不变。
+
+### 下一步
+- 网页冲刺第二批：国内/国际双构建、`/report` 路由、Cloudflare Pages 指引与提交入口双 URL。

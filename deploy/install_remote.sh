@@ -73,6 +73,11 @@ server {
     index index.html;
     charset utf-8;
     client_max_body_size 64k;
+    gzip on;
+    gzip_static on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript application/json image/svg+xml;
 
     add_header X-Content-Type-Options nosniff always;
     add_header Referrer-Policy strict-origin-when-cross-origin always;
