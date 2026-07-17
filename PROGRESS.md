@@ -1094,6 +1094,9 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       该字段不包含 Key、IP 或请求内容。
 - [x] 远端安装脚本改为 `enable` 后每次明确 `restart ai-market-diagnostic`；首次部署和
       重复部署都会加载当前代码，不再出现前端新、后端旧的混合版本。
+- [x] 公网强制断开验收：请求前 `live_busy=false`，发起 3 题流并在 0.2 秒强制断开，
+      第一次轮询即回到 `live_busy=false`，服务器 `worker_cleanup=ok`；随后重启服务清空
+      本轮演示计次，健康状态仍为 replay/live 可用。
 - [x] 当前 `58 passed`、Mock `20 / 8 / 7 / 7`、Vue typecheck 与国内/国际双构建全部通过。
 
 ### 候选人与现场入口
