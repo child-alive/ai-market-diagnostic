@@ -734,3 +734,7 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       并附"非品牌被引用比例"定义：报告指标卡+跨平台表头、网页两处、方案说明 §1/§2.3/§3.1、
       README 术语行+FAQ、SUBMISSION 边界表。JSON 字段名 citation_rate 不动（契约）。
       重渲染 37b442ec（report.json 字节不变）、重建 web/dist 并验证同步；55 passed；mock 20/8/7/7
+- [x] 收尾-2 头版"单轮样本"角标：执行摘要卡 + 指标区标题加统一角标
+      "单平台单轮采样 · 无品牌词 N 题 (+ Fanout 分支 M 题) · 观测值非定论"，题数随数据自适应
+      （37b442ec 显示 5+6，mock 显示 7）；网页 hero scope-note 同步统一措辞并带题数。
+      重渲染 37b442ec、重建 dist 并验证同步；55 passed

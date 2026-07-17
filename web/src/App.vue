@@ -227,7 +227,7 @@ onUnmounted(() => {
             </button>
             <a class="text-button" href="./full-report.html" target="_blank" rel="noopener">打开完整报告 ↗</a>
           </div>
-          <p class="scope-note">单平台 · 单轮小样本 · 不等同于 ChatGPT / Gemini 市场表现</p>
+          <p class="scope-note">单平台单轮采样（无品牌词 {{ report.metrics.unbranded.questions_checked }} 题 + 分支 {{ report.fanout_metrics.queries_checked }} 题）· 观测值非定论 · 不等同于 ChatGPT / Gemini 市场表现</p>
         </div>
 
         <div class="signal-board" aria-label="核心诊断指标">

@@ -274,6 +274,7 @@
       {% else %}
       <p><strong>RUN {{ r.meta.run_id }}</strong> 的 {{ um.questions_checked }} 个高价值无品牌词问题中，得力被提及 {{ (um.visibility_rate * um.questions_checked)|round|int }} 次：<strong>Mention Rate / Visibility {{ "%.0f%%"|format(um.visibility_rate*100) }}</strong>{% if um.recommendation_rate is not none %}，其中 Recommendation Rate 为 {{ "%.0f%%"|format(um.recommendation_rate*100) }}{% endif %}，SOV {{ "%.1f%%"|format(um.sov*100) }}。提及与推荐已分开，只表示本次单轮 Prompt Set。</p>
       {% endif %}
+      <p style="margin-top:12px"><span class="badge">单平台单轮采样 · 无品牌词 {{ um.questions_checked }} 题{% if r.fanout_metrics and r.fanout_metrics.queries_checked %} + Fanout 分支 {{ r.fanout_metrics.queries_checked }} 题{% endif %} · 观测值非定论</span></p>
     </article>
     <article class="summary-card">
       <h2>优先判断 <small>Lecturas clave</small></h2>
@@ -287,7 +288,7 @@
 
   <section id="metrics">
     <div class="section-head">
-      <div><p class="section-kicker">01 · Performance</p><h2>AI 可见度指标 <small>Métricas de visibilidad</small></h2></div>
+      <div><p class="section-kicker">01 · Performance</p><h2>AI 可见度指标 <small>Métricas de visibilidad</small> <span class="badge">单平台单轮采样 · 观测值非定论</span></h2></div>
       <p class="section-note">头部竞争力指标只统计无品牌词；Mention 不等于 Recommendation，品牌词另作认知与情感诊断。平均排名越低越好。</p>
     </div>
     <div class="metrics">
