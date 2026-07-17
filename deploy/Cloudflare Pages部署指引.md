@@ -57,11 +57,12 @@ npm run preview:intl -- --port 4174
 
 该构建不需要前端环境变量或 API 密钥。
 
-## 5. 上线后回填
+## 5. 当前线上项目与更新
 
-Cloudflare Pages 首次部署会分配 `*.pages.dev` 地址。将它填入 `SUBMISSION.md` 的“国际静态版”行；
-再将 ECS/Nginx 地址填入“国内动态版”行。若绑定自定义域名，在 Pages 的 Custom domains 中
-添加域名并按提示设置 DNS 即可。
+当前国际静态版固定地址为 `https://ai-market-diagnostic.pages.dev/`，已写入 `SUBMISSION.md`。
+后续更新进入同一个 Pages 项目，选择 **Create a new deployment**，重新上传最新的
+`web/dist-intl/` 并发布；不要新建同名项目。若绑定自定义域名，在 Pages 的 Custom domains
+中添加域名并按提示设置 DNS 即可。
 
 两个版本都支持：
 

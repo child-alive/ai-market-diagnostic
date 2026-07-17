@@ -2,6 +2,8 @@
 
 面向出海品牌的 GEO（生成式引擎优化）诊断原型。输入品牌与目标市场，输出问题地图、AI 可见度、竞品话语权、官网可引用性、内容缺口与优先行动建议。
 
+**在线入口：** [国内动态演示](http://101.201.79.59:8080/) · [国际静态演示](https://ai-market-diagnostic.pages.dev/) · [评审导览](SUBMISSION.md)
+
 演示用例为 **得力 Deli × 墨西哥 × 西班牙语**。核心指标与聚路国际产品语言对齐：Mention Rate / Visibility、Recommendation Rate、Share of Voice、Average Position、Citation Rate（来源覆盖率）、Sentiment、Source Mix；问题按品牌词 / 地区排名词 / 品类排名词与 TOFU / MOFU / BOFU 分类。
 
 ## 三步运行
@@ -136,7 +138,7 @@ cp .env.example .env
 .venv/bin/python -m pytest -q
 ```
 
-当前测试集共 55 个用例，覆盖启发式回答解析、提及/推荐区分、来源质量分层、品牌词/无品牌词独立指标、重复采样聚合、Query Fanout 派生约束/品牌泄漏防护/Coverage、品牌/竞品顺位、引用与情感识别、三平台搜索响应解析与 URL/文本区间传递、多平台调度、页面证据预审、AI 爬虫/llms.txt/原始 HTML 可读性、跨平台报告渲染、SQLite 报告往返、实况固定 Prompt Set / 流事件 / 缺 Key fail-closed / 限流，以及已有真实链路回归场景。所有 OpenAI/Gemini Provider 测试和 Demo Worker 测试均使用本地伪响应，不消耗 API 额度。
+当前测试集共 63 个用例，覆盖启发式回答解析、提及/推荐区分、来源质量分层、品牌词/无品牌词独立指标、重复采样聚合、Query Fanout 派生约束/品牌泄漏防护/Coverage、品牌/竞品顺位、引用与情感识别、三平台搜索响应解析与 URL/文本区间传递、多平台调度、页面证据预审、AI 爬虫/llms.txt/原始 HTML 可读性、跨平台报告渲染、SQLite 报告往返、实况固定 Prompt Set / 流事件 / 缺 Key fail-closed / 限流 / 断开释放，以及 LiveLease 幽灵租约、死 PID、活 PID、最大生命周期和健康接口自愈场景。所有 OpenAI/Gemini Provider 测试和 Demo Worker 测试均使用本地伪响应，不消耗 API 额度。
 
 ## 项目文档
 

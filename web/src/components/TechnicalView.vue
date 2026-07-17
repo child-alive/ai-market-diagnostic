@@ -71,7 +71,7 @@ const stageCommand = computed(() => [
       <div class="delivery-console">
         <header><i></i><i></i><i></i><span>delivery.status</span></header>
         <dl>
-          <div><dt>tests</dt><dd>58 passed</dd></div>
+          <div><dt>tests</dt><dd>63 passed</dd></div>
           <div><dt>grounded</dt><dd>{{ report.answers.filter(item => item.search_grounded).length }}/{{ report.answers.length }}</dd></div>
           <div><dt>main_sources</dt><dd>{{ mainSourceCount }}</dd></div>
           <div><dt>site_pages</dt><dd>{{ report.site_audit.pages_checked }}</dd></div>
