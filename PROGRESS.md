@@ -1174,3 +1174,19 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 - [x] `tests/test_demo.py`：12 passed；全量测试从 58 增至 **63 passed**。
 - [x] Mock 基线保持 `20 问题 / 8 回答 / 7 缺口 / 7 建议`。
 - [x] 本任务只补 session-17 指定测试，不改 `LiveLease` 修复实现；下一步重新部署并做公网真实浏览器场景链。
+
+---
+
+## 2026-07-17 session-19 (Codex，LiveLease 修复重新部署)
+
+### 部署结果
+- [x] 常规 `deploy.sh` 在 SSH 密钥交换阶段被服务器主动断开；云助手确认 `sshd -t` 通过、
+      `ssh.service=active`、22 端口正常监听，且服务器历史上接受过当前 RSA 指纹，故不是项目代码或密钥不匹配。
+- [x] 由于公网 SSH 持续受扫描/网络出口影响，改用阿里云云助手从公开 GitHub `main` 拉取最新代码；
+      同步时继续排除 `.env`、虚拟环境、SQLite 与生成报告，不读取、不输出、不覆盖服务器密钥和运行数据。
+- [x] 远端安装脚本完成依赖确认、systemd restart、Nginx 配置校验与 reload；服务器本机
+      `/api/health` 返回 `replay_available=true`、`live_available=true`、`live_busy=false`。
+
+### 决策记录
+- 本次偏离常规 SSH 部署的原因是传输通道不可用，不改变部署产物或安全边界；云助手只作为一次性带外发布通道。
+- 公网真实浏览器完整场景链仍是下一道闸门；服务器本机健康通过不等于公网实况已经验收。
