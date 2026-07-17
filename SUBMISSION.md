@@ -24,7 +24,7 @@
 
 4. **可选：双受众演示网页**
    
-   在线 URL：`待用户按 deploy/部署手册.md 部署 ECS 后回填`。无需 Node.js 的本地预览：`.venv/bin/uvicorn src.demo_api:app --host 127.0.0.1 --port 8765`，然后访问 `http://127.0.0.1:8765/`。默认回放零额度；实况必须显式点击。当前的 `report.html` 仍是独立完整的提交主件。
+   在线 URL：`待用户按 deploy/部署手册.md 部署 ECS 后回填`。<!-- TODO(提交前处理): 部署完成后将本行替换为 http://IP:端口；如最终决定不部署，删除整个第 4 步 -->。无需 Node.js 的本地预览：`.venv/bin/uvicorn src.demo_api:app --host 127.0.0.1 --port 8765`，然后访问 `http://127.0.0.1:8765/`。默认回放零额度；实况必须显式点击。当前的 `report.html` 仍是独立完整的提交主件。
 
 ## 1. 完成了什么
 

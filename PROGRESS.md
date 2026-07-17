@@ -743,3 +743,8 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       新增 `location = /report` 302 直达 full-report.html；`.env` 收紧为 root:root 600
       （systemd 以 root 读 EnvironmentFile 后降权，服务进程无需读权限），部署手册同步；
       rsync 继续排除 .env；新增 deploy/上线前检查单.md（安全组/防火墙/自启/限流验证/外网自测五段）
+- [x] 收尾-5 SUBMISSION.md 在线演示占位行保留，加 HTML 注释提醒标记：部署后回填 IP:端口，
+      最终不部署则删除整个第 4 步（注释不影响 Markdown 渲染，评审者不可见）
+- 按用户指令：收尾五项完成后暂停；演示网页视觉/交互调整等用户具体清单，不自行发挥
+
+**收尾五项全部完成 ✅（40 commits，工作树干净）**
