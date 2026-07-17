@@ -2,7 +2,9 @@
 import { onUnmounted, ref } from 'vue'
 import type { LiveEvent } from '../types'
 
-const props = defineProps<{ apiBase: string }>()
+const props = withDefaults(defineProps<{ apiBase: string; audience?: 'product' | 'technical' }>(), {
+  audience: 'technical',
+})
 const emit = defineEmits<{ exit: [] }>()
 
 const status = ref<'idle' | 'running' | 'done' | 'error'>('idle')
@@ -89,26 +91,27 @@ onUnmounted(() => controller?.abort())
 </script>
 
 <template>
-  <section class="live-lab">
+  <section :class="['live-lab', `is-${audience}`]">
     <div class="live-copy">
-      <span class="section-index">LIVE LAB · EXPLICIT OPT-IN</span>
-      <h2>用 3 个无品牌词，现场跑一次 DeepSeek Web Search。</h2>
-      <p>服务端固定 Prompt Set，不允许输入品牌词；Key 不进入浏览器。每 IP 每小时 2 次，全局同时只跑 1 个任务，超时或额度异常会提示返回回放。</p>
+      <span class="section-index">{{ audience === 'product' ? '3 QUESTIONS · REAL WEB SEARCH' : 'LIVE LAB · EXPLICIT OPT-IN' }}</span>
+      <h2>{{ audience === 'product' ? '让 3 个真实问题依次经过联网搜索。' : '用 3 个无品牌词，现场跑一次 DeepSeek Web Search。' }}</h2>
+      <p v-if="audience === 'product'">每个问题都会显示 AI 回答、是否提及 Deli，以及找到多少个公开来源。一次体验大约需要 1–3 分钟。</p>
+      <p v-else>服务端固定 Prompt Set，不允许输入品牌词；Key 不进入浏览器。每 IP 每小时 2 次，全局同时只跑 1 个任务，超时或额度异常会提示返回回放。</p>
       <div class="guardrails">
-        <span>3 questions</span><span>2 runs / IP / hour</span><span>concurrency 1</span><span>server-side key</span>
+        <span>{{ audience === 'product' ? '3 个问题' : '3 questions' }}</span><span>{{ audience === 'product' ? '每小时 2 次' : '2 runs / IP / hour' }}</span><span>{{ audience === 'product' ? '一次只运行 1 项' : 'concurrency 1' }}</span><span>{{ audience === 'product' ? '密钥不进入页面' : 'server-side key' }}</span>
       </div>
       <div class="live-actions">
-        <button v-if="status !== 'running'" class="primary-button" @click="runLive">开始实况诊断</button>
+        <button v-if="status !== 'running'" class="primary-button" @click="runLive">{{ audience === 'product' ? '开始现场诊断' : '开始实况诊断' }}</button>
         <button v-else class="danger-button" @click="stopLive">停止本次诊断</button>
-        <button class="text-button" @click="emit('exit')">返回稳定回放</button>
+        <button v-if="audience === 'technical'" class="text-button" @click="emit('exit')">返回稳定回放</button>
       </div>
-      <p class="scope-note">实况回答采用本地启发式提取，避免额外分析调用；结果不回写提交报告。</p>
+      <p class="scope-note">{{ audience === 'product' ? '这是一次独立体验，不会改变页面中的正式诊断报告。' : '实况回答采用本地启发式提取，避免额外分析调用；结果不回写提交报告。' }}</p>
     </div>
     <div class="live-terminal" aria-live="polite">
       <header><span><i></i><i></i><i></i></span><b>live-diagnostic.stream</b><small>{{ status }}</small></header>
       <div class="terminal-body">
         <div v-if="status === 'idle'" class="terminal-empty">
-          <span>READY</span><p>等待技术评审显式启动。<br>默认回放不会调用任何 API。</p>
+          <span>READY</span><p>{{ audience === 'product' ? '点击“开始现场诊断”后，结果会逐题出现在这里。' : '等待技术评审显式启动。默认回放不会调用任何 API。' }}</p>
         </div>
         <template v-for="(event, index) in events" :key="index">
           <div v-if="event.type === 'started'" class="terminal-line system"><span>00</span><p>{{ event.message }}</p></div>
@@ -126,4 +129,3 @@ onUnmounted(() => controller?.abort())
     </div>
   </section>
 </template>
-

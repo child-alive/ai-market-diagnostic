@@ -959,3 +959,56 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 2. 分别用产品经理和技术评审身份复述首屏与前两部分，看是否无需项目背景即可理解；
 3. 检查滚动渐显在慢设备和 reduced-motion 下是否始终保证内容可见；
 4. 不需要调用真实 API。
+
+---
+
+## 2026-07-17 session-12 (Codex，上线前交互、实况与常驻收口)
+
+### 折叠动画与居中布局
+- [x] 六项考察从原生 `details` 改为 Vue 单项展开状态；用 CSS Grid `0fr → 1fr` 实现未知高度
+      内容的平滑展开/收起，同时保留 `aria-expanded` 与键盘可操作按钮。
+- [x] 展开项的加号旋转、边框、阴影和正文位移同步过渡；浏览器实测切换中旧内容高度降到 2px、
+      新内容升到 196px，结束后 DOM 只保留一个展开内容。
+- [x] 产品页主要章节统一为 1200px 居中阅读容器；1920px 实测六项列表左右留白均为 360px、
+      中心偏差 0；390px 下列表宽 346px且页面无横向溢出。
+- [x] 七步流程、工具栏、步骤详情、建议卡和报告 CTA 同步居中，修复超宽屏内容偏左。
+
+### 产品视角实况
+- [x] 产品视角新增“现场跑一次，看 AI 会不会主动想到 Deli”模块，复用同一个 LivePanel 与 SSE
+      端点，但把 Prompt、并发等术语改成 3 个问题、预计时长、提及状态和来源数量。
+- [x] 产品和技术视角均可显式启动 3 题实况；国际静态构建仍在编译期排除 LivePanel，不出现
+      无法工作的按钮。
+- [x] 本机 8766 已从 Vite 静态预览切换为 FastAPI 同源服务；`/api/health` 返回
+      `replay_available=true`、`live_available=true`，证明当前 DeepSeek + Web Search 配置可用。
+- [x] 未点击真实实况按钮，避免在最终交付前额外消耗 3 次联网调用；按钮、端点、健康状态、
+      限流与 SSE 代码均已验收。
+
+### 上线常驻与文档审计
+- [x] systemd 从 `Restart=on-failure` 收紧为 `Restart=always`；安装脚本对应用和 Nginx 都执行
+      `enable --now`，保证关闭 SSH、进程退出或服务器重启后自动恢复。
+- [x] 部署手册和检查单补充 `systemctl is-enabled` / `Restart=always` 验收；修正陈旧的
+      `/full-report.html` 跳转、`question_count` 请求字段与 ECharts CDN 排错说明。
+- [x] README 修正为产品/技术均有实况入口，并同步报告已使用无 CDN 的 CSS 图表。
+- [x] 当前本机 8766 由 PID 26284 的 Uvicorn 服务提供页面与 API；它用于本轮人工核验。
+      真正交付后的常驻能力以服务器 systemd + Nginx 为准。
+
+### 最终闸门
+- [x] typecheck、国内/国际 build、55 passed、Mock 20 / 8 / 7 / 7、部署脚本语法、
+      `git diff --check`、报告路由、安全响应头和密钥特征扫描全部通过。
+- [x] 国际静态构建无 LivePanel chunk；国内构建主 JS 37.57KB gzip、CSS 6.87KB gzip。
+- [x] 最终生产压缩口径 Lighthouse：LCP 1771.941ms、TBT 37.625ms、CLS 0、6 请求、约 99KiB；
+      FastAPI 无 gzip 对照为 2529.284ms / 345KiB，生产由 Nginx `gzip_static` 提供静态文件。
+
+### 决策记录
+- 产品经理可以使用实况，但不能输入任意品牌或 Prompt；继续使用固定 3 题是为了控制额度、
+  防止 Prompt 注入，并让不同评审的体验可比较。
+- 产品与技术共享同一实况实现，差异只在解释语言；避免维护两套端点或两套测量口径。
+- 本机手动 Uvicorn 只用于核验，不冒充生产常驻。生产常驻必须由 systemd 守护、Nginx 对外，
+  并在服务器端单独配置 `.env`。
+
+### 下一步（部署）
+1. 用户在阿里云安全组放行 8080（或选定端口），不放行 8000；
+2. 本机执行 `./deploy/deploy.sh ubuntu@<公网 IP> 8080`；
+3. 只在服务器创建 `/opt/ai-market-diagnostic/.env`，随后重启服务；
+4. 按 `deploy/上线前检查单.md` 验证健康页、开机自启、报告和可选实况；
+5. 将公网 URL 回填 `SUBMISSION.md` 后做最终提交冻结。

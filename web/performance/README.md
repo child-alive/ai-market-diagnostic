@@ -42,4 +42,20 @@
 
 本轮机器报告：`lighthouse-clean-presentation.report.json/.html`。
 
+## 上线前最终复测（折叠动画 + 产品实况入口）
+
+2026-07-17 加入居中的 1200px 阅读容器、自动高度折叠动画和产品视角实况模块后，分别检查了
+两种本地服务口径：
+
+| 服务口径 | LCP | TBT | CLS | 请求 | 传输 |
+|---|---:|---:|---:|---:|---:|
+| FastAPI 直接托管静态文件（无 gzip） | 2529.284ms | 66.315ms | 0 | 6 | 约 345KiB |
+| Vite 压缩预览（对应生产 Nginx `gzip_static`） | 1771.941ms | 37.625ms | 0 | 6 | 约 99KiB |
+
+生产部署由 Nginx 直接提供 `web/dist` 并启用已生成的 `.gz` 文件，所以以上线验收口径
+1771.941ms 为准；FastAPI 在生产只接收 `/api/`，不会承担静态资源传输。
+
+机器报告：`lighthouse-predeploy-final.report.json/.html`（无压缩对照）与
+`lighthouse-predeploy-compressed.report.json/.html`（生产压缩口径）。
+
 说明：性能批次的连续两次同口径 LCP 为 1871.325ms、1872.442ms；完成全部视觉与叙事增量后复测为 1971.537ms，仍有约 528ms 预算余量。公网服务器延迟、缓存和代理配置仍会影响线上结果；部署后应按同一口径再跑一次。Nginx 已启用 `gzip_static`，构建会为 HTML/CSS/JS/JSON 生成 `.gz` 文件。

@@ -77,6 +77,8 @@ onMounted(loadReport)
           v-if="perspective === 'product'"
           :report="report"
           :report-href="reportHref"
+          :live-enabled="liveEnabled"
+          :api-base="apiBase"
         />
         <Suspense v-else>
           <TechnicalView

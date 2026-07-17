@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onUnmounted, ref, watch } from 'vue'
 import type { Report } from '../types'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
-const props = defineProps<{ report: Report; reportHref: string }>()
+const props = defineProps<{
+  report: Report
+  reportHref: string
+  liveEnabled: boolean
+  apiBase: string
+}>()
+
+const buildLiveEnabled = import.meta.env.VITE_ENABLE_LIVE === 'true'
+const ProductLivePanel = buildLiveEnabled
+  ? defineAsyncComponent(() => import('./LivePanel.vue'))
+  : null
 
 const journeySection = ref<HTMLElement | null>(null)
 const activeStage = ref(0)
 const isPlaying = ref(true)
 const replaySpeed = ref<1 | 2>(1)
 const replayRun = ref(0)
+const activeAssessment = ref<number | null>(0)
 let replayTimer: number | undefined
 
 useScrollReveal('.product-page')
@@ -115,6 +126,10 @@ function skipToConclusion(): void {
   replayRun.value += 1
 }
 
+function toggleAssessment(index: number): void {
+  activeAssessment.value = activeAssessment.value === index ? null : index
+}
+
 watch([isPlaying, replaySpeed], startReplayTimer, { immediate: true })
 onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
 </script>
@@ -148,13 +163,21 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
         <p>点击任意一项，在原地查看项目判断、实现方式与可核验证据。</p>
       </header>
       <div class="assessment-list">
-        <details v-for="(item, index) in assessmentItems" :key="item.title" :open="index === 0">
-          <summary><b>{{ String(index + 1).padStart(2, '0') }}</b><span>{{ item.title }}</span><i>＋</i></summary>
-          <div class="assessment-answer">
-            <h3>本项目的回答</h3><p>{{ item.answer }}</p>
-            <h3>可核验的证据</h3><ul><li v-for="proof in item.evidence" :key="proof">{{ proof }}</li></ul>
-          </div>
-        </details>
+        <article v-for="(item, index) in assessmentItems" :key="item.title" :class="{ open: activeAssessment === index }">
+          <button class="assessment-summary" :aria-expanded="activeAssessment === index" @click="toggleAssessment(index)">
+            <b>{{ String(index + 1).padStart(2, '0') }}</b><span>{{ item.title }}</span><i>＋</i>
+          </button>
+          <Transition name="accordion">
+            <div v-if="activeAssessment === index" class="assessment-collapse">
+              <div>
+                <div class="assessment-answer">
+                  <h3>本项目的回答</h3><p>{{ item.answer }}</p>
+                  <h3>可核验的证据</h3><ul><li v-for="proof in item.evidence" :key="proof">{{ proof }}</li></ul>
+                </div>
+              </div>
+            </div>
+          </Transition>
+        </article>
       </div>
     </section>
 
@@ -194,6 +217,18 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
         <section><p>{{ currentStage.label }}</p><h3>{{ currentStage.result }}</h3><strong>{{ currentStage.explanation }}</strong></section>
         <aside><small>为什么可信</small><p>{{ currentStage.proof }}</p></aside>
       </article>
+    </section>
+
+    <section v-if="liveEnabled && ProductLivePanel" class="product-live-section" data-reveal>
+      <header class="section-intro">
+        <span>LIVE TRYOUT · 现场体验</span>
+        <h2>现场跑一次，看 AI 会不会主动想到 Deli。</h2>
+        <p>点击开始后，3 个真实的墨西哥用户问题会依次经过联网搜索，并即时显示回答与来源情况。</p>
+      </header>
+      <Suspense>
+        <component :is="ProductLivePanel" audience="product" :api-base="apiBase" />
+        <template #fallback><div class="product-live-loader">正在加载现场诊断模块…</div></template>
+      </Suspense>
     </section>
 
     <section class="recommendation-section" data-reveal>

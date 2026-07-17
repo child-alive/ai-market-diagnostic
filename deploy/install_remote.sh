@@ -49,7 +49,7 @@ Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=DEMO_TRUST_PROXY=true
 EnvironmentFile=-$APP_DIR/.env
 ExecStart=$APP_DIR/.venv/bin/uvicorn src.demo_api:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
-Restart=on-failure
+Restart=always
 RestartSec=5
 TimeoutStopSec=10
 KillMode=mixed
@@ -122,6 +122,7 @@ fi
 systemctl daemon-reload
 systemctl enable --now "$SERVICE_NAME"
 nginx -t
+systemctl enable --now nginx
 systemctl reload nginx
 
 if command -v ufw >/dev/null 2>&1 && ufw status | grep -q '^Status: active'; then
