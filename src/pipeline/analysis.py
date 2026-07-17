@@ -5,7 +5,10 @@
   仍失败则降级到启发式抽取并标记 parse_degraded=True；
 - mock：直接走启发式抽取（词典 + 正则），确定性、可单测、离线可跑。
 
-指标命名对齐聚路国际数据检测平台：Visibility / SOV / Avg Position / Citation Rate / Sentiment。
+指标命名对齐聚路国际数据检测平台，且全部按 branded / unbranded 分层独立聚合：
+Mention Rate (Visibility) / Recommendation Rate / SOV / Avg Position /
+Citation Rate (来源覆盖率，回答附带搜索来源的占比) / Sentiment / Source Mix。
+顶层旧字段保留全样本口径仅为向后兼容，头版结论只使用 unbranded 切片。
 """
 from __future__ import annotations
 

@@ -738,3 +738,4 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       "单平台单轮采样 · 无品牌词 N 题 (+ Fanout 分支 M 题) · 观测值非定论"，题数随数据自适应
       （37b442ec 显示 5+6，mock 显示 7）；网页 hero scope-note 同步统一措辞并带题数。
       重渲染 37b442ec、重建 dist 并验证同步；55 passed
+- [x] 收尾-3 更新 analysis.py 模块注释为分层后口径（旧注释仍是分层前五指标说法）
