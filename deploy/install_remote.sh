@@ -26,6 +26,8 @@ python3 -m venv "$APP_DIR/.venv"
 chown -R root:www-data "$APP_DIR"
 find "$APP_DIR" -type d -exec chmod 750 {} +
 find "$APP_DIR" -type f -exec chmod 640 {} +
+# 上一条会统一移除普通文件的执行位；虚拟环境中的控制台命令需要恢复执行权限。
+find "$APP_DIR/.venv/bin" -maxdepth 1 -type f -exec chmod 750 {} +
 chmod 750 "$APP_DIR/deploy/deploy.sh" "$APP_DIR/deploy/install_remote.sh"
 if [[ -f "$APP_DIR/.env" ]]; then
   # systemd 以 root 读取 EnvironmentFile，600 root:root 即可，www-data 无需读权限
@@ -48,7 +50,7 @@ Environment=PYTHONUNBUFFERED=1
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=DEMO_TRUST_PROXY=true
 EnvironmentFile=-$APP_DIR/.env
-ExecStart=$APP_DIR/.venv/bin/uvicorn src.demo_api:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
+ExecStart=$APP_DIR/.venv/bin/python -m uvicorn src.demo_api:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
 Restart=always
 RestartSec=5
 TimeoutStopSec=10

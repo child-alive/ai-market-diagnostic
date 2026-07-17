@@ -1012,3 +1012,22 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 3. 只在服务器创建 `/opt/ai-market-diagnostic/.env`，随后重启服务；
 4. 按 `deploy/上线前检查单.md` 验证健康页、开机自启、报告和可选实况；
 5. 将公网 URL 回填 `SUBMISSION.md` 后做最终提交冻结。
+
+---
+
+## 2026-07-17 session-13 (Codex，ECS 首次部署)
+
+### 部署进度
+- [x] 阿里云 ECS 密钥对绑定完成，本机 SSH 实测可以 `root` 登录 Ubuntu 22.04。
+- [x] 安全组仅新增入方 TCP 8080；FastAPI 8000 仍只监听 loopback。
+- [x] 首次同步、Nginx 安装与 systemd 单元创建完成；Nginx 已在 8080 监听。
+
+### 部署缺陷与修正
+- [x] 首次健康检查发现 systemd `203/EXEC`：权限收紧逻辑将 `.venv/bin/uvicorn`
+      从可执行文件改成了 `640`，导致 `www-data` 无法启动；业务代码未报错。
+- [x] 安装脚本现在会恢复 `.venv/bin` 普通文件的执行位，systemd 同时改用
+      `python -m uvicorn` 启动，避免再依赖 console script 的执行位。
+
+### 决策记录
+- 保留服务进程以 `www-data` 运行和目录最小权限的安全设计；不通过改成 root 运行或
+  放宽整个项目目录权限来规避问题。
