@@ -8,7 +8,7 @@ import asyncio
 import httpx
 
 from src.config import Settings
-from src.demo_api import SlidingWindowLimiter, create_app
+from src.demo_api import SlidingWindowLimiter, _readline_until_disconnect, create_app
 from src.demo_worker import run_worker, select_live_questions
 from src.providers.mock import MockProvider
 
@@ -97,3 +97,28 @@ def test_sliding_window_limiter_allows_two_runs_per_hour() -> None:
         )
 
     assert asyncio.run(scenario()) == (True, True, False, True)
+
+
+def test_live_stream_detects_browser_disconnect_without_waiting_for_worker() -> None:
+    class NeverReadyStream:
+        async def readline(self) -> bytes:
+            await asyncio.Event().wait()
+            return b""
+
+    class DisconnectedRequest:
+        async def is_disconnected(self) -> bool:
+            return True
+
+    async def scenario() -> bool:
+        try:
+            await _readline_until_disconnect(
+                NeverReadyStream(),  # type: ignore[arg-type]
+                DisconnectedRequest(),  # type: ignore[arg-type]
+                asyncio.get_running_loop().time() + 1,
+                poll_seconds=0.01,
+            )
+        except asyncio.CancelledError:
+            return True
+        return False
+
+    assert asyncio.run(scenario()) is True

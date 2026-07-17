@@ -7,7 +7,7 @@ const props = withDefaults(defineProps<{ apiBase: string; audience?: 'product' |
 })
 const emit = defineEmits<{ exit: [] }>()
 
-const status = ref<'idle' | 'running' | 'done' | 'error'>('idle')
+const status = ref<'idle' | 'running' | 'stopping' | 'done' | 'error'>('idle')
 const message = ref('')
 const events = ref<LiveEvent[]>([])
 let controller: AbortController | undefined
@@ -75,7 +75,10 @@ async function runLive(): Promise<void> {
     if (status.value === 'running') status.value = 'done'
   } catch (error) {
     if (controller.signal.aborted) {
-      message.value = '本次实况已停止。回放数据不受影响。'
+      status.value = 'stopping'
+      message.value = '正在安全停止服务器任务…'
+      await new Promise((resolve) => window.setTimeout(resolve, 900))
+      message.value = '本次实况已停止，现在可以重新开始。回放数据不受影响。'
     } else {
       message.value = `${error instanceof Error ? error.message : '实况服务不可用'}。已保留回放模式，你仍可完整查看真实样本。`
     }
@@ -84,6 +87,8 @@ async function runLive(): Promise<void> {
 }
 
 function stopLive(): void {
+  status.value = 'stopping'
+  message.value = '正在安全停止服务器任务…'
   controller?.abort()
 }
 
@@ -101,13 +106,14 @@ onUnmounted(() => controller?.abort())
         <span>{{ audience === 'product' ? '3 个问题' : '3 questions' }}</span><span>{{ audience === 'product' ? '每小时 2 次' : '2 runs / IP / hour' }}</span><span>{{ audience === 'product' ? '一次只运行 1 项' : 'concurrency 1' }}</span><span>{{ audience === 'product' ? '密钥不进入页面' : 'server-side key' }}</span>
       </div>
       <div class="live-actions">
-        <button v-if="status !== 'running'" class="primary-button" @click="runLive">{{ audience === 'product' ? '开始现场诊断' : '开始实况诊断' }}</button>
-        <button v-else class="danger-button" @click="stopLive">停止本次诊断</button>
+        <button v-if="status !== 'running' && status !== 'stopping'" class="primary-button" @click="runLive">{{ audience === 'product' ? '开始现场诊断' : '开始实况诊断' }}</button>
+        <button v-else-if="status === 'running'" class="danger-button" @click="stopLive">停止本次诊断</button>
+        <button v-else class="danger-button" disabled>正在停止…</button>
         <button v-if="audience === 'technical'" class="text-button" @click="emit('exit')">返回稳定回放</button>
       </div>
       <p class="scope-note">{{ audience === 'product' ? '这是一次独立体验，不会改变页面中的正式诊断报告。' : '实况回答采用本地启发式提取，避免额外分析调用；结果不回写提交报告。' }}</p>
     </div>
-    <div class="live-terminal" aria-live="polite">
+    <div :class="['live-terminal', `status-${status}`]" aria-live="polite">
       <header><span><i></i><i></i><i></i></span><b>live-diagnostic.stream</b><small>{{ status }}</small></header>
       <div class="terminal-body">
         <div v-if="status === 'idle'" class="terminal-empty">

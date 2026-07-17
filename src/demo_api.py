@@ -11,6 +11,7 @@ import os
 import sys
 import time
 from collections import defaultdict, deque
+from contextlib import suppress
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -82,6 +83,34 @@ async def _terminate(process: asyncio.subprocess.Process) -> None:
 def _sse(event: dict) -> bytes:
     payload = json.dumps(event, ensure_ascii=False, separators=(",", ":"))
     return f"data: {payload}\n\n".encode()
+
+
+async def _readline_until_disconnect(
+    stream: asyncio.StreamReader,
+    request: Request,
+    deadline: float,
+    *,
+    poll_seconds: float = 0.5,
+) -> bytes:
+    """等待子进程输出时同时监测浏览器断开，避免停止后长时间占用全局锁。"""
+    read_task = asyncio.create_task(stream.readline())
+    try:
+        while True:
+            remaining = deadline - asyncio.get_running_loop().time()
+            if remaining <= 0:
+                raise asyncio.TimeoutError
+            done, _ = await asyncio.wait(
+                {read_task}, timeout=min(poll_seconds, remaining)
+            )
+            if read_task in done:
+                return read_task.result()
+            if await request.is_disconnected():
+                raise asyncio.CancelledError
+    finally:
+        if not read_task.done():
+            read_task.cancel()
+            with suppress(asyncio.CancelledError):
+                await read_task
 
 
 def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -> FastAPI:
@@ -162,7 +191,9 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
                     remaining = deadline - asyncio.get_running_loop().time()
                     if remaining <= 0:
                         raise asyncio.TimeoutError
-                    line = await asyncio.wait_for(process.stdout.readline(), timeout=remaining)
+                    line = await _readline_until_disconnect(
+                        process.stdout, request, deadline
+                    )
                     if not line:
                         break
                     try:

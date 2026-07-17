@@ -138,6 +138,7 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
   <div class="product-page">
     <section id="top" class="product-hero hero-entrance">
       <div class="product-hero-copy">
+        <span class="candidate-byline">刘畅 · AI 研发工程师候选作品</span>
         <span class="view-label">PRODUCT VIEW · 给 HR 与产品经理</span>
         <p class="product-definition">AI 海外市场诊断智能体：输入品牌与目标市场，找出 AI 推荐缺口、官网承接问题与行动优先级。</p>
         <h1>AI 认识 Deli，<br><em>但不会主动推荐它。</em></h1>
@@ -219,7 +220,7 @@ onUnmounted(() => replayTimer && window.clearInterval(replayTimer))
       </article>
     </section>
 
-    <section v-if="liveEnabled && ProductLivePanel" class="product-live-section" data-reveal>
+    <section id="live-demo" v-if="liveEnabled && ProductLivePanel" class="product-live-section" data-reveal>
       <header class="section-intro">
         <span>LIVE TRYOUT · 现场体验</span>
         <h2>现场跑一次，看 AI 会不会主动想到 Deli。</h2>
