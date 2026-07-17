@@ -833,3 +833,20 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 
 ### 下一步
 - 最终 QA、网页冲刺完成报告、全量回归与提交前移交。
+
+---
+
+## 2026-07-17 session-09 (Codex，网页冲刺最终 QA 与移交)
+
+### 最终闸门
+- [x] 输出 `deploy/网页冲刺完成报告.md`：改动、前后体积、双线路产物、验收与遗留事项齐全
+- [x] 国内 / 国际 `build:all` 通过；`dist/`、`dist-intl/`、两端 `/report/`、404 与 gzip 产物完整
+- [x] 55 passed；Mock 基线 20/8/7/7；部署脚本语法与 Git diff 空白检查通过
+- [x] 国内/国际桌面控制台零 error/zero warning；国际版无 LivePanel chunk、主资源无 `/api`
+- [x] 最终性能：LCP 1971.537ms、JS 36.37KB gzip、5 请求，全部在预算内
+- [x] QA 图：桌面 hero、六项评审证据、390px 手机首屏均已入库
+
+### 移交状态
+- 网页冲刺代码任务完成；部署仍由用户执行，待两个公网 URL 后回填 `SUBMISSION.md`
+- 真人 10/20 秒复述待用户外部执行；机器代理检查不冒充真人结果
+- Fable5 可从 commits `8b934d5` → `d4c39ef` → `60c4683` 及本节继续独立审核，无需猜测中间状态
