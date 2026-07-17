@@ -1158,3 +1158,19 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
    保回放与报告主线，先行单独汇报。带雷交付不可接受；
 5. 继续终审指令第二~五部分（一致性修正/GitHub 门面/压缩终审/裁决），指令原文见用户消息，
    其中"测试数 58"在补看门狗测试后会变，注意第 5 条同步要求。
+
+---
+
+## 2026-07-17 session-18 (Codex，LiveLease 看门狗测试补齐)
+
+### 自动化覆盖
+- [x] 新增幽灵租约单测：租约超过 orphan grace 仍未挂载 worker 时，`reconcile()` 释放租约并返回原因。
+- [x] 新增死 PID 单测：worker PID 已不存在时释放租约；新增活 PID 对照，确认正常 worker 不被误杀。
+- [x] 新增最大生命周期单测：即使 PID 仍存活，超过 hard lifetime 也强制释放，避免永久占用。
+- [x] 新增端点级自愈测试：预置泄漏租约后，只调用一次 `/api/health` 即从 `live_busy=true`
+      恢复为 `false`，同时确认应用内租约状态已释放。
+
+### 回归结果
+- [x] `tests/test_demo.py`：12 passed；全量测试从 58 增至 **63 passed**。
+- [x] Mock 基线保持 `20 问题 / 8 回答 / 7 缺口 / 7 建议`。
+- [x] 本任务只补 session-17 指定测试，不改 `LiveLease` 修复实现；下一步重新部署并做公网真实浏览器场景链。

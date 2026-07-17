@@ -8,8 +8,14 @@ import asyncio
 import httpx
 from starlette.requests import Request
 
+from src import demo_api
 from src.config import Settings
-from src.demo_api import SlidingWindowLimiter, _readline_until_disconnect, create_app
+from src.demo_api import (
+    LiveLease,
+    SlidingWindowLimiter,
+    _readline_until_disconnect,
+    create_app,
+)
 from src.demo_worker import run_worker, select_live_questions
 from src.providers.mock import MockProvider
 
@@ -99,6 +105,85 @@ def test_sliding_window_limiter_allows_two_runs_per_hour() -> None:
         )
 
     assert asyncio.run(scenario()) == (True, True, False, True)
+
+
+def test_live_lease_reconciles_orphan_after_grace_period() -> None:
+    lease = LiveLease(max_lifetime_seconds=60, orphan_grace_seconds=5)
+    token = lease.try_acquire()
+
+    assert token is not None
+    reason = lease.reconcile(now=lease._acquired_at + 6)
+
+    assert reason is not None
+    assert "未挂载 worker" in reason
+    assert lease.locked() is False
+
+
+def test_live_lease_reconciles_dead_worker_pid(monkeypatch) -> None:
+    lease = LiveLease(max_lifetime_seconds=60, orphan_grace_seconds=5)
+    token = lease.try_acquire()
+    assert token is not None
+    lease.attach_worker(token, 424242)
+    monkeypatch.setattr(demo_api, "_pid_alive", lambda _pid: False)
+
+    reason = lease.reconcile(now=lease._acquired_at + 6)
+
+    assert reason is not None
+    assert "424242" in reason
+    assert "已不存在" in reason
+    assert lease.locked() is False
+
+
+def test_live_lease_keeps_live_worker(monkeypatch) -> None:
+    lease = LiveLease(max_lifetime_seconds=60, orphan_grace_seconds=5)
+    token = lease.try_acquire()
+    assert token is not None
+    lease.attach_worker(token, 424242)
+    monkeypatch.setattr(demo_api, "_pid_alive", lambda _pid: True)
+
+    reason = lease.reconcile(now=lease._acquired_at + 6)
+
+    assert reason is None
+    assert lease.locked() is True
+    lease.release(token)
+
+
+def test_live_lease_releases_after_max_lifetime(monkeypatch) -> None:
+    lease = LiveLease(max_lifetime_seconds=10, orphan_grace_seconds=5)
+    token = lease.try_acquire()
+    assert token is not None
+    lease.attach_worker(token, 424242)
+    monkeypatch.setattr(demo_api, "_pid_alive", lambda _pid: True)
+
+    reason = lease.reconcile(now=lease._acquired_at + 11)
+
+    assert reason is not None
+    assert "超过最大生命周期" in reason
+    assert lease.locked() is False
+
+
+def test_health_reconciles_leaked_lease_in_one_request() -> None:
+    async def scenario() -> tuple[bool, httpx.Response, bool]:
+        app = create_app(live_enabled=True, mount_static=False)
+        lease = app.state.live_lease
+        token = lease.try_acquire()
+        assert token is not None
+        lease._acquired_at -= lease.orphan_grace_seconds + 1
+        busy_before = lease.locked()
+
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as client:
+            health = await client.get("/api/health")
+        return busy_before, health, lease.locked()
+
+    busy_before, health, busy_after = asyncio.run(scenario())
+
+    assert busy_before is True
+    assert health.status_code == 200
+    assert health.json()["live_busy"] is False
+    assert busy_after is False
 
 
 def test_live_stream_detects_browser_disconnect_without_waiting_for_worker() -> None:
