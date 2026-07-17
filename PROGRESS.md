@@ -1036,3 +1036,14 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 ### 决策记录
 - 保留服务进程以 `www-data` 运行和目录最小权限的安全设计；不通过改成 root 运行或
   放宽整个项目目录权限来规避问题。
+
+### 公网验收
+- [x] 正式演示地址：`http://101.201.79.59:8080/`；首页 200、`/report` 302 到 `/report/`、
+      报告 200、`/api/health` 200。
+- [x] 健康状态为 `replay_available=true` 与 `live_available=true`；本轮未调用真实诊断端点，
+      因此未消耗演示限流次数。
+- [x] 安全与常驻验收：`.env` 公网请求返回 403，服务器文件为 `root:root 600`；
+      FastAPI 仅监听 `127.0.0.1:8000`，Nginx 监听 `0.0.0.0:8080`；两个服务均
+      `active + enabled`，应用 `Restart=always`。
+- [x] `SUBMISSION.md` 已回填公网地址，删除未发布的双线路占位和提交前 TODO，
+      并将回归测试数同步为 56。
