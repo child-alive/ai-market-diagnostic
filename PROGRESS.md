@@ -1124,3 +1124,37 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       常见 DeepSeek/OpenAI/Gemini 长密钥模式扫描无命中。
 - [x] 仅发布仓库内的提交历史，不上传服务器 `/opt/ai-market-diagnostic/.env`、
       本机 SSH 私钥或 GitHub 登录凭据。
+
+---
+
+## 2026-07-17 session-17 (Claude Fable5，幽灵锁双保险修复——中断交接)
+
+### 取证结论（先取证后修复 ✅）
+- 本机 SSH 无授权（publickey 拒绝，Codex 应为密码交互登录），改用公开只读接口取证：
+  2026-07-17 实测 `http://101.201.79.59:8080/api/health` 返回 **`live_busy: true`**，
+  结合用户提供的"服务器无 demo_worker 进程"证据 → **幽灵锁此刻就在公网现场，session-15 修复未穷尽**。
+- 根因定位（代码层）：旧实现 `await asyncio.wait_for(semaphore.acquire(), timeout=0.05)` 存在
+  Python 3.10 已知取消竞态（bpo-42130/gh-86296）——客户端恰在 acquire 成功同瞬断开、外层任务被取消时，
+  wait_for 丢失已获取的信号量，lease_acquired 保持 False，finally 不释放 → 永久卡死。
+  这解释了"修了两轮仍复发"。
+
+### 修复（已完成代码，未部署未实测）
+- [x] 新增 `LiveLease` 类替换 asyncio.Semaphore（src/demo_api.py）：
+  - `try_acquire()/release(token)` 全同步、单事件循环内原子，无任何 await → 取消竞态根除（保险一）；
+  - `reconcile()` 看门狗对账：租约忙碌但 worker 未挂载/进程已死(os.kill(pid,0))/超过最大生命周期
+    (timeout+30s，孤儿宽限 15s，均可 env 覆盖) → 强制释放并返回原因（保险二）；
+  - 对账挂在 /api/health 与实况入口 409 判断前——任何一次访问触发自愈，日志前缀 `[watchdog]`；
+  - `app.state.live_semaphore` 别名保留 `.locked()`，旧测试无需改。
+- [x] 58 passed / mock 20-8-7-7 未回退（本 commit 时点）
+
+### 交接给 Codex 的剩余任务（按序）
+1. **补看门狗自动化测试**（本修复唯一缺口）：LiveLease 单元测试（幽灵租约超宽限自愈/死 PID 自愈/
+   活 PID 不误杀/超最大生命周期强制释放）+ 端点级测试（泄漏租约后 /api/health 一次调用即 live_busy=false）；
+2. **重新部署**（用户跑 `bash deploy/deploy.sh root@101.201.79.59 8080`，install 脚本已含 restart）；
+3. **公网真实浏览器实测完整场景链**：启动→主动暂停→刷新→立即再启动→完整跑完→第三次触发 429 正确响应；
+   每步之间用 /api/health 验证 live_busy 回落；混合操作 10 次零卡死（受每 IP 2 次/时限流约束时，
+   409/429 的正确响应本身计入"正确行为"，或临时调大 DEMO_RATE_LIMIT_PER_HOUR 验证后恢复）；
+4. **时间盒**：一个工作时段内达不到零卡死 → 立即降级（隐藏实况入口或标"实验功能"移出主动线），
+   保回放与报告主线，先行单独汇报。带雷交付不可接受；
+5. 继续终审指令第二~五部分（一致性修正/GitHub 门面/压缩终审/裁决），指令原文见用户消息，
+   其中"测试数 58"在补看门狗测试后会变，注意第 5 条同步要求。

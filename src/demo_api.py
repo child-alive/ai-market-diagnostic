@@ -58,6 +58,85 @@ class SlidingWindowLimiter:
             return True
 
 
+def _pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+class LiveLease:
+    """全局并发 1 的实况租约（替代 asyncio.Semaphore）。
+
+    获取/释放均为同步操作（单事件循环内原子），从根上消除
+    `wait_for(semaphore.acquire())` 在客户端断开瞬间的取消竞态
+    （Python 3.10 wait_for 可能丢失已获取的信号量，导致永久泄漏）。
+
+    reconcile() 是看门狗对账：租约声称忙碌，但对应 worker 进程不存在、
+    从未挂载、或超过最大生命周期时，强制释放并返回原因供调用方记录日志。
+    它挂在健康接口与实况入口上——任何一次访问都会触发对账，
+    因此即使出现未知的断开姿势，系统也会在有限时间内自愈，不会永久卡死。
+    """
+
+    def __init__(self, max_lifetime_seconds: float, orphan_grace_seconds: float = 15.0):
+        self.max_lifetime_seconds = max_lifetime_seconds
+        self.orphan_grace_seconds = orphan_grace_seconds
+        self._held = False
+        self._token = 0
+        self._acquired_at = 0.0
+        self._worker_pid: int | None = None
+
+    def locked(self) -> bool:
+        return self._held
+
+    def try_acquire(self) -> int | None:
+        """空闲时占用租约并返回持有 token；忙碌时返回 None。"""
+        if self._held:
+            return None
+        self._token += 1
+        self._held = True
+        self._acquired_at = time.monotonic()
+        self._worker_pid = None
+        return self._token
+
+    def attach_worker(self, token: int, pid: int) -> None:
+        if self._held and token == self._token:
+            self._worker_pid = pid
+
+    def release(self, token: int) -> None:
+        if self._held and token == self._token:
+            self._held = False
+            self._worker_pid = None
+
+    def reconcile(self, now: float | None = None) -> str | None:
+        """看门狗对账；强制释放时返回原因，无需处理时返回 None。"""
+        if not self._held:
+            return None
+        age = (time.monotonic() if now is None else now) - self._acquired_at
+        reason: str | None = None
+        if age > self.max_lifetime_seconds:
+            reason = (
+                f"租约超过最大生命周期 {self.max_lifetime_seconds:.0f}s"
+                f"（已持有 {age:.0f}s）"
+            )
+        elif age > self.orphan_grace_seconds and self._worker_pid is None:
+            reason = f"租约持有 {age:.0f}s 仍未挂载 worker 进程"
+        elif (
+            age > self.orphan_grace_seconds
+            and self._worker_pid is not None
+            and not _pid_alive(self._worker_pid)
+        ):
+            reason = f"worker 进程 {self._worker_pid} 已不存在（租约已持有 {age:.0f}s）"
+        if reason is None:
+            return None
+        self._held = False
+        self._worker_pid = None
+        return reason
+
+
 def _client_ip(request: Request) -> str:
     trust_proxy = os.getenv("DEMO_TRUST_PROXY", "false").lower() in {
         "1", "true", "yes", "on"
@@ -121,9 +200,19 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
         redoc_url=None,
     )
     limiter = SlidingWindowLimiter(_positive_int("DEMO_RATE_LIMIT_PER_HOUR", 2))
-    semaphore = asyncio.Semaphore(1)
-    app.state.live_semaphore = semaphore
     timeout_seconds = _positive_int("DEMO_LIVE_TIMEOUT_SECONDS", 180)
+    lease = LiveLease(
+        max_lifetime_seconds=timeout_seconds
+        + _positive_int("DEMO_LEASE_EXTRA_LIFETIME_SECONDS", 30),
+        orphan_grace_seconds=float(_positive_int("DEMO_LEASE_ORPHAN_GRACE_SECONDS", 15)),
+    )
+    app.state.live_lease = lease
+    app.state.live_semaphore = lease  # 向后兼容旧测试/调用方的 .locked() 探测
+
+    def _reconcile_lease() -> None:
+        reason = lease.reconcile()
+        if reason:
+            print(f"[watchdog] 强制释放实况租约: {reason}", flush=True)
 
     def is_live_enabled() -> bool:
         if live_enabled is not None:
@@ -141,11 +230,12 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
 
     @app.get("/api/health")
     async def health() -> dict:
+        _reconcile_lease()
         return {
             "status": "ok",
             "replay_available": (WEB_DIST_DIR / "demo-report.json").exists(),
             "live_available": is_live_enabled(),
-            "live_busy": semaphore.locked(),
+            "live_busy": lease.locked(),
             "live_question_range": [3, 5],
         }
 
@@ -157,9 +247,11 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
                 detail="实况服务未配置 DeepSeek Web Search；请使用不耗额度的回放模式",
             )
 
-        # 这里只做无状态的快速判断；真正占用信号量必须在
-        # event_stream 内完成，否则客户端在流开始前断开会永久泄漏锁。
-        if semaphore.locked():
+        # 这里只做无状态的快速判断；真正占用租约必须在
+        # event_stream 内完成，否则客户端在流开始前断开会泄漏锁。
+        # 判断前先对账：幽灵租约（无 worker/超时）在此被强制回收。
+        _reconcile_lease()
+        if lease.locked():
             raise HTTPException(
                 status_code=409,
                 detail="已有一项实况诊断正在运行，请稍后重试或使用回放模式",
@@ -174,20 +266,18 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
 
         async def event_stream():  # type: ignore[no-untyped-def]
             process: asyncio.subprocess.Process | None = None
-            lease_acquired = False
             terminal_event_seen = False
             deadline = asyncio.get_running_loop().time() + timeout_seconds
+            # 同步获取租约：单事件循环内原子完成，不经过任何 await，
+            # 客户端在任意瞬间断开都不可能让"已获取"状态丢失。
+            token = lease.try_acquire()
+            if token is None:
+                yield _sse({
+                    "type": "error",
+                    "message": "已有一项实况诊断正在运行，请稍后重试",
+                })
+                return
             try:
-                try:
-                    await asyncio.wait_for(semaphore.acquire(), timeout=0.05)
-                    lease_acquired = True
-                except asyncio.TimeoutError:
-                    yield _sse({
-                        "type": "error",
-                        "message": "已有一项实况诊断正在运行，请稍后重试",
-                    })
-                    return
-
                 process = await asyncio.create_subprocess_exec(
                     sys.executable,
                     "-m",
@@ -198,6 +288,7 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.DEVNULL,
                 )
+                lease.attach_worker(token, process.pid)
                 assert process.stdout is not None
                 while True:
                     remaining = deadline - asyncio.get_running_loop().time()
@@ -240,8 +331,7 @@ def create_app(*, live_enabled: bool | None = None, mount_static: bool = True) -
             finally:
                 if process is not None:
                     await _terminate(process)
-                if lease_acquired:
-                    semaphore.release()
+                lease.release(token)
 
         return StreamingResponse(
             event_stream(),
