@@ -28,8 +28,9 @@ find "$APP_DIR" -type d -exec chmod 750 {} +
 find "$APP_DIR" -type f -exec chmod 640 {} +
 chmod 750 "$APP_DIR/deploy/deploy.sh" "$APP_DIR/deploy/install_remote.sh"
 if [[ -f "$APP_DIR/.env" ]]; then
-  chown root:www-data "$APP_DIR/.env"
-  chmod 640 "$APP_DIR/.env"
+  # systemd 以 root 读取 EnvironmentFile，600 root:root 即可，www-data 无需读权限
+  chown root:root "$APP_DIR/.env"
+  chmod 600 "$APP_DIR/.env"
 fi
 
 cat > "/etc/systemd/system/$SERVICE_NAME.service" <<EOF
@@ -88,6 +89,10 @@ server {
         proxy_cache off;
         proxy_read_timeout 190s;
         add_header X-Accel-Buffering no;
+    }
+
+    location = /report {
+        return 302 /full-report.html;
     }
 
     location / {

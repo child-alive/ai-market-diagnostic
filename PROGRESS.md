@@ -739,3 +739,7 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
       （37b442ec 显示 5+6，mock 显示 7）；网页 hero scope-note 同步统一措辞并带题数。
       重渲染 37b442ec、重建 dist 并验证同步；55 passed
 - [x] 收尾-3 更新 analysis.py 模块注释为分层后口径（旧注释仍是分层前五指标说法）
+- [x] 收尾-4 部署方案定稿：核对 Nginx 单端口三路由——根路径 Vue dist ✓、/api 反代 FastAPI(SSE 配置) ✓、
+      新增 `location = /report` 302 直达 full-report.html；`.env` 收紧为 root:root 600
+      （systemd 以 root 读 EnvironmentFile 后降权，服务进程无需读权限），部署手册同步；
+      rsync 继续排除 .env；新增 deploy/上线前检查单.md（安全组/防火墙/自启/限流验证/外网自测五段）
