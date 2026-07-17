@@ -295,7 +295,7 @@
       <article class="metric primary"><div class="label">Recommendation Rate<br>无品牌词推荐率</div><div class="num">{% if um.recommendation_rate is not none %}{{ "%.0f%%"|format(um.recommendation_rate*100) }}{% else %}—{% endif %}</div><div class="sub">明确建议或进入推荐列表{% if um.recommendation_rate is none %} · 历史未评估{% endif %}</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Unbranded SOV<br>无品牌词话语权</div><div class="num">{{ "%.1f%%"|format(um.sov*100) }}</div><div class="sub">无品牌词中的品牌提及占比</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Unbranded Avg Position<br>无品牌词平均排名</div><div class="num">{{ um.avg_position if um.avg_position is not none else "—" }}</div><div class="sub">主动被提及时的顺位</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
-      <article class="metric"><div class="label">Unbranded Citation<br>{{ "联网引用率" if grounded_count else "声明引用率" }}</div><div class="num">{{ "%.0f%%"|format(um.citation_rate*100) }}</div><div class="sub">{% if grounded_count %}无品牌词且含搜索来源 URL{% else %}回答声明域名的占比 · 未核验{% endif %}</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
+      <article class="metric"><div class="label">来源覆盖率 Source Coverage<br>(Citation Rate)</div><div class="num">{{ "%.0f%%"|format(um.citation_rate*100) }}</div><div class="sub">{% if grounded_count %}带搜索来源 URL 的回答占比 · 非“品牌被引用”比例{% else %}回答声明域名的占比 · 未核验 · 非“品牌被引用”比例{% endif %}</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
       <article class="metric"><div class="label">Branded Sentiment<br>品牌词情感</div><div class="num">{{ bm.sentiment_summary.get("pos",0) }}·{{ bm.sentiment_summary.get("neu",0) }}·{{ bm.sentiment_summary.get("neg",0) }}</div><div class="sub">正面 · 中性 · 负面</div>{% if mock_count %}<span class="badge mock mini-badge">MOCK DERIVED</span>{% endif %}</article>
     </div>
 
@@ -371,7 +371,7 @@
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>平台</th><th>模型</th><th>回答</th><th>联网回答</th><th>Mention Rate</th><th>Recommendation Rate</th><th>Unbranded SOV</th><th>无品牌词平均排名</th><th>无品牌词引用率</th><th>证据预审</th></tr></thead>
+        <thead><tr><th>平台</th><th>模型</th><th>回答</th><th>联网回答</th><th>Mention Rate</th><th>Recommendation Rate</th><th>Unbranded SOV</th><th>无品牌词平均排名</th><th>无品牌词来源覆盖率</th><th>证据预审</th></tr></thead>
         <tbody>
           {% for p in r.platform_results %}
           {% set p_grounded = p.answers|selectattr("search_grounded")|list|length %}

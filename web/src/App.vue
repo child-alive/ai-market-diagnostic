@@ -242,7 +242,7 @@ onUnmounted(() => {
           <div class="signal-grid">
             <article><span>品牌词认知</span><strong>{{ percent(report.metrics.branded.visibility_rate) }}</strong><small>AI 认识品牌</small></article>
             <article><span>无品牌词推荐</span><strong>{{ percent(report.metrics.unbranded.recommendation_rate) }}</strong><small>未进入推荐集</small></article>
-            <article><span>联网引用率</span><strong>{{ percent(report.metrics.unbranded.citation_rate) }}</strong><small>{{ mainSourceCount }} 个主来源</small></article>
+            <article><span>来源覆盖率</span><strong>{{ percent(report.metrics.unbranded.citation_rate) }}</strong><small>带搜索来源的回答占比 · {{ mainSourceCount }} 个主来源</small></article>
             <article><span>官网承接</span><strong>0</strong><small>无品牌词官方来源</small></article>
           </div>
           <div class="board-foot"><span>OBSERVATION, NOT A FORECAST</span><span>{{ new Date(report.meta.generated_at).toLocaleDateString('zh-CN') }}</span></div>
@@ -334,7 +334,7 @@ onUnmounted(() => {
               <div class="mini-metrics">
                 <span>推荐率 <b>{{ percent(report.metrics.unbranded.recommendation_rate) }}</b></span>
                 <span>SOV <b>{{ percent(report.metrics.unbranded.sov) }}</b></span>
-                <span>引用率 <b>{{ percent(report.metrics.unbranded.citation_rate) }}</b></span>
+                <span>来源覆盖率 <b>{{ percent(report.metrics.unbranded.citation_rate) }}</b></span>
               </div>
               <p class="output-insight">若把两类问题混算，整体 37.5% 会制造品牌已经有竞争力的错觉。</p>
             </template>

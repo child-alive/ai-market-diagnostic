@@ -57,7 +57,7 @@
 | **Mock 演示** | `--mock` 使用本地 fixtures，问题、回答、官网结果和派生指标均在数据与报告中明显标注；用于链路验收，不代表市场表现 |
 | **OpenAI** | Provider 代码和本地伪响应测试已通过；官方最小真实请求因 API 账户无 credits 返回 `429 insufficient_quota`，**不声称联网真实验收通过** |
 | **Gemini** | Key 有效且普通文本生成可用；Google Search Grounding 返回 `429 RESOURCE_EXHAUSTED`，**不声称联网真实验收通过** |
-| **来源验证** | Citation Rate 只表示平台 API 返回了搜索来源。可选证据预审只做词面覆盖，所有结果仍需人工复核，不是事实核查 |
+| **来源验证** | Citation Rate（报告中显示为“来源覆盖率”）只表示平台 API 返回了搜索来源，不是“品牌被引用的比例”。可选证据预审只做词面覆盖，所有结果仍需人工复核，不是事实核查 |
 | **重复采样演示** | `repeat_sampling.json` 保存 q05/q07/q08 各 3 轮真实 DeepSeek Web Search，9/9 联网成功；三轮 Mention / Recommendation Rate 均在 0%~33.3% 波动。它证明噪声存在，但不是置信区间 |
 | **双受众网页** | 回放数据完整来自 `37b442ec`；2026-07-17 浏览器实况验收固定 q05/q07/q06，3/3 Web Search 成功，来源数分别 3/7/10，Deli 均未提及。该实况不回写主报告，也不混入主指标 |
 | **采样结论** | 主报告仍是单轮、8 问演示规模；不与 ChatGPT/Gemini 客户端分布等同，也不直接用于客户商业决策 |

@@ -713,3 +713,24 @@ Stage 0~3 全部完成；Stage 4 已完成 DeepSeek V4 原生联网、OpenAI/Gem
 - 用户自行核验报告与网页观感；
 - 如需公网展示，等待用户提供 ECS 信息并授权部署后回填 `SUBMISSION.md` URL；
 - OpenAI/Gemini 官方联网只在额度/权限恢复后做单题冒烟，成功前不跑全量。
+
+---
+
+## 2026-07-17 session-05 (Claude Fable5，独立复核 + 最终收尾)
+
+### 独立复核结论（复核 Codex session-03/04 全部 8 个 commit）
+- [x] 总裁决：**可提交**。P0/P1 发现 0 项；P2 三项（引用率语义易误读、analysis.py 旧注释、
+      URL 占位决定），已转化为下方用户批准的收尾任务
+- [x] 独立复跑安全审计：`.env` 全历史 0 commit；三类密钥特征（带边界规则）全历史 0 命中
+- [x] 零额度基线：55 passed；mock 20/8/7/7；`--run-id 37b442ec` 重渲染成功；部署脚本语法通过；
+      `web/dist` 回放数据与 `data/示例产物` 字节一致
+- [x] 数字一致性：22/8、3 branded + 5 unbranded、Unbranded 0%、Branded 100%/66.7%/1.0、
+      70+66 来源、Fanout 2 父/6 分支 0 泄漏、15 页实抓——在 JSON/README/方案说明/SUBMISSION/网页五处一致
+- [x] 确认 37b442ec 的 Fanout 父问题 q01/q02 为无品牌词（与旧 fixtures 同 id 纯属巧合，无泄漏）
+
+### 收尾任务（用户批准清单，逐项独立 commit）
+- [x] 收尾-1 消歧"引用率 100%"：确认 citation_rate 定义 = 带 ≥1 个 Web Search 来源 URL 的
+      回答占比（与用户推测一致）。显示层统一改为"来源覆盖率 Source Coverage (Citation Rate)"
+      并附"非品牌被引用比例"定义：报告指标卡+跨平台表头、网页两处、方案说明 §1/§2.3/§3.1、
+      README 术语行+FAQ、SUBMISSION 边界表。JSON 字段名 citation_rate 不动（契约）。
+      重渲染 37b442ec（report.json 字节不变）、重建 web/dist 并验证同步；55 passed；mock 20/8/7/7
